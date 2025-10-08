@@ -58,11 +58,11 @@
                         <input type="text" name="cod_regional" required 
                                        class="form-input"
                                placeholder="Ej: REG-001" value="{{ old('cod_regional') }}">
-                            </div>
-                        </div>
                     </div>
+                    </div>
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="form-group">
                             <label class="form-label">
                                 Código Centro <span class="required">*</span>
@@ -109,14 +109,14 @@
                         <div class="form-group">
                             <label class="form-label">
                                 Consecutivo <span class="required">*</span>
-                            </label>
+                        </label>
                             <div class="input-container">
                                 <i class="fas fa-sort-numeric-up input-icon"></i>
-                                <input type="text" name="consecutivo" required 
+                        <input type="text" name="consecutivo" required 
                                        class="form-input"
-                                       placeholder="Ej: CON-001" value="{{ old('consecutivo') }}">
-                            </div>
-                        </div>
+                               placeholder="Ej: CON-001" value="{{ old('consecutivo') }}">
+                    </div>
+                </div>
                         <div class="form-group">
                             <label class="form-label">
                                 Descripción SKU <span class="required">*</span>
@@ -126,7 +126,7 @@
                         <input type="text" name="desc_sku" required 
                                        class="form-input"
                                placeholder="Ej: SKU-001" value="{{ old('desc_sku') }}">
-                            </div>
+                    </div>
                         </div>
                     </div>
 
@@ -196,7 +196,7 @@
                             <input type="date" name="fecha_adq" required 
                                        class="form-input"
                                    value="{{ old('fecha_adq') }}">
-                            </div>
+                        </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">
@@ -246,7 +246,7 @@
                                 </label>
                             </div>
                             <p class="form-hint">Formatos permitidos: JPEG, PNG, JPG, GIF. Tamaño máximo: 2MB</p>
-                        </div>
+                    </div>
                 </div>
 
                     <div class="form-group">

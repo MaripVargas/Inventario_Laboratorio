@@ -8,129 +8,173 @@
 <div class="modern-inventory-container">
     <div class="card mb-6 modern-card">
         <div class="card-header modern-header">
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-900">Lista de Items</h2>
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-900">Lista de Items</h2>
                 <a href="{{ route('inventario.create') }}" class="modern-btn modern-btn-primary">
                     <i class="fas fa-plus"></i>
-                    Agregar Item
-                </a>
-            </div>
+                Agregar Item
+            </a>
         </div>
-        <div class="card-body">
-            <!-- Filtros -->
+    </div>
+    <div class="card-body">
+        <!-- Filtros -->
             <div class="mb-6 modern-filters">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="filter-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
                         <div class="search-input-container">
                             <i class="fas fa-search search-icon"></i>
-                            <input type="text" placeholder="Buscar por IR ID, SKU o descripción..." 
+                    <input type="text" placeholder="Buscar por IR ID, SKU o descripción..." 
                                    class="modern-input search-input">
                         </div>
-                    </div>
+                </div>
                     <div class="filter-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Gestión</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gestión</label>
                         <div class="select-container">
                             <i class="fas fa-calendar-alt select-icon"></i>
                             <select class="modern-select">
-                                <option value="">Todas las gestiones</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                                <option value="2022">2022</option>
-                            </select>
-                        </div>
+                        <option value="">Todas las gestiones</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
                     </div>
                     <div class="filter-group">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Estado</label>
                         <div class="select-container">
                             <i class="fas fa-filter select-icon"></i>
                             <select class="modern-select">
-                                <option value="">Todos los estados</option>
-                                <option value="bueno">Bueno</option>
-                                <option value="regular">Regular</option>
-                                <option value="malo">Malo</option>
-                            </select>
+                        <option value="">Todos los estados</option>
+                        <option value="bueno">Bueno</option>
+                        <option value="regular">Regular</option>
+                        <option value="malo">Malo</option>
+                    </select>
                         </div>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Tabla de Items -->
-            <div class="overflow-x-auto modern-table-wrapper">
-                <table class="modern-table">
-                    <thead>
-                        <tr>
-                            <th class="table-header">IR ID</th>
-                            <th class="table-header">IV ID</th>
-                            <th class="table-header">Desc. SKU</th>
-                            <th class="table-header">Descripción</th>
-                            <th class="table-header">No. Placa</th>
-                            <th class="table-header">Valor</th>
-                            <th class="table-header">Estado</th>
-                            <th class="table-header">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($items as $item)
+        <!-- Tabla de Items -->
+            <div class="table-container">
+                <div class="table-scroll-indicator">
+                    <i class="fas fa-arrows-alt-h"></i>
+                    <span>Desliza horizontalmente para ver más información</span>
+                </div>
+                <div class="overflow-x-auto modern-table-wrapper">
+                    <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th class="table-header">ID</th>
+                        <th class="table-header">IR ID</th>
+                        <th class="table-header">IV ID</th>
+                        <th class="table-header">Código Regional</th>
+                        <th class="table-header">Código Centro</th>
+                        <th class="table-header">Desc. Almacén</th>
+                        <th class="table-header">No. Placa</th>
+                        <th class="table-header">Consecutivo</th>
+                        <th class="table-header">Desc. SKU</th>
+                        <th class="table-header">Serial</th>
+                        <th class="table-header">Descripción Completa</th>
+                        <th class="table-header">Atributos</th>
+                        <th class="table-header">Imagen</th>
+                        <th class="table-header">Fecha Adq.</th>
+                        <th class="table-header">Valor</th>
+                        <th class="table-header">Estado</th>
+                        <th class="table-header">Gestión</th>
+                        <th class="table-header">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($items as $item)
                         <tr class="table-row" data-item-id="{{ $item->id }}">
+                            <td class="table-cell">{{ $item->id }}</td>
                             <td class="table-cell">{{ $item->ir_id }}</td>
                             <td class="table-cell">{{ $item->iv_id ?? '-' }}</td>
+                            <td class="table-cell">{{ $item->cod_regional ?? '-' }}</td>
+                            <td class="table-cell">{{ $item->cod_centro ?? '-' }}</td>
+                            <td class="table-cell">{{ $item->desc_almacen ?? '-' }}</td>
+                            <td class="table-cell">{{ $item->no_placa }}</td>
+                            <td class="table-cell">{{ $item->consecutivo ?? '-' }}</td>
                             <td class="table-cell">{{ $item->desc_sku }}</td>
+                            <td class="table-cell">{{ $item->serial ?? '-' }}</td>
                             <td class="table-cell">
-                                <div class="table-description" title="{{ $item->descripcion_elemento }}">
-                                    {{ $item->descripcion_elemento }}
+                                <div class="table-description-full" title="{{ $item->descripcion_elemento }}">
+                                {{ $item->descripcion_elemento }}
+                            </div>
+                        </td>
+                            <td class="table-cell">
+                                <div class="table-description-full" title="{{ $item->atributos }}">
+                                    {{ $item->atributos ?? '-' }}
                                 </div>
                             </td>
-                            <td class="table-cell">{{ $item->no_placa }}</td>
-                            <td class="table-cell table-value">${{ number_format($item->valor_adq, 2) }}</td>
                             <td class="table-cell">
-                                @if($item->estado == 'bueno')
-                                    <span class="status-badge status-good">
-                                        <i class="fas fa-check-circle"></i>
-                                        Bueno
-                                    </span>
-                                @elseif($item->estado == 'regular')
-                                    <span class="status-badge status-regular">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        Regular
-                                    </span>
+                                @if($item->foto)
+                                    <div class="table-image-container">
+                                        <img src="{{ asset('uploads/inventario/' . $item->foto) }}" 
+                                             alt="Imagen del item" 
+                                             class="table-image"
+                                             onclick="openImageModal('{{ asset('uploads/inventario/' . $item->foto) }}')">
+                                    </div>
                                 @else
-                                    <span class="status-badge status-bad">
-                                        <i class="fas fa-times-circle"></i>
-                                        Malo
-                                    </span>
+                                    <div class="no-image">
+                                        <i class="fas fa-image"></i>
+                                        <span>Sin imagen</span>
+                                    </div>
                                 @endif
                             </td>
+                            <td class="table-cell">{{ $item->fecha_adq ? $item->fecha_adq->format('d/m/Y') : '-' }}</td>
+                            <td class="table-cell table-value">${{ number_format($item->valor_adq, 2) }}</td>
+                            <td class="table-cell">
+                            @if($item->estado == 'bueno')
+                                    <span class="status-badge status-good">
+                                        <i class="fas fa-check-circle"></i>
+                                    Bueno
+                                </span>
+                            @elseif($item->estado == 'regular')
+                                    <span class="status-badge status-regular">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    Regular
+                                </span>
+                            @else
+                                    <span class="status-badge status-bad">
+                                        <i class="fas fa-times-circle"></i>
+                                    Malo
+                                </span>
+                            @endif
+                        </td>
+                            <td class="table-cell">{{ $item->gestion ?? 'SIN GESTIONAR' }}</td>
                             <td class="table-cell">
                                 <div class="action-buttons">
                                     <a href="{{ route('inventario.edit', $item->id) }}" class="action-btn action-btn-edit" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('inventario.destroy', $item->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('inventario.destroy', $item->id) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
                                         <button type="submit" class="action-btn action-btn-delete" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este item?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <!-- Mensaje cuando no hay items -->
-                        <tr>
-                            <td colspan="8" class="empty-state">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <!-- Mensaje cuando no hay items -->
+                    <tr>
+                            <td colspan="18" class="empty-state">
                                 <div class="empty-state-content">
                                     <i class="fas fa-box-open"></i>
                                     <h3>No hay items en el inventario</h3>
                                     <p>Comienza agregando tu primer item</p>
                                 </div>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+                </div>
+        </div>
 
         <!-- Paginación -->
         <div class="mt-6 flex justify-between items-center">
@@ -392,15 +436,40 @@
 }
 
 /* Modern Table */
+.table-container {
+    position: relative;
+}
+
+.table-scroll-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #1e40af;
+    animation: pulse 2s infinite;
+}
+
+.table-scroll-indicator i {
+    font-size: 1rem;
+}
+
 .modern-table-wrapper {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     margin-top: 1rem;
+    overflow-x: auto;
+    max-width: 100%;
 }
 
 .modern-table {
     width: 100%;
+    min-width: 1800px; /* Asegurar que todas las columnas tengan espacio */
     border-collapse: collapse;
     background: white;
 }
@@ -453,6 +522,71 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.table-description-full {
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+/* Table Images */
+.table-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.table-image-container:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.table-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.table-image:hover {
+    transform: scale(1.1);
+}
+
+.no-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    border: 2px dashed var(--gray-300);
+    border-radius: 8px;
+    color: var(--gray-500);
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.no-image i {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.no-image span {
+    font-size: 0.625rem;
+    font-weight: 500;
 }
 
 .table-value {
@@ -654,5 +788,125 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Image Modal Functions
+function openImageModal(imageSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalInfo = document.getElementById('modalImageInfo');
+    
+    modalImage.src = imageSrc;
+    modalInfo.textContent = 'Imagen del inventario';
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeImageModal();
+    }
+});
 </script>
+
+<!-- Modal para ver imagen en tamaño completo -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <div class="image-modal-content" onclick="event.stopPropagation()">
+        <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+        <img id="modalImage" src="" alt="Imagen del inventario">
+        <div class="image-modal-info">
+            <p id="modalImageInfo">Imagen del inventario</p>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Image Modal Styles */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.image-modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: slideInUp 0.3s ease;
+}
+
+.image-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+    transition: color 0.3s ease;
+}
+
+.image-modal-close:hover {
+    color: #000;
+}
+
+.image-modal-content img {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.image-modal-info {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.image-modal-info p {
+    margin: 0;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(-50%) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-50%) translateY(0);
+    }
+}
+</style>
 @endsection
