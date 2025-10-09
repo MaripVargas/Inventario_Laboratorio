@@ -10,8 +10,14 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
         * {
@@ -255,6 +261,166 @@
             list-style-position: inside;
         }
 
+        /* ========================================
+           ESTILOS PARA EL MODAL
+           ======================================== */
+        
+        /* Asegurar que el modal esté por encima de todo */
+        .modal {
+            z-index: 9999 !important;
+        }
+        
+        .modal-backdrop {
+            z-index: 9998 !important;
+        }
+        
+        /* Estilos del modal */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px 12px 0 0;
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .modal-header .btn-close {
+            opacity: 1;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        /* Scrollbar personalizado para el modal */
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #dc3545;
+            border-radius: 10px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #c82333;
+        }
+        
+        /* Estilos para los inputs del formulario */
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+            outline: none;
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            padding-right: calc(1.5em + 0.75rem);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .invalid-feedback {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: #dc3545;
+        }
+        
+        /* Estilos para labels */
+        .form-label {
+            margin-bottom: 0.5rem;
+            color: #495057;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .form-label .text-danger {
+            font-weight: bold;
+        }
+        
+        /* Botones dentro del modal */
+        .modal .btn {
+            border-radius: 8px;
+            padding: 0.5rem 1.25rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .modal .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+        
+        .modal .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .modal .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .modal .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        /* Alert de información */
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border: 1px solid #b8daff;
+            border-radius: 8px;
+            color: #0c5460;
+        }
+        
+        /* Spinner de carga */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3rem;
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal.show .modal-dialog {
+            animation: fadeIn 0.3s ease-out;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -267,6 +433,15 @@
 
             .main-content {
                 margin-left: 0;
+            }
+            
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+            
+            .modal-body {
+                padding: 1rem;
+                max-height: 60vh;
             }
         }
     </style>
@@ -343,6 +518,34 @@
             @yield('content')
         </div>
     </div>
+
+    <!-- jQuery (opcional pero recomendado) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap 5 JS Bundle (IMPORTANTE: incluye Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Script para verificar que Bootstrap está cargado -->
+    <script>
+        // Verificar que Bootstrap se haya cargado correctamente
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof bootstrap === 'undefined') {
+                console.error('⚠️ Bootstrap no se ha cargado correctamente');
+            } else {
+                console.log('✅ Bootstrap cargado correctamente');
+                console.log('✅ Versión de Bootstrap:', bootstrap.Modal ? 'Modal disponible' : 'Modal NO disponible');
+            }
+            
+            if (typeof Swal === 'undefined') {
+                console.error('⚠️ SweetAlert2 no se ha cargado correctamente');
+            } else {
+                console.log('✅ SweetAlert2 cargado correctamente');
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>

@@ -108,21 +108,22 @@
                                     {{ $item->atributos ?? '-' }}
                                 </div>
                             </td>
-                            <td class="table-cell">
-                                @if($item->foto)
-                                    <div class="table-image-container">
-                                        <img src="{{ asset('uploads/inventario/' . $item->foto) }}" 
-                                             alt="Imagen del item" 
-                                             class="table-image"
-                                             onclick="openImageModal('{{ asset('uploads/inventario/' . $item->foto) }}')">
-                                    </div>
-                                @else
-                                    <div class="no-image">
-                                        <i class="fas fa-image"></i>
-                                        <span>Sin imagen</span>
-                                    </div>
-                                @endif
-                            </td>
+                           <td class="table-cell">
+    @if($item->foto)
+        <div class="table-image-container">
+            <img src="{{ asset('storage/' . $item->foto) }}" 
+                 alt="Imagen del item" 
+                 class="table-image"
+                 onclick="openImageModal('{{ asset('storage/' . $item->foto) }}')">
+        </div>
+    @else
+        <div class="no-image">
+            <i class="fas fa-image"></i>
+            <span>Sin imagen</span>
+        </div>
+    @endif
+</td>
+
                             <td class="table-cell">{{ $item->fecha_adq ? $item->fecha_adq->format('d/m/Y') : '-' }}</td>
                             <td class="table-cell table-value">${{ number_format($item->valor_adq, 2) }}</td>
                             <td class="table-cell">
@@ -144,20 +145,44 @@
                             @endif
                         </td>
                             <td class="table-cell">{{ $item->gestion ?? 'SIN GESTIONAR' }}</td>
-                            <td class="table-cell">
-                                <div class="action-buttons">
-                                    <a href="{{ route('inventario.edit', $item->id) }}" class="action-btn action-btn-edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('inventario.destroy', $item->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                        <button type="submit" class="action-btn action-btn-delete" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este item?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
+                           <td class="table-cell">
+    <div class="action-buttons d-flex justify-content-center gap-2">
+
+<td>    
+  <div class="action-buttons d-flex align-items-center gap-2">
+
+  <button 
+    type="button" 
+    class="btn btn-warning btn-sm"
+    title="Editar"
+    onclick="openEditModal({{ $item->id }})">
+    <i class="fas fa-edit"></i>
+</button>
+
+    {{-- Botón Eliminar (envía el formulario de eliminación) --}}
+    <form 
+      action="{{ route('inventario.destroy', $item->id) }}" 
+      method="POST" 
+      class="d-inline">
+      @csrf
+      @method('DELETE')
+      <button 
+        type="submit" 
+        class="btn btn-danger btn-sm action-btn action-btn-delete"
+        title="Eliminar"
+        onclick="return confirm('¿Eliminar este item?')">
+        <i class="fas fa-trash"></i>
+      </button>
+    </form>
+
+  </div>
+</td>
+
+
+        </form>
+    </div>
+</td>
+
                     </tr>
                     @empty
                     <!-- Mensaje cuando no hay items -->
@@ -189,6 +214,241 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal Bootstrap para Editar -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Item
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- Spinner de carga -->
+                <div class="text-center py-5" id="loadingSpinner">
+                    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Cargando formulario...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+// Función para abrir el modal y cargar el formulario
+function openEditModal(itemId) {
+    console.log('🔄 Abriendo modal para item:', itemId);
+    
+    // Abrir el modal
+    const modalElement = document.getElementById('editModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+    // Referencias a elementos
+    const modalBody = document.getElementById('editModalBody');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Mostrar spinner
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'block';
+    }
+    
+    // Cargar formulario
+    fetch(`/inventario/${itemId}/edit`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'text/html'
+        }
+    })
+    .then(response => {
+        console.log('📡 Respuesta:', response.status);
+        if (!response.ok) throw new Error('Error al cargar');
+        return response.text();
+    })
+    .then(html => {
+        console.log('✅ Formulario cargado');
+        if (loadingSpinner) loadingSpinner.style.display = 'none';
+        modalBody.innerHTML = html;
+    })
+    .catch(error => {
+        console.error('❌ Error:', error);
+        if (loadingSpinner) loadingSpinner.style.display = 'none';
+        modalBody.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Error al cargar el formulario.
+            </div>
+        `;
+    });
+}
+
+// Interceptar submit del formulario
+document.addEventListener('submit', function(e) {
+       
+        const form = e.target;
+        
+       const camposObligatorios = [
+    { name: 'ir_id', label: 'IR ID' },
+    { name: 'cod_regional', label: 'Código Regional' },
+    { name: 'cod_centro', label: 'Código Centro' },
+    { name: 'desc_almacen', label: 'Descripción Almacén' },
+    { name: 'no_placa', label: 'No. Placa' },
+    { name: 'consecutivo', label: 'Consecutivo' },
+    { name: 'desc_sku', label: 'Descripción SKU' },
+    { name: 'descripcion_elemento', label: 'Descripción del Elemento' },
+    { name: 'atributos', label: 'Atributos' },
+    { name: 'serial', label: 'Serial' },
+    { name: 'fecha_adq', label: 'Fecha de Adquisición' },
+    { name: 'valor_adq', label: 'Valor de Adquisición' },
+    { name: 'gestion', label: 'Gestión' },
+    { name: 'acciones', label: 'Acciones' },
+    { name: 'estado', label: 'Estado' }
+];
+        
+        let camposVacios = [];
+        
+        camposObligatorios.forEach(campo => {
+            const input = form.querySelector(`[name="${campo.name}"]`);
+            if (input && !input.value.trim()) {
+                camposVacios.push(campo.label);
+            }
+        });
+        
+        // Si hay campos vacíos, mostrar alerta
+        if (camposVacios.length > 0) {
+            let mensaje = camposVacios.length === 1 
+                ? `El campo <strong>${camposVacios[0]}</strong> es obligatorio`
+                : `Los siguientes campos son obligatorios:<br><ul class="text-start mt-2 mb-0">` + 
+                  camposVacios.map(c => `<li>${c}</li>`).join('') + `</ul>`;
+        
+        Swal.fire({
+            title: 'Guardando cambios...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'error' && data.errors) {
+                let errorHtml = '<ul class="text-start mb-0">';
+                Object.keys(data.errors).forEach(field => {
+                    data.errors[field].forEach(error => {
+                        errorHtml += `<li>${error}</li>`;
+                    });
+                });
+                errorHtml += '</ul>';
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Errores de validación',
+                    html: errorHtml,
+                    confirmButtonColor: '#dc3545'
+                });
+            } else if (data.status === 'success') {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+                modal.hide();
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: data.message || 'Item actualizado correctamente',
+                    confirmButtonColor: '#28a745',
+                    timer: 2000
+                }).then(() => window.location.reload());
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ocurrió un error al guardar.',
+                confirmButtonColor: '#dc3545'
+            });
+        });
+    }
+});
+
+// Confirmar eliminación
+function confirmDelete(event) {
+    event.preventDefault();
+    
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción no se puede revertir",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            event.target.submit();
+        }
+    });
+    
+    return false;
+}
+
+// Limpiar modal al cerrar
+const editModal = document.getElementById('editModal');
+if (editModal) {
+    editModal.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('editModalBody').innerHTML = `
+            <div class="text-center py-5" id="loadingSpinner">
+                <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3 text-muted">Cargando formulario...</p>
+            </div>
+        `;
+    });
+}
+
+// Mensajes de sesión
+@if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: '{{ session('success') }}',
+        confirmButtonColor: '#28a745',
+        timer: 3000,
+        timerProgressBar: true
+    });
+@endif
+
+@if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '{{ session('error') }}',
+        confirmButtonColor: '#dc3545'
+    });
+@endif
+</script>
+@endpush
+
+
+
+
+
 
 <style>
 /* Variables CSS */
