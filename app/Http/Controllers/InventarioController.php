@@ -128,13 +128,15 @@ public function edit($id)
             // Manejar la foto si se subió una nueva
             if ($request->hasFile('foto')) {
                 // Eliminar la foto anterior si existe
-                if ($item->foto && Storage::exists('public/' . $item->foto)) {
-                    Storage::delete('public/' . $item->foto);
+                if ($item->foto && file_exists(public_path('uploads/inventario/' . $item->foto))) {
+                    unlink(public_path('uploads/inventario/' . $item->foto));
                 }
 
                 // Guardar la nueva foto
-                $path = $request->file('foto')->store('inventario', 'public');
-                $validated['foto'] = $path;
+                $foto = $request->file('foto');
+                $nombreFoto = time() . '_' . $foto->getClientOriginalName();
+                $foto->move(public_path('uploads/inventario'), $nombreFoto);
+                $validated['foto'] = $nombreFoto;
             }
 
             // Actualizar el item
@@ -190,8 +192,8 @@ public function edit($id)
             $item = Inventario::findOrFail($id);
 
             // Eliminar la foto si existe
-            if ($item->foto && Storage::exists('public/' . $item->foto)) {
-                Storage::delete('public/' . $item->foto);
+            if ($item->foto && file_exists(public_path('uploads/inventario/' . $item->foto))) {
+                unlink(public_path('uploads/inventario/' . $item->foto));
             }
 
             $item->delete();

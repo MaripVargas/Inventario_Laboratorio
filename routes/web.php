@@ -24,6 +24,8 @@ Route::get('/', function () {
 Route::middleware(['simulate.auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPDF'])->name('dashboard.export.pdf');
+    Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])->name('dashboard.export.excel');
     
     // Rutas del inventario
     Route::resource('inventario', InventarioController::class);

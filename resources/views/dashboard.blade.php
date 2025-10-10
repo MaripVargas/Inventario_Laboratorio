@@ -97,30 +97,31 @@
                     <i class="fas fa-arrow-right"></i>
                 </div>
             </a>
-            <button class="action-card action-card-warning" onclick="exportData()">
+            <button class="action-card action-card-warning" onclick="exportPDF()">
                 <div class="action-card-icon">
-                    <i class="fas fa-download"></i>
+                    <i class="fas fa-file-pdf"></i>
                 </div>
                 <div class="action-card-content">
-                    <h3>Exportar</h3>
-                    <p>Descargar datos</p>
+                    <h3>Exportar PDF</h3>
+                    <p>Descargar en PDF</p>
                 </div>
                 <div class="action-card-arrow">
                     <i class="fas fa-arrow-right"></i>
                 </div>
             </button>
-            <button class="action-card action-card-purple" onclick="showReports()">
+            <button class="action-card action-card-success" onclick="exportExcel()">
                 <div class="action-card-icon">
-                    <i class="fas fa-chart-bar"></i>
+                    <i class="fas fa-file-excel"></i>
                 </div>
                 <div class="action-card-content">
-                    <h3>Reportes</h3>
-                    <p>Ver estadísticas</p>
+                    <h3>Exportar Excel</h3>
+                    <p>Descargar en Excel</p>
                 </div>
                 <div class="action-card-arrow">
                     <i class="fas fa-arrow-right"></i>
                 </div>
             </button>
+           
         </div>
     </div>
 </div>
@@ -164,7 +165,7 @@
                         <th class="table-header">Valor</th>
                         <th class="table-header">Estado</th>
                         <th class="table-header">Gestión</th>
-                        <th class="table-header">Acciones</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -227,17 +228,8 @@
                         </td>
                         <td class="table-cell">{{ $item->gestion ?? 'SIN GESTIONAR' }}</td>
                         <td class="table-cell">
-                            <div class="action-buttons">
-                                <a href="{{ route('inventario.edit', $item->id) }}" class="action-btn action-btn-edit" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('inventario.destroy', $item->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn action-btn-delete" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este item?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                           
+                               
                             </div>
                         </td>
                     </tr>
@@ -998,19 +990,38 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Export and Reports functions
-function exportData() {
+function exportPDF() {
     // Add loading animation
     const btn = event.target.closest('button');
     const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exportando...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
     btn.disabled = true;
     
+    // Redirect to PDF export route
+    window.location.href = '{{ route("dashboard.export.pdf") }}';
+    
+    // Reset button after a short delay
     setTimeout(() => {
         btn.innerHTML = originalContent;
         btn.disabled = false;
-        // Here you would implement actual export functionality
-        alert('Función de exportación en desarrollo');
-    }, 2000);
+    }, 1000);
+}
+
+function exportExcel() {
+    // Add loading animation
+    const btn = event.target.closest('button');
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Excel...';
+    btn.disabled = true;
+    
+    // Redirect to Excel export route
+    window.location.href = '{{ route("dashboard.export.excel") }}';
+    
+    // Reset button after a short delay
+    setTimeout(() => {
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
+    }, 1000);
 }
 
 function showReports() {

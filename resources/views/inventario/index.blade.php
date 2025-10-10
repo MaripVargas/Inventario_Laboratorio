@@ -111,10 +111,10 @@
                            <td class="table-cell">
     @if($item->foto)
         <div class="table-image-container">
-            <img src="{{ asset('storage/' . $item->foto) }}" 
+            <img src="{{ asset('uploads/inventario/' . $item->foto) }}" 
                  alt="Imagen del item" 
                  class="table-image"
-                 onclick="openImageModal('{{ asset('storage/' . $item->foto) }}')">
+                 onclick="openImageModal('{{ asset('uploads/inventario/' . $item->foto) }}')">
         </div>
     @else
         <div class="no-image">
@@ -145,43 +145,32 @@
                             @endif
                         </td>
                             <td class="table-cell">{{ $item->gestion ?? 'SIN GESTIONAR' }}</td>
-                           <td class="table-cell">
-    <div class="action-buttons d-flex justify-content-center gap-2">
+                            <td class="table-cell">
+                                <div class="action-buttons d-flex align-items-center gap-2">
+                                    <button 
+                                        type="button" 
+                                        class="btn btn-warning btn-sm"
+                                        title="Editar"
+                                        onclick="openEditModal({{ $item->id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
 
-<td>    
-  <div class="action-buttons d-flex align-items-center gap-2">
-
-  <button 
-    type="button" 
-    class="btn btn-warning btn-sm"
-    title="Editar"
-    onclick="openEditModal({{ $item->id }})">
-    <i class="fas fa-edit"></i>
-</button>
-
-    {{-- Botón Eliminar (envía el formulario de eliminación) --}}
-    <form 
-      action="{{ route('inventario.destroy', $item->id) }}" 
-      method="POST" 
-      class="d-inline">
-      @csrf
-      @method('DELETE')
-      <button 
-        type="submit" 
-        class="btn btn-danger btn-sm action-btn action-btn-delete"
-        title="Eliminar"
-        onclick="return confirm('¿Eliminar este item?')">
-        <i class="fas fa-trash"></i>
-      </button>
-    </form>
-
-  </div>
-</td>
-
-
-        </form>
-    </div>
-</td>
+                                    <form 
+                                        action="{{ route('inventario.destroy', $item->id) }}" 
+                                        method="POST" 
+                                        class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button 
+                                            type="submit" 
+                                            class="btn btn-danger btn-sm action-btn action-btn-delete"
+                                            title="Eliminar"
+                                            onclick="return confirm('¿Eliminar este item?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
 
                     </tr>
                     @empty
@@ -722,7 +711,6 @@ if (editModal) {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
-    margin-top: 1rem;
     overflow-x: auto;
     max-width: 100%;
 }
