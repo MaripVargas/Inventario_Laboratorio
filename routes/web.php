@@ -22,11 +22,45 @@ Route::get('/', function () {
 
 // Rutas protegidas con autenticación simulada
 Route::middleware(['simulate.auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPDF'])->name('dashboard.export.pdf');
-    Route::get('/dashboard/export-excel', [DashboardController::class, 'exportExcel'])->name('dashboard.export.excel');
     
-    // Rutas del inventario
+    // ========================================
+    // DASHBOARD ROUTES
+    // ========================================
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Dashboard Export Routes
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        // Exportar PDF completo (todos los registros)
+        Route::get('/export-pdf', [DashboardController::class, 'exportPDF'])->name('export.pdf');
+        
+        // Exportar PDF paginado (útil para inventarios grandes)
+        Route::get('/export-pdf-paginated', [DashboardController::class, 'exportPDFPaginated'])->name('export.pdf.paginated');
+        
+        // Exportar Excel
+        Route::get('/export-excel', [DashboardController::class, 'exportExcel'])->name('export.excel');
+        
+        // Vista previa del PDF (para testing)
+        Route::get('/preview-pdf', [DashboardController::class, 'previewPDF'])->name('preview.pdf');
+    });
+    
+    // ========================================
+    // INVENTARIO ROUTES
+    // ========================================
     Route::resource('inventario', InventarioController::class);
+    
+    // Rutas adicionales de inventario si las necesitas
+    Route::prefix('inventario')->name('inventario.')->group(function () {
+        // Ejemplo: Exportar inventario individual
+        // Route::get('/{id}/export-pdf', [InventarioController::class, 'exportItemPDF'])->name('item.export.pdf');
+        
+        // Ejemplo: Búsqueda avanzada
+        // Route::get('/search', [InventarioController::class, 'search'])->name('search');
+    });
 });
+
+// ========================================
+// RUTAS PÚBLICAS (si las necesitas)
+// ========================================
+// Route::get('/about', function () {
+//     return view('about');
+// })->name('about');

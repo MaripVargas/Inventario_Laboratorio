@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Inventario - {{ date('d/m/Y') }}</title>
+    <title>Reporte de Inventario - {{ now()->timezone('America/Bogota')->format('d/m/Y') }}</title>
     <style>
+        @page {
+            margin: 12mm 10mm;
+            size: A4;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,334 +16,413 @@
         }
         
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 9px;
-            line-height: 1.3;
-            color: #333;
-            background: white;
+            color: #2c3e50;
+            background: #f8f9fa;
         }
         
         .header {
             text-align: center;
+            padding: 15px;
+            background-color: #0066CC;
+            color: #FFFFFF;
+            border-radius: 8px;
             margin-bottom: 15px;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 6px;
+            border: 3px solid #004C99;
         }
         
         .header h1 {
-            font-size: 20px;
+            font-size: 24px;
+            margin-bottom: 5px;
             font-weight: bold;
-            margin-bottom: 4px;
+            letter-spacing: 1px;
+            color: #FFFFFF;
         }
         
         .header p {
-            font-size: 10px;
-            opacity: 0.9;
+            font-size: 11px;
+            color: #FFFFFF;
         }
         
-        .summary {
-            display: flex;
-            justify-content: space-between;
+        .summary-grid {
+            display: table;
+            width: 100%;
             margin-bottom: 15px;
-            flex-wrap: wrap;
+            border-spacing: 8px;
+        }
+        
+        .summary-row {
+            display: table-row;
         }
         
         .summary-card {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 8px;
-            margin: 3px;
-            flex: 1;
-            min-width: 100px;
+            display: table-cell;
+            background: white;
+            border-left: 4px solid #4A90E2;
+            border-radius: 6px;
+            padding: 12px;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .summary-card h3 {
             font-size: 9px;
             color: #6c757d;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .summary-card .value {
-            font-size: 12px;
-            font-weight: bold;
-            color: #495057;
-        }
-        
-        .summary-card .value.currency {
-            color: #28a745;
-        }
-        
-        .table-container {
-            margin-top: 15px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 7px;
-        }
-        
-        th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 6px 3px;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid #5a6fd8;
-            font-size: 7px;
-        }
-        
-        td {
-            padding: 4px 3px;
-            border: 1px solid #dee2e6;
-            vertical-align: top;
-            font-size: 7px;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        
-        .estado-badge {
-            padding: 1px 4px;
-            border-radius: 8px;
-            font-size: 6px;
-            font-weight: bold;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-        
-        .estado-bueno {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .estado-regular {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        
-        .estado-malo {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        
-        .currency {
-            text-align: right;
-            font-weight: bold;
-            color: #28a745;
-        }
-        
-        .date {
-            text-align: center;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .text-right {
-            text-align: right;
-        }
-        
-        .font-bold {
-            font-weight: bold;
-        }
-        
-        .item-image {
-            width: 25px;
-            height: 25px;
-            object-fit: cover;
-            border-radius: 2px;
-            border: 1px solid #dee2e6;
-            display: block;
-            margin: 0 auto;
-        }
-        
-        .no-image {
-            width: 25px;
-            height: 25px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5px;
-            color: #6c757d;
-            margin: 0 auto;
-        }
-        
-        /* Additional professional styling */
-        .table-header-row {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .data-row:hover {
-            background-color: #f1f3f4;
-        }
-        
-        .important-field {
+            font-size: 18px;
             font-weight: bold;
             color: #2c3e50;
         }
         
-        .secondary-field {
+        .summary-card .value.currency {
+            color: #28a745;
+            font-size: 16px;
+        }
+        
+        .items-grid {
+            display: table;
+            width: 100%;
+            border-spacing: 10px;
+        }
+        
+        .item-row {
+            display: table-row;
+        }
+        
+        .item-card {
+            display: table-cell;
+            width: 48%;
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            border-top: 3px solid #4A90E2;
+            page-break-inside: avoid;
+        }
+        
+        .item-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+        }
+        
+        .item-image-container {
+            display: table-cell;
+            width: 70px;
+            vertical-align: top;
+            padding-right: 10px;
+        }
+        
+        .item-image {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .no-image {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
             color: #6c757d;
+            text-align: center;
+            border: 2px solid #dee2e6;
+        }
+        
+        .item-main-info {
+            display: table-cell;
+            vertical-align: top;
+        }
+        
+        .item-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        
+        .item-subtitle {
+            font-size: 9px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .item-badge-container {
+            margin-top: 5px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 7px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+        
+        .badge-primary {
+            background: #e7f3ff;
+            color: #0056b3;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .item-details {
+            display: table;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .detail-row {
+            display: table-row;
+        }
+        
+        .detail-label {
+            display: table-cell;
+            font-size: 8px;
+            color: #6c757d;
+            padding: 3px 5px 3px 0;
+            font-weight: bold;
+            width: 35%;
+        }
+        
+        .detail-value {
+            display: table-cell;
+            font-size: 9px;
+            color: #2c3e50;
+            padding: 3px 0;
+        }
+        
+        .detail-value.highlight {
+            font-weight: bold;
+            color: #4A90E2;
+        }
+        
+        .detail-value.currency {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 10px;
+        }
+        
+        .page-break {
+            page-break-after: always;
         }
         
         .footer {
             position: fixed;
-            bottom: 15px;
+            bottom: 0;
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 7px;
+            font-size: 8px;
             color: #6c757d;
-            border-top: 1px solid #dee2e6;
-            padding-top: 8px;
+            padding: 8px;
+            background: white;
+            border-top: 2px solid #4A90E2;
         }
         
-        .page-break {
-            page-break-before: always;
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #4A90E2 0%, #0066CC 100%);
+            margin: 15px 0;
+            border-radius: 2px;
         }
-        
-        /* Column widths for better organization - All fields included */
-        .col-imagen { width: 3%; }
-        .col-id { width: 4%; }
-        .col-ir-id { width: 4%; }
-        .col-iv-id { width: 4%; }
-        .col-regional { width: 4%; }
-        .col-centro { width: 4%; }
-        .col-almacen { width: 6%; }
-        .col-placa { width: 5%; }
-        .col-consecutivo { width: 4%; }
-        .col-sku { width: 6%; }
-        .col-serial { width: 4%; }
-        .col-desc { width: 12%; }
-        .col-atributos { width: 8%; }
-        .col-fecha { width: 5%; }
-        .col-valor { width: 6%; }
-        .col-gestion { width: 6%; }
-        .col-acciones { width: 6%; }
-        .col-estado { width: 4%; }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>REPORTE DE INVENTARIO</h1>
+        <h1>📦 REPORTE DE INVENTARIO</h1>
         <p>Laboratorio - Generado el {{ date('d/m/Y H:i:s') }}</p>
     </div>
     
     <!-- Summary Statistics -->
-    <div class="summary">
-        <div class="summary-card">
-            <h3>Total Items</h3>
-            <div class="value">{{ number_format($stats['total_items']) }}</div>
+    <div class="summary-grid">
+        <div class="summary-row">
+            <div class="summary-card">
+                <h3>Total Items</h3>
+                <div class="value">{{ number_format($stats['total_items']) }}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Valor Total</h3>
+                <div class="value currency">${{ number_format($stats['total_value'], 0, ',', '.') }}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Estado Bueno</h3>
+                <div class="value">{{ number_format($stats['estado_bueno']) }}</div>
+            </div>
         </div>
-        <div class="summary-card">
-            <h3>Valor Total</h3>
-            <div class="value currency">${{ number_format($stats['total_value'], 0, ',', '.') }} COP</div>
-        </div>
-        <div class="summary-card">
-            <h3>Estado Bueno</h3>
-            <div class="value">{{ number_format($stats['estado_bueno']) }}</div>
-        </div>
-        <div class="summary-card">
-            <h3>Estado Regular</h3>
-            <div class="value">{{ number_format($stats['estado_regular']) }}</div>
-        </div>
-        <div class="summary-card">
-            <h3>Estado Malo</h3>
-            <div class="value">{{ number_format($stats['estado_malo']) }}</div>
-        </div>
-        <div class="summary-card">
-            <h3>Gestiones</h3>
-            <div class="value">{{ number_format($stats['gestiones']) }}</div>
+        <div class="summary-row">
+            <div class="summary-card">
+                <h3>Estado Regular</h3>
+                <div class="value">{{ number_format($stats['estado_regular']) }}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Estado Malo</h3>
+                <div class="value">{{ number_format($stats['estado_malo']) }}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Gestiones</h3>
+                <div class="value">{{ number_format($stats['gestiones']) }}</div>
+            </div>
         </div>
     </div>
     
-    <!-- Inventory Table -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr class="table-header-row">
-                    <th class="col-imagen text-center">Imagen</th>
-                    <th class="col-id">ID</th>
-                    <th class="col-ir-id">IR ID</th>
-                    <th class="col-iv-id">IV ID</th>
-                    <th class="col-regional">Cód. Regional</th>
-                    <th class="col-centro">Cód. Centro</th>
-                    <th class="col-almacen">Desc. Almacén</th>
-                    <th class="col-placa">No. Placa</th>
-                    <th class="col-consecutivo">Consecutivo</th>
-                    <th class="col-sku">Desc. SKU</th>
-                    <th class="col-serial">Serial</th>
-                    <th class="col-desc">Descripción Completa</th>
-                    <th class="col-atributos">Atributos</th>
-                    <th class="col-fecha text-center">Fecha Adq.</th>
-                    <th class="col-valor text-right">Valor Adq.</th>
-                    <th class="col-gestion">Gestión</th>
-                    <th class="col-acciones">Acciones</th>
-                    <th class="col-estado text-center">Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($inventario as $item)
-                <tr class="data-row">
-                    <td class="text-center">
-                        @if($item->foto && file_exists(public_path('uploads/inventario/' . $item->foto)))
-                            @php
-                                $imagePath = public_path('uploads/inventario/' . $item->foto);
-                                $imageData = base64_encode(file_get_contents($imagePath));
-                                $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
-                                $imageSrc = 'data:image/' . $imageType . ';base64,' . $imageData;
-                            @endphp
-                            <img src="{{ $imageSrc }}" alt="Imagen del item" class="item-image">
-                        @else
-                            <div class="no-image">Sin imagen</div>
-                        @endif
-                    </td>
-                    <td class="important-field">{{ $item->id }}</td>
-                    <td class="important-field">{{ $item->ir_id }}</td>
-                    <td class="important-field">{{ $item->iv_id ?? 'N/A' }}</td>
-                    <td class="secondary-field">{{ $item->cod_regional ?? 'N/A' }}</td>
-                    <td class="secondary-field">{{ $item->cod_centro ?? 'N/A' }}</td>
-                    <td>{{ Str::limit($item->desc_almacen ?? 'N/A', 15) }}</td>
-                    <td class="important-field">{{ $item->no_placa }}</td>
-                    <td class="secondary-field">{{ $item->consecutivo ?? 'N/A' }}</td>
-                    <td>{{ $item->desc_sku }}</td>
-                    <td class="secondary-field">{{ $item->serial ?? 'N/A' }}</td>
-                    <td>{{ Str::limit($item->descripcion_elemento, 30) }}</td>
-                    <td>{{ Str::limit($item->atributos ?? 'N/A', 20) }}</td>
-                    <td class="date">{{ $item->fecha_adq ? $item->fecha_adq->format('d/m/Y') : 'N/A' }}</td>
-                    <td class="currency">${{ number_format($item->valor_adq, 0, ',', '.') }}</td>
-                    <td class="secondary-field">{{ $item->gestion ?? 'N/A' }}</td>
-                    <td>{{ Str::limit($item->acciones ?? 'N/A', 15) }}</td>
-                    <td class="text-center">
-                        <span class="estado-badge estado-{{ $item->estado }}">
-                            {{ ucfirst($item->estado) }}
-                        </span>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="18" class="text-center">No hay elementos en el inventario</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    <div class="section-divider"></div>
+    
+    <!-- Items Grid -->
+    @if($inventario->isNotEmpty())
+        @foreach($inventario->chunk(2) as $chunkIndex => $chunk)
+            <div class="items-grid">
+                <div class="item-row">
+                    @foreach($chunk as $item)
+                    <div class="item-card">
+                        <!-- Item Header with Image -->
+                        <div class="item-header">
+                            <div class="item-image-container">
+                                @if($item->foto && file_exists(public_path('uploads/inventario/' . $item->foto)))
+                                    @php
+                                        $imagePath = public_path('uploads/inventario/' . $item->foto);
+                                        $imageData = base64_encode(file_get_contents($imagePath));
+                                        $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
+                                        $imageSrc = 'data:image/' . $imageType . ';base64,' . $imageData;
+                                    @endphp
+                                    <img src="{{ $imageSrc }}" alt="Item" class="item-image">
+                                @else
+                                    <div class="no-image">Sin Imagen</div>
+                                @endif
+                            </div>
+                            <div class="item-main-info">
+                                <div class="item-title">{{ Str::limit($item->desc_sku, 40) }}</div>
+                                <div class="item-subtitle">{{ Str::limit($item->descripcion_elemento, 50) }}</div>
+                                <div class="item-badge-container">
+                                    <span class="badge badge-primary">ID: {{ $item->id }}</span>
+                                    <span class="badge badge-primary">Placa: {{ $item->no_placa }}</span>
+                                    @if($item->estado == 'bueno')
+                                        <span class="badge badge-success">{{ strtoupper($item->estado) }}</span>
+                                    @elseif($item->estado == 'regular')
+                                        <span class="badge badge-warning">{{ strtoupper($item->estado) }}</span>
+                                    @else
+                                        <span class="badge badge-danger">{{ strtoupper($item->estado) }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Item Details -->
+                        <div class="item-details">
+                            <div class="detail-row">
+                                <div class="detail-label">IR ID:</div>
+                                <div class="detail-value highlight">{{ $item->ir_id }}</div>
+                            </div>
+                            @if($item->iv_id)
+                            <div class="detail-row">
+                                <div class="detail-label">IV ID:</div>
+                                <div class="detail-value">{{ $item->iv_id }}</div>
+                            </div>
+                            @endif
+                            <div class="detail-row">
+                                <div class="detail-label">Regional:</div>
+                                <div class="detail-value">{{ $item->cod_regional ?? 'N/A' }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Centro:</div>
+                                <div class="detail-value">{{ $item->cod_centro ?? 'N/A' }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Almacén:</div>
+                                <div class="detail-value">{{ Str::limit($item->desc_almacen ?? 'N/A', 25) }}</div>
+                            </div>
+                            @if($item->consecutivo)
+                            <div class="detail-row">
+                                <div class="detail-label">Consecutivo:</div>
+                                <div class="detail-value">{{ $item->consecutivo }}</div>
+                            </div>
+                            @endif
+                            @if($item->serial)
+                            <div class="detail-row">
+                                <div class="detail-label">Serial:</div>
+                                <div class="detail-value">{{ $item->serial }}</div>
+                            </div>
+                            @endif
+                            @if($item->atributos)
+                            <div class="detail-row">
+                                <div class="detail-label">Atributos:</div>
+                                <div class="detail-value">{{ Str::limit($item->atributos, 30) }}</div>
+                            </div>
+                            @endif
+                            <div class="detail-row">
+                                <div class="detail-label">Fecha Adquisición:</div>
+                                <div class="detail-value">{{ $item->fecha_adq ? $item->fecha_adq->format('d/m/Y') : 'N/A' }}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Valor Adquisición:</div>
+                                <div class="detail-value currency">${{ number_format($item->valor_adq, 0, ',', '.') }} COP</div>
+                            </div>
+                            @if($item->gestion)
+                            <div class="detail-row">
+                                <div class="detail-label">Gestión:</div>
+                                <div class="detail-value">{{ Str::limit($item->gestion, 30) }}</div>
+                            </div>
+                            @endif
+                            @if($item->acciones)
+                            <div class="detail-row">
+                                <div class="detail-label">Acciones:</div>
+                                <div class="detail-value">{{ Str::limit($item->acciones, 30) }}</div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                    
+                    @if($chunk->count() == 1)
+                        <div class="item-card" style="visibility: hidden;"></div>
+                    @endif
+                </div>
+            </div>
+            
+            @if(($chunkIndex + 1) % 3 == 0 && !$loop->last)
+                <div class="page-break"></div>
+            @endif
+        @endforeach
+    @else
+        <div style="text-align: center; padding: 40px; color: #6c757d;">
+            <p style="font-size: 14px;">No hay elementos en el inventario</p>
+        </div>
+    @endif
     
     <!-- Footer -->
     <div class="footer">
-        <p>Página 1 de 1 | Sistema de Inventario del Laboratorio | {{ date('d/m/Y H:i:s') }}</p>
+        <p><strong>Sistema de Inventario del Laboratorio</strong> | Generado: {{ date('d/m/Y H:i:s') }} | Total de registros: {{ $stats['total_items'] }}</p>
     </div>
 </body>
 </html>
