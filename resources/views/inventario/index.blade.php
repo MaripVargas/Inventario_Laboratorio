@@ -431,6 +431,62 @@ if (editModal) {
         confirmButtonColor: '#dc3545'
     });
 @endif
+
+// Filtro por estado
+document.addEventListener('DOMContentLoaded', function() {
+    const estadoSelect = document.querySelectorAll('.modern-select')[1];
+    const tableRows = document.querySelectorAll('.table-row');
+
+    function filtrarPorEstado() {
+        const estadoValue = estadoSelect.value.toLowerCase();
+        let visibleCount = 0;
+
+        tableRows.forEach(row => {
+            const estadoBadge = row.querySelector('.status-badge');
+            const estadoTexto = estadoBadge?.textContent.toLowerCase().trim() || '';
+
+            const matchEstado = !estadoValue || estadoTexto.includes(estadoValue);
+
+            if (matchEstado) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        actualizarMensajeVacio(visibleCount);
+    }
+
+    function actualizarMensajeVacio(count) {
+        const tbody = document.querySelector('.modern-table tbody');
+        let emptyRow = tbody.querySelector('.no-results-row');
+
+        if (count === 0 && !emptyRow) {
+            emptyRow = document.createElement('tr');
+            emptyRow.className = 'no-results-row';
+            emptyRow.innerHTML = `
+                <td colspan="18" class="empty-state">
+                    <div class="empty-state-content">
+                        <i class="fas fa-search"></i>
+                        <h3>No se encontraron items con este estado</h3>
+                        <p>Selecciona otro estado del filtro</p>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(emptyRow);
+        } else if (count > 0 && emptyRow) {
+            emptyRow.remove();
+        }
+    }
+
+    if (estadoSelect) {
+        estadoSelect.addEventListener('change', filtrarPorEstado);
+    }
+});
+
+
+
 </script>
 @endpush
 
