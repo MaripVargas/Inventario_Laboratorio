@@ -20,6 +20,11 @@
             <form action="{{ route($storeRouteName ?? 'inventario.store') }}" method="POST" enctype="multipart/form-data" class="modern-form space-y-6">
                 @csrf
                 
+                <!-- Campo oculto para identificar el módulo de laboratorio -->
+                @if(isset($labModule))
+                    <input type="hidden" name="lab_module" value="{{ $labModule }}">
+                @endif
+                
                 <!-- Información Básica -->
                 <div class="form-section">
                     <h3 class="form-section-title">

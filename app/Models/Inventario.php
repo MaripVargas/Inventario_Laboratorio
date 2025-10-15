@@ -35,6 +35,7 @@ class Inventario extends Model
         'nombre_responsable',
         'cedula',
         'vinculacion',
+        'lab_module',
     ];
 
     protected $casts = [

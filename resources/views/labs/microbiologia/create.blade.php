@@ -7,7 +7,9 @@
 @section('content')
     @include('inventario.create', [
         'backRouteName' => 'microbiologia.index',
-        'storeRouteName' => 'inventario.store'
+        'storeRouteName' => 'inventario.store',
+        'labModule' => 'microbiologia',
+        'responsables' => $responsables
     ])
 @endsection
 

@@ -12,7 +12,9 @@ class InventarioController extends Controller
      */
     public function index()
     {
-        $items = Inventario::orderBy('created_at', 'desc')->paginate(10);
+        $items = Inventario::where('lab_module', 'zoologia_botanica')
+                          ->orderBy('created_at', 'desc')
+                          ->paginate(10);
         
         return view('inventario.index', compact('items'));
     }
@@ -22,7 +24,33 @@ class InventarioController extends Controller
      */
     public function create()
     {
-        return view('inventario.create');
+        // Obtener lista de responsables únicos con su cédula de la base de datos
+        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+            ->whereNotNull('nombre_responsable')
+            ->where('nombre_responsable', '!=', '')
+            ->groupBy('nombre_responsable', 'cedula')
+            ->orderBy('nombre_responsable')
+            ->get();
+
+        // Responsables por defecto (catálogo base)
+        $defaultResponsables = collect([
+            ['nombre_responsable' => 'Carolina', 'cedula' => '1234567890'],
+            ['nombre_responsable' => 'Maria',    'cedula' => '0987654321'],
+            ['nombre_responsable' => 'Alcy',     'cedula' => '1122334455'],
+            ['nombre_responsable' => 'Yoli',     'cedula' => '5544332211'],
+        ]);
+
+        // Combinar y asegurar unicidad
+        $responsables = $defaultResponsables->merge($responsablesDb)->unique(function ($item) {
+            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
+        })->sortBy(function ($item) {
+            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
+        });
+
+        return view('inventario.create', [
+            'labModule' => 'zoologia_botanica',
+            'responsables' => $responsables
+        ]);
     }
 
     /**
@@ -65,10 +93,16 @@ class InventarioController extends Controller
             $data['foto'] = $nombreFoto;
         }
 
+        // Asignar lab_module según la ruta desde donde se accede
+        $data['lab_module'] = $this->getLabModuleFromRequest($request);
+
         // Crear el nuevo item en la base de datos
         Inventario::create($data);
 
-        return redirect()->route('inventario.index')
+        // Redirigir según el módulo de origen
+        $redirectRoute = $this->getRedirectRouteFromLabModule($data['lab_module']);
+        
+        return redirect()->route($redirectRoute)
                         ->with('success', 'Item agregado exitosamente al inventario.');
     }
 
@@ -246,6 +280,47 @@ public function edit($id)
         } catch (\Exception $e) {
             return redirect()->route('inventario.index')
                 ->with('error', 'Error al eliminar el item: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Determina el lab_module basado en el request
+     */
+    private function getLabModuleFromRequest(Request $request)
+    {
+        // Verificar si viene un parámetro específico del módulo
+        if ($request->has('lab_module')) {
+            return $request->input('lab_module');
+        }
+
+        // Determinar por la URL de referencia
+        $referer = $request->header('referer');
+        
+        if (str_contains($referer, 'biotecnologia')) {
+            return 'biotecnologia_vegetal';
+        } elseif (str_contains($referer, 'fisicoquimica')) {
+            return 'fisico_quimica';
+        } elseif (str_contains($referer, 'microbiologia')) {
+            return 'microbiologia';
+        } else {
+            return 'zoologia_botanica'; // Por defecto
+        }
+    }
+
+    /**
+     * Obtiene la ruta de redirección basada en el lab_module
+     */
+    private function getRedirectRouteFromLabModule($labModule)
+    {
+        switch ($labModule) {
+            case 'biotecnologia_vegetal':
+                return 'biotecnologia.index';
+            case 'fisico_quimica':
+                return 'fisicoquimica.index';
+            case 'microbiologia':
+                return 'microbiologia.index';
+            default:
+                return 'inventario.index';
         }
     }
 }

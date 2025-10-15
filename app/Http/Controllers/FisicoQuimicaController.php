@@ -9,15 +9,49 @@ class FisicoQuimicaController extends Controller
 {
     public function index()
     {
-        $items = Inventario::orderBy('created_at', 'desc')->paginate(10);
+        $items = Inventario::where('lab_module', 'fisico_quimica')
+                          ->orderBy('created_at', 'desc')
+                          ->paginate(10);
         return view('labs.fisicoquimica.index', [
             'items' => $items,
+            'createRouteName' => 'fisicoquimica.create',
+            'editBasePath' => 'inventario',
+            'storeRouteName' => 'inventario.store',
+            'updateRouteName' => 'inventario.update',
+            'destroyRouteName' => 'inventario.destroy',
         ]);
     }
 
     public function create()
     {
-        return view('labs.fisicoquimica.create');
+        // Obtener lista de responsables únicos con su cédula de la base de datos
+        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+            ->whereNotNull('nombre_responsable')
+            ->where('nombre_responsable', '!=', '')
+            ->groupBy('nombre_responsable', 'cedula')
+            ->orderBy('nombre_responsable')
+            ->get();
+
+        // Responsables por defecto (catálogo base)
+        $defaultResponsables = collect([
+            ['nombre_responsable' => 'Carolina', 'cedula' => '1234567890'],
+            ['nombre_responsable' => 'Maria',    'cedula' => '0987654321'],
+            ['nombre_responsable' => 'Alcy',     'cedula' => '1122334455'],
+            ['nombre_responsable' => 'Yoli',     'cedula' => '5544332211'],
+        ]);
+
+        // Combinar y asegurar unicidad
+        $responsables = $defaultResponsables->merge($responsablesDb)->unique(function ($item) {
+            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
+        })->sortBy(function ($item) {
+            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
+        });
+
+        return view('labs.fisicoquimica.create', [
+            'backRouteName' => 'fisicoquimica.index',
+            'storeRouteName' => 'inventario.store',
+            'responsables' => $responsables
+        ]);
     }
 }
 

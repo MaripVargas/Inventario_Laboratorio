@@ -7,7 +7,9 @@
 @section('content')
     @include('inventario.create', [
         'backRouteName' => 'fisicoquimica.index',
-        'storeRouteName' => 'inventario.store'
+        'storeRouteName' => 'inventario.store',
+        'labModule' => 'fisico_quimica',
+        'responsables' => $responsables
     ])
 @endsection
 
