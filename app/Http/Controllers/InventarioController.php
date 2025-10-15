@@ -33,6 +33,7 @@ class InventarioController extends Controller
         // Validación de datos
         $request->validate([
             'ir_id' => 'required|string|max:255|unique:inventario',
+            'iv_id' => 'nullable|string|max:255',
             'cod_regional' => 'required|string|max:255',
             'cod_centro' => 'required|string|max:255',
             'desc_almacen' => 'required|string|max:255',
@@ -48,6 +49,11 @@ class InventarioController extends Controller
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
+            'uso' => 'nullable|string|max:255',
+            'contrato' => 'nullable|string|max:255',
+            'nombre_responsable' => 'nullable|string|max:255',
+            'cedula' => 'nullable|string|max:50',
+            'vinculacion' => 'nullable|string|max:255',
         ]);
 
         // Manejar la subida de la foto
@@ -81,7 +87,37 @@ class InventarioController extends Controller
 public function edit($id)
 {
     $item = Inventario::findOrFail($id);
-    return view('inventario.edit', compact('item'));
+    // Obtener lista de responsables únicos con su cédula
+    $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+        ->whereNotNull('nombre_responsable')
+        ->where('nombre_responsable', '!=', '')
+        ->groupBy('nombre_responsable', 'cedula')
+        ->orderBy('nombre_responsable')
+        ->get();
+
+    // Responsables por defecto (catálogo base)
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Carolina', 'cedula' => '1234567890'],
+        ['nombre_responsable' => 'Maria',    'cedula' => '0987654321'],
+        ['nombre_responsable' => 'Alcy',     'cedula' => '1122334455'],
+        ['nombre_responsable' => 'Yoli',     'cedula' => '5544332211'],
+    ]);
+
+    // Unir catálogo con los existentes en BD, sin duplicar por nombre
+    $responsables = $defaultResponsables
+        ->concat($responsablesDb)
+        ->filter(function($r){ return !empty($r['nombre_responsable'] ?? $r->nombre_responsable); })
+        ->map(function($r){
+            return [
+                'nombre_responsable' => is_array($r) ? $r['nombre_responsable'] : $r->nombre_responsable,
+                'cedula' => is_array($r) ? $r['cedula'] : $r->cedula,
+            ];
+        })
+        ->unique('nombre_responsable')
+        ->sortBy('nombre_responsable')
+        ->values();
+
+    return view('inventario.edit', compact('item', 'responsables'));
 }
 
  public function update(Request $request, $id)
@@ -89,6 +125,7 @@ public function edit($id)
         // Validación
         $validated = $request->validate([
             'ir_id' => 'required|string|max:255',
+            'iv_id' => 'nullable|string|max:255',
             'cod_regional' => 'nullable|string|max:255',
             'cod_centro' => 'nullable|string|max:255',
             'desc_almacen' => 'nullable|string|max:255',
@@ -104,6 +141,11 @@ public function edit($id)
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
+            'uso' => 'nullable|string|max:255',
+            'contrato' => 'nullable|string|max:255',
+            'nombre_responsable' => 'nullable|string|max:255',
+            'cedula' => 'nullable|string|max:50',
+            'vinculacion' => 'nullable|string|max:255',
         ], [
             // Mensajes personalizados en español
             'ir_id.required' => 'El campo IR ID es obligatorio',

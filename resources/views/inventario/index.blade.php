@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Inventario')
-@section('page-title', 'Inventario')
-@section('page-subtitle', 'Gestiona el inventario del laboratorio')
+@section('title', 'Lab.Zoologia y Bontanica')
+@section('page-title', 'Lab.Zoologia y Bontanica')
+@section('page-subtitle', 'Gestiona el inventario del laboratorio - módulo Zoología y Botánica')
 
 @section('content')
 <div class="modern-inventory-container">
@@ -10,7 +10,7 @@
         <div class="card-header modern-header">
         <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold text-gray-900">Lista de Items</h2>
-                <a href="{{ route('inventario.create') }}" class="modern-btn modern-btn-primary">
+                <a href="{{ route($createRouteName ?? 'inventario.create') }}" class="modern-btn modern-btn-primary">
                     <i class="fas fa-plus"></i>
                 Agregar Item
             </a>
@@ -168,7 +168,7 @@
                                     </button>
 
                                     <form 
-                                        action="{{ route('inventario.destroy', $item->id) }}" 
+                                        action="{{ route(($destroyRouteName ?? 'inventario.destroy'), $item->id) }}" 
                                         method="POST" 
                                         class="d-inline">
                                         @csrf
@@ -261,7 +261,8 @@ function openEditModal(itemId) {
     }
     
     // Cargar formulario
-    fetch(`/inventario/${itemId}/edit`, {
+    const editBasePath = "{{ $editBasePath ?? '/inventario' }}";
+    fetch(`${editBasePath}/${itemId}/edit`, {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',

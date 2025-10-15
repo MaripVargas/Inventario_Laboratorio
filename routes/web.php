@@ -6,6 +6,7 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\BiotecnologiaController;
 use App\Http\Controllers\FisicoQuimicaController;
 use App\Http\Controllers\MicrobiologiaController;
+use App\Http\Controllers\AreasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,8 +65,18 @@ Route::middleware(['simulate.auth'])->group(function () {
     // MÓDULOS DE LABORATORIO
     // ========================================
     Route::get('/biotecnologia', [BiotecnologiaController::class, 'index'])->name('biotecnologia.index');
+    Route::get('/biotecnologia/create', [BiotecnologiaController::class, 'create'])->name('biotecnologia.create');
+
     Route::get('/fisicoquimica', [FisicoQuimicaController::class, 'index'])->name('fisicoquimica.index');
+    Route::get('/fisicoquimica/create', [FisicoQuimicaController::class, 'create'])->name('fisicoquimica.create');
+
     Route::get('/microbiologia', [MicrobiologiaController::class, 'index'])->name('microbiologia.index');
+    Route::get('/microbiologia/create', [MicrobiologiaController::class, 'create'])->name('microbiologia.create');
+
+    // ========================================
+    // ÁREAS
+    // ========================================
+    Route::get('/areas', [AreasController::class, 'index'])->name('areas.index');
 });
 
 // ========================================

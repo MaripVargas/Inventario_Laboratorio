@@ -64,6 +64,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Card de Áreas -->
+    <a href="{{ route('areas.index') }}" class="stats-card stats-card-blue" style="text-decoration:none;">
+        <div class="card-body">
+            <div class="flex items-center">
+                <div class="stats-icon stats-icon-blue">
+                    <i class="fas fa-th-large text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Áreas</h3>
+                    <p class="text-3xl font-bold text-blue-600">4</p>
+                </div>
+            </div>
+            <div class="stats-progress">
+                <div class="stats-progress-bar stats-progress-blue" style="width: 60%"></div>
+            </div>
+        </div>
+    </a>
 </div>
 
 <!-- Acciones Rápidas -->
@@ -73,6 +91,18 @@
     </div>
     <div class="card-body">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="{{ route('areas.index') }}" class="action-card action-card-purple">
+                <div class="action-card-icon">
+                    <i class="fas fa-th-large"></i>
+                </div>
+                <div class="action-card-content">
+                    <h3>Áreas</h3>
+                    <p>Ver áreas disponibles</p>
+                </div>
+                <div class="action-card-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
             <a href="{{ route('inventario.create') }}" class="action-card action-card-primary">
                 <div class="action-card-icon">
                     <i class="fas fa-plus"></i>

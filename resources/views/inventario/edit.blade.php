@@ -34,6 +34,19 @@
             @enderror
         </div>
 
+        <!-- IV ID -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">IV ID</label>
+            <input 
+                type="text" 
+                name="iv_id" 
+                value="{{ old('iv_id', $item->iv_id) }}" 
+                class="form-control @error('iv_id') is-invalid @enderror">
+            @error('iv_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
         <!-- Código Centro -->
         <div class="col-md-4">
             <label class="form-label fw-semibold">Código Centro</label>
@@ -203,6 +216,88 @@
             @enderror
         </div>
 
+        <!-- Uso -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Uso</label>
+            <select name="uso" class="form-select @error('uso') is-invalid @enderror">
+                @php($usoValue = old('uso', $item->uso))
+                <option value="">Seleccione</option>
+                <option value="docencia" {{ $usoValue=='docencia' ? 'selected' : '' }}>Formación</option>
+                <option value="investigacion" {{ $usoValue=='investigacion' ? 'selected' : '' }}>Servicios Tecnológicos</option>
+                <option value="administracion" {{ $usoValue=='administracion' ? 'selected' : '' }}>Investigación</option>
+              
+            </select>
+            @error('uso')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Contrato (texto) -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Contrato</label>
+            <input 
+                type="text" 
+                name="contrato" 
+                value="{{ old('contrato', $item->contrato) }}" 
+                class="form-control @error('contrato') is-invalid @enderror">
+            @error('contrato')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Nombre Responsable (select con autocarga de cédula) -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Nombre del Responsable</label>
+            <select name="nombre_responsable" id="nombre_responsable" class="form-select @error('nombre_responsable') is-invalid @enderror">
+                <option value="">Seleccione</option>
+                @php($nombreActual = old('nombre_responsable', $item->nombre_responsable))
+                @foreach(($responsables ?? []) as $resp)
+                    @php($n = is_array($resp) ? ($resp['nombre_responsable'] ?? '') : ($resp->nombre_responsable ?? ''))
+                    @php($c = is_array($resp) ? ($resp['cedula'] ?? '') : ($resp->cedula ?? ''))
+                    @if($n)
+                    <option value="{{ $n }}" data-cedula="{{ $c }}" {{ $nombreActual == $n ? 'selected' : '' }}>
+                        {{ $n }}
+                    </option>
+                    @endif
+                @endforeach
+                @if(($responsables ?? collect())->where('nombre_responsable', $nombreActual)->isEmpty() && $nombreActual)
+                    <option value="{{ $nombreActual }}" data-cedula="{{ old('cedula', $item->cedula) }}" selected>{{ $nombreActual }}</option>
+                @endif
+            </select>
+            @error('nombre_responsable')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Cédula (auto-actualiza según responsable) -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Cédula</label>
+            <input 
+                type="text" 
+                name="cedula" id="cedula" 
+                value="{{ old('cedula', $item->cedula) }}" 
+                class="form-control @error('cedula') is-invalid @enderror">
+            @error('cedula')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Vinculación -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Vinculación</label>
+            <select name="vinculacion" class="form-select @error('vinculacion') is-invalid @enderror">
+                @php($vincValue = old('vinculacion', $item->vinculacion))
+                <option value="">Seleccione</option>
+                <option value="planta" {{ $vincValue=='planta' ? 'selected' : '' }}>Contrato</option>
+                <option value="contratista" {{ $vincValue=='contratista' ? 'selected' : '' }}>Funcionario Administrativo</option>
+                <option value="aprendiz" {{ $vincValue=='aprendiz' ? 'selected' : '' }}>Provisional</option>
+              
+            </select>
+            @error('vinculacion')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
         <!-- Foto -->
         <div class="col-md-6">
             <label class="form-label fw-semibold">Foto</label>
@@ -261,3 +356,22 @@
         </button>
     </div>
 </form>
+
+@push('scripts')
+<script>
+    (function(){
+        const selectResp = document.getElementById('nombre_responsable');
+        const cedulaInput = document.getElementById('cedula');
+        if (selectResp && cedulaInput) {
+            const syncCedula = () => {
+                const option = selectResp.options[selectResp.selectedIndex];
+                const ced = option ? option.getAttribute('data-cedula') : '';
+                if (ced) cedulaInput.value = ced;
+            };
+            selectResp.addEventListener('change', syncCedula);
+            // sincronizar al cargar si ya hay opción seleccionada
+            syncCedula();
+        }
+    })();
+</script>
+@endpush

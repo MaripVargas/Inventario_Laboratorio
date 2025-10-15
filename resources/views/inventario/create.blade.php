@@ -10,14 +10,14 @@
         <div class="card-header modern-form-header">
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-900">Información del Item</h2>
-                <a href="{{ route('inventario.index') }}" class="modern-btn modern-btn-secondary">
+                <a href="{{ route($backRouteName ?? 'inventario.index') }}" class="modern-btn modern-btn-secondary">
                     <i class="fas fa-arrow-left"></i>
                     Volver
                 </a>
             </div>
         </div>
         <div class="card-body">
-            <form action="{{ route('inventario.store') }}" method="POST" enctype="multipart/form-data" class="modern-form space-y-6">
+            <form action="{{ route($storeRouteName ?? 'inventario.store') }}" method="POST" enctype="multipart/form-data" class="modern-form space-y-6">
                 @csrf
                 
                 <!-- Información Básica -->
@@ -263,10 +263,28 @@
                                 <i class="fas fa-user select-icon"></i>
                                 <select name="nombre_responsable" id="nombre_responsable" required class="form-select">
                                     <option value="">Seleccionar responsable</option>
-                                    <option value="Carolina" data-cc="1234567890" {{ old('nombre_responsable') == 'Carolina' ? 'selected' : '' }}>Carolina</option>
-                                    <option value="Maria" data-cc="0987654321" {{ old('nombre_responsable') == 'Maria' ? 'selected' : '' }}>Maria</option>
-                                    <option value="Alcy" data-cc="1122334455" {{ old('nombre_responsable') == 'Alcy' ? 'selected' : '' }}>Alcy</option>
-                                    <option value="Yoli" data-cc="5544332211" {{ old('nombre_responsable') == 'Yoli' ? 'selected' : '' }}>Yoli</option>
+                                    @php
+                                        $responsables = (new \App\Models\Inventario())
+                                            ::select('nombre_responsable','cedula')
+                                            ->whereNotNull('nombre_responsable')
+                                            ->where('nombre_responsable','!=','')
+                                            ->groupBy('nombre_responsable','cedula')
+                                            ->orderBy('nombre_responsable')
+                                            ->get();
+                                        $catalogo = collect([
+                                            ['nombre_responsable'=>'Carolina','cedula'=>'1234567890'],
+                                            ['nombre_responsable'=>'Maria','cedula'=>'0987654321'],
+                                            ['nombre_responsable'=>'Alcy','cedula'=>'1122334455'],
+                                            ['nombre_responsable'=>'Yoli','cedula'=>'5544332211']
+                                        ])->concat($responsables)
+                                          ->unique('nombre_responsable')
+                                          ->sortBy('nombre_responsable');
+                                    @endphp
+                                    @foreach($catalogo as $resp)
+                                        @php($n = is_array($resp)? $resp['nombre_responsable'] : $resp->nombre_responsable)
+                                        @php($c = is_array($resp)? $resp['cedula'] : $resp->cedula)
+                                        <option value="{{ $n }}" data-cc="{{ $c }}" {{ old('nombre_responsable') == $n ? 'selected' : '' }}>{{ $n }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -350,7 +368,7 @@
 
                 <!-- Botones de Acción -->
                 <div class="form-actions">
-                    <a href="{{ route('inventario.index') }}" class="modern-btn modern-btn-secondary">
+                    <a href="{{ route($backRouteName ?? 'inventario.index') }}" class="modern-btn modern-btn-secondary">
                         <i class="fas fa-times"></i>
                         Cancelar
                     </a>
@@ -371,12 +389,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputCedula = document.getElementById('cedula');
     
     // Datos de responsables
-    const responsables = {
-        'Carolina': '1234567890',
-        'Maria': '0987654321',
-        'Alcy': '1122334455',
-        'Yoli': '5544332211'
-    };
+    const responsables = Array.from(document.querySelectorAll('#nombre_responsable option'))
+        .reduce((acc, opt) => {
+            if (opt.value) acc[opt.value] = opt.getAttribute('data-cc') || '';
+            return acc;
+        }, {});
     
     // Cuando se selecciona un nombre, auto-completar la cédula
     selectNombre.addEventListener('change', function() {
