@@ -356,22 +356,3 @@
         </button>
     </div>
 </form>
-
-@push('scripts')
-<script>
-    (function(){
-        const selectResp = document.getElementById('nombre_responsable');
-        const cedulaInput = document.getElementById('cedula');
-        if (selectResp && cedulaInput) {
-            const syncCedula = () => {
-                const option = selectResp.options[selectResp.selectedIndex];
-                const ced = option ? option.getAttribute('data-cedula') : '';
-                if (ced) cedulaInput.value = ced;
-            };
-            selectResp.addEventListener('change', syncCedula);
-            // sincronizar al cargar si ya hay opción seleccionada
-            syncCedula();
-        }
-    })();
-</script>
-@endpush
