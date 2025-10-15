@@ -61,6 +61,8 @@ class DashboardController extends Controller
                       'isRemoteEnabled' => false,
                       'debugKeepTemp' => false,
                       'enable_php' => true,
+                      'isPhpEnabled' => true,
+                      'isJavascriptEnabled' => false,
                   ]);
         
         // Return PDF download
@@ -108,6 +110,8 @@ class DashboardController extends Controller
                       'defaultFont' => 'DejaVu Sans',
                       'isHtml5ParserEnabled' => true,
                       'isRemoteEnabled' => false,
+                      'isPhpEnabled' => true,
+                      'isJavascriptEnabled' => false,
                   ]);
         
         return $pdf->download($filename);
@@ -148,6 +152,8 @@ class DashboardController extends Controller
                       'defaultFont' => 'DejaVu Sans',
                       'isHtml5ParserEnabled' => true,
                       'isRemoteEnabled' => false,
+                      'isPhpEnabled' => true,
+                      'isJavascriptEnabled' => false,
                   ]);
         
         // Stream instead of download for preview

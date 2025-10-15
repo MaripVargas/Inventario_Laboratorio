@@ -480,7 +480,28 @@
                 <div class="menu-icon">
                     <i class="fas fa-boxes"></i>
                 </div>
-                Inventario
+                Lab. Zoologia y Botanica 
+            </a>
+            
+            <a href="{{ Route::has('biotecnologia.index') ? route('biotecnologia.index') : '#' }}" class="menu-item {{ request()->routeIs('biotecnologia.*') ? 'active' : '' }}">
+                <div class="menu-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                Lab. Biotecnologia Vegetal
+            </a>
+
+            <a href="{{ Route::has('fisicoquimica.index') ? route('fisicoquimica.index') : '#' }}" class="menu-item {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}">
+                <div class="menu-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                Lab. Fisico Quimica
+            </a>
+
+            <a href="{{ Route::has('microbiologia.index') ? route('microbiologia.index') : '#' }}" class="menu-item {{ request()->routeIs('microbiologia.*') ? 'active' : '' }}">
+                <div class="menu-icon">
+                    <i class="fas fa-bacteria"></i>
+                </div>
+                Lab. microbiologia
             </a>
         </nav>
     </div>

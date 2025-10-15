@@ -213,22 +213,36 @@ class InventarioExport implements FromCollection, WithHeadings, WithMapping, Wit
      */
     public function drawings()
     {
+        // Verificar si GD está disponible
+        if (!extension_loaded('gd')) {
+            // Si GD no está disponible, intentar cargarlo
+            if (function_exists('dl') && !dl('php_gd.dll')) {
+                // Si no se puede cargar GD, retornar array vacío
+                return [];
+            }
+        }
+        
         $drawings = [];
         $inventario = $this->collection();
         
         foreach ($inventario as $index => $item) {
             if ($item->foto && file_exists(public_path('uploads/inventario/' . $item->foto))) {
-                $drawing = new Drawing();
-                $drawing->setName('Imagen ' . $item->ir_id);
-                $drawing->setDescription('Imagen del item ' . $item->ir_id);
-                $drawing->setPath(public_path('uploads/inventario/' . $item->foto));
-                $drawing->setHeight(60);
-                $drawing->setWidth(60);
-                $drawing->setCoordinates('A' . ($index + 2)); // +2 porque la fila 1 es el encabezado
-                $drawing->setOffsetX(5);
-                $drawing->setOffsetY(5);
-                
-                $drawings[] = $drawing;
+                try {
+                    $drawing = new Drawing();
+                    $drawing->setName('Imagen ' . $item->ir_id);
+                    $drawing->setDescription('Imagen del item ' . $item->ir_id);
+                    $drawing->setPath(public_path('uploads/inventario/' . $item->foto));
+                    $drawing->setHeight(60);
+                    $drawing->setWidth(60);
+                    $drawing->setCoordinates('A' . ($index + 2)); // +2 porque la fila 1 es el encabezado
+                    $drawing->setOffsetX(5);
+                    $drawing->setOffsetY(5);
+                    
+                    $drawings[] = $drawing;
+                } catch (\Exception $e) {
+                    // Si hay error al procesar la imagen, continuar sin ella
+                    continue;
+                }
             }
         }
         

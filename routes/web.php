@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\BiotecnologiaController;
+use App\Http\Controllers\FisicoQuimicaController;
+use App\Http\Controllers\MicrobiologiaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +59,13 @@ Route::middleware(['simulate.auth'])->group(function () {
         // Ejemplo: Búsqueda avanzada
         // Route::get('/search', [InventarioController::class, 'search'])->name('search');
     });
+
+    // ========================================
+    // MÓDULOS DE LABORATORIO
+    // ========================================
+    Route::get('/biotecnologia', [BiotecnologiaController::class, 'index'])->name('biotecnologia.index');
+    Route::get('/fisicoquimica', [FisicoQuimicaController::class, 'index'])->name('fisicoquimica.index');
+    Route::get('/microbiologia', [MicrobiologiaController::class, 'index'])->name('microbiologia.index');
 });
 
 // ========================================

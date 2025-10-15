@@ -310,13 +310,7 @@
                         <div class="item-header">
                             <div class="item-image-container">
                                 @if($item->foto && file_exists(public_path('uploads/inventario/' . $item->foto)))
-                                    @php
-                                        $imagePath = public_path('uploads/inventario/' . $item->foto);
-                                        $imageData = base64_encode(file_get_contents($imagePath));
-                                        $imageType = pathinfo($imagePath, PATHINFO_EXTENSION);
-                                        $imageSrc = 'data:image/' . $imageType . ';base64,' . $imageData;
-                                    @endphp
-                                    <img src="{{ $imageSrc }}" alt="Item" class="item-image">
+                                    <div class="no-image">📷 {{ $item->foto }}</div>
                                 @else
                                     <div class="no-image">Sin Imagen</div>
                                 @endif
