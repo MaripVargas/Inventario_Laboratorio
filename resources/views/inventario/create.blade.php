@@ -26,17 +26,17 @@
                         <i class="fas fa-info-circle"></i>
                         Información Básica
                     </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="form-group">
                             <label class="form-label">
                                 IR ID <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-tag input-icon"></i>
-                        <input type="text" name="ir_id" required 
+                                <input type="text" name="ir_id" required 
                                        class="form-input"
-                               placeholder="Ej: IR-001" value="{{ old('ir_id') }}">
-                    </div>
+                                       placeholder="Ej: IR-001" value="{{ old('ir_id') }}">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">
@@ -52,52 +52,53 @@
                         <div class="form-group">
                             <label class="form-label">
                                 Código Regional <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-map-marker-alt input-icon"></i>
-                        <input type="text" name="cod_regional" required 
+                                <input type="text" name="cod_regional" required 
                                        class="form-input"
-                               placeholder="Ej: REG-001" value="{{ old('cod_regional') }}">
+                                       placeholder="Ej: REG-001" value="{{ old('cod_regional') }}">
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div class="form-group">
                             <label class="form-label">
                                 Código Centro <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-building input-icon"></i>
-                        <input type="text" name="cod_centro" required 
+                                <input type="text" name="cod_centro" required 
                                        class="form-input"
-                               placeholder="Ej: CEN-001" value="{{ old('cod_centro') }}">
-                    </div>
-                </div>
+                                       placeholder="Ej: CEN-001" value="{{ old('cod_centro') }}">
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">
                                 Descripción Almacén <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-warehouse input-icon"></i>
-                        <input type="text" name="desc_almacen" required 
+                                <input type="text" name="desc_almacen" required 
                                        class="form-input"
-                               placeholder="Ej: Almacén Principal" value="{{ old('desc_almacen') }}">
-                    </div>
+                                       placeholder="Ej: Almacén Principal" value="{{ old('desc_almacen') }}">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">
                                 No. de Placa <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-id-card input-icon"></i>
-                        <input type="text" name="no_placa" required 
+                                <input type="text" name="no_placa" required 
                                        class="form-input"
-                               placeholder="Ej: PL-001" value="{{ old('no_placa') }}">
-                    </div>
+                                       placeholder="Ej: PL-001" value="{{ old('no_placa') }}">
+                            </div>
                         </div>
                     </div>
                 </div>
+                
 
                 <!-- Información del Producto -->
                 <div class="form-section">
@@ -105,41 +106,41 @@
                         <i class="fas fa-box"></i>
                         Información del Producto
                     </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="form-group">
                             <label class="form-label">
                                 Consecutivo <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-sort-numeric-up input-icon"></i>
-                        <input type="text" name="consecutivo" required 
+                                <input type="text" name="consecutivo" required 
                                        class="form-input"
-                               placeholder="Ej: CON-001" value="{{ old('consecutivo') }}">
-                    </div>
-                </div>
+                                       placeholder="Ej: CON-001" value="{{ old('consecutivo') }}">
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="form-label">
                                 Descripción SKU <span class="required">*</span>
-                        </label>
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-barcode input-icon"></i>
-                        <input type="text" name="desc_sku" required 
+                                <input type="text" name="desc_sku" required 
                                        class="form-input"
-                               placeholder="Ej: SKU-001" value="{{ old('desc_sku') }}">
-                    </div>
+                                       placeholder="Ej: SKU-001" value="{{ old('desc_sku') }}">
+                            </div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="form-group">
                             <label class="form-label">
-                            Serial
-                        </label>
+                                Serial
+                            </label>
                             <div class="input-container">
                                 <i class="fas fa-microchip input-icon"></i>
-                        <input type="text" name="serial" 
+                                <input type="text" name="serial" 
                                        class="form-input"
-                               placeholder="Ej: SN123456789" value="{{ old('serial') }}">
+                                       placeholder="Ej: SN123456789" value="{{ old('serial') }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -152,30 +153,30 @@
                                        class="form-input"
                                        placeholder="Ej: 2024" value="{{ old('gestion') }}">
                             </div>
+                        </div>
                     </div>
-                </div>
 
                     <div class="form-group">
                         <label class="form-label">
                             Descripción del Elemento <span class="required">*</span>
-                    </label>
+                        </label>
                         <div class="textarea-container">
                             <i class="fas fa-align-left textarea-icon"></i>
-                    <textarea name="descripcion_elemento" rows="3" required
+                            <textarea name="descripcion_elemento" rows="3" required
                                       class="form-textarea"
-                              placeholder="Descripción detallada del elemento...">{{ old('descripcion_elemento') }}</textarea>
+                                      placeholder="Descripción detallada del elemento...">{{ old('descripcion_elemento') }}</textarea>
                         </div>
-                </div>
+                    </div>
 
                     <div class="form-group">
                         <label class="form-label">
-                        Atributos
-                    </label>
+                            Atributos
+                        </label>
                         <div class="textarea-container">
                             <i class="fas fa-list-ul textarea-icon"></i>
-                    <textarea name="atributos" rows="3"
+                            <textarea name="atributos" rows="3"
                                       class="form-textarea"
-                              placeholder="Atributos adicionales del elemento...">{{ old('atributos') }}</textarea>
+                                      placeholder="Atributos adicionales del elemento...">{{ old('atributos') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -193,10 +194,10 @@
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-calendar input-icon"></i>
-                            <input type="date" name="fecha_adq" required 
+                                <input type="date" name="fecha_adq" required 
                                        class="form-input"
-                                   value="{{ old('fecha_adq') }}">
-                        </div>
+                                       value="{{ old('fecha_adq') }}">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label">
@@ -204,9 +205,94 @@
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-dollar-sign input-icon"></i>
-                            <input type="number" name="valor_adq" required min="0" step="0.01"
+                                <input type="number" name="valor_adq" required min="0" step="0.01"
                                        class="form-input"
-                                   placeholder="0.00" value="{{ old('valor_adq') }}">
+                                       placeholder="0.00" value="{{ old('valor_adq') }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uso y Contrato -->
+                <div class="form-section">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        Uso y Contratación
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Uso <span class="required">*</span>
+                            </label>
+                            <div class="select-container">
+                                <i class="fas fa-layer-group select-icon"></i>
+                                <select name="uso" required class="form-select">
+                                    <option value="">Seleccionar uso</option>
+                                    <option value="formacion" {{ old('uso') == 'formacion' ? 'selected' : '' }}>Formación</option>
+                                    <option value="servicios_tecnologicos" {{ old('uso') == 'servicios_tecnologicos' ? 'selected' : '' }}>Servicios Tecnológicos</option>
+                                    <option value="investigacion" {{ old('uso') == 'investigacion' ? 'selected' : '' }}>Investigación</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Contrato/PCN <span class="required">*</span>
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-file-contract input-icon"></i>
+                                <input type="text" name="contrato" required 
+                                       class="form-input"
+                                       placeholder="Ej: PCN-2024-001" value="{{ old('contrato') }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información del Responsable -->
+                <div class="form-section">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-user-tie"></i>
+                        Información del Responsable
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Nombre Responsable <span class="required">*</span>
+                            </label>
+                            <div class="select-container">
+                                <i class="fas fa-user select-icon"></i>
+                                <select name="nombre_responsable" id="nombre_responsable" required class="form-select">
+                                    <option value="">Seleccionar responsable</option>
+                                    <option value="Carolina" data-cc="1234567890" {{ old('nombre_responsable') == 'Carolina' ? 'selected' : '' }}>Carolina</option>
+                                    <option value="Maria" data-cc="0987654321" {{ old('nombre_responsable') == 'Maria' ? 'selected' : '' }}>Maria</option>
+                                    <option value="Alcy" data-cc="1122334455" {{ old('nombre_responsable') == 'Alcy' ? 'selected' : '' }}>Alcy</option>
+                                    <option value="Yoli" data-cc="5544332211" {{ old('nombre_responsable') == 'Yoli' ? 'selected' : '' }}>Yoli</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Cédula (C.C) <span class="required">*</span>
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-id-card input-icon"></i>
+                                <input type="text" name="cedula" id="cedula" required 
+                                       class="form-input"
+                                       placeholder="Número de cédula" value="{{ old('cedula') }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Tipo de Vinculación <span class="required">*</span>
+                            </label>
+                            <div class="select-container">
+                                <i class="fas fa-briefcase select-icon"></i>
+                                <select name="vinculacion" required class="form-select">
+                                    <option value="">Seleccionar vinculación</option>
+                                    <option value="contrato" {{ old('vinculacion') == 'contrato' ? 'selected' : '' }}>Contrato</option>
+                                    <option value="funcionario_administrativo" {{ old('vinculacion') == 'funcionario_administrativo' ? 'selected' : '' }}>Funcionario Administrativo</option>
+                                    <option value="provisional" {{ old('vinculacion') == 'provisional' ? 'selected' : '' }}>Provisional</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -226,13 +312,13 @@
                             <div class="select-container">
                                 <i class="fas fa-check-circle select-icon"></i>
                                 <select name="estado" required class="form-select">
-                                <option value="">Seleccionar estado</option>
-                                <option value="bueno" {{ old('estado') == 'bueno' ? 'selected' : '' }}>Bueno</option>
-                                <option value="regular" {{ old('estado') == 'regular' ? 'selected' : '' }}>Regular</option>
-                                <option value="malo" {{ old('estado') == 'malo' ? 'selected' : '' }}>Malo</option>
-                            </select>
+                                    <option value="">Seleccionar estado</option>
+                                    <option value="bueno" {{ old('estado') == 'bueno' ? 'selected' : '' }}>Bueno</option>
+                                    <option value="regular" {{ old('estado') == 'regular' ? 'selected' : '' }}>Regular</option>
+                                    <option value="malo" {{ old('estado') == 'malo' ? 'selected' : '' }}>Malo</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
                         <div class="form-group">
                             <label class="form-label">
                                 Foto del Elemento
@@ -246,19 +332,19 @@
                                 </label>
                             </div>
                             <p class="form-hint">Formatos permitidos: JPEG, PNG, JPG, GIF. Tamaño máximo: 2MB</p>
+                        </div>
                     </div>
-                </div>
 
                     <div class="form-group">
                         <label class="form-label">
-                        Acciones
-                    </label>
+                            Acciones
+                        </label>
                         <div class="textarea-container">
                             <i class="fas fa-tasks textarea-icon"></i>
-                    <textarea name="acciones" rows="3"
+                            <textarea name="acciones" rows="3"
                                       class="form-textarea"
-                              placeholder="Acciones realizadas o pendientes...">{{ old('acciones') }}</textarea>
-                </div>
+                                      placeholder="Acciones realizadas o pendientes...">{{ old('acciones') }}</textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -277,6 +363,44 @@
         </div>
     </div>
 </div>
+
+<script>
+// Sincronización automática entre Nombre y Cédula
+document.addEventListener('DOMContentLoaded', function() {
+    const selectNombre = document.getElementById('nombre_responsable');
+    const inputCedula = document.getElementById('cedula');
+    
+    // Datos de responsables
+    const responsables = {
+        'Carolina': '1234567890',
+        'Maria': '0987654321',
+        'Alcy': '1122334455',
+        'Yoli': '5544332211'
+    };
+    
+    // Cuando se selecciona un nombre, auto-completar la cédula
+    selectNombre.addEventListener('change', function() {
+        const nombre = this.value;
+        if (nombre && responsables[nombre]) {
+            inputCedula.value = responsables[nombre];
+        }
+    });
+    
+    // Cuando se escribe una cédula, auto-seleccionar el nombre
+    inputCedula.addEventListener('blur', function() {
+        const cedula = this.value;
+        for (const [nombre, cc] of Object.entries(responsables)) {
+            if (cc === cedula) {
+                selectNombre.value = nombre;
+                break;
+            }
+        }
+    });
+});
+</script>
+
+
+
 
 <style>
 /* Variables CSS */

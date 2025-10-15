@@ -29,6 +29,12 @@ class Inventario extends Model
         'acciones',
         'foto',
         'estado',
+        // 👇 Nuevos campos añadidos
+        'uso',
+        'contrato',
+        'nombre_responsable',
+        'cedula',
+        'vinculacion',
     ];
 
     protected $casts = [

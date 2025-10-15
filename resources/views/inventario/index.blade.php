@@ -82,6 +82,12 @@
                         <th class="table-header">Valor</th>
                         <th class="table-header">Estado</th>
                         <th class="table-header">Gestión</th>
+                        <th class="table-header">Uso</th>
+<th class="table-header">Contrato</th>
+<th class="table-header">Nombre Responsable</th>
+<th class="table-header">Cédula</th>
+<th class="table-header">Vinculación</th>
+
                         <th class="table-header">Acciones</th>
                     </tr>
                 </thead>
@@ -145,6 +151,12 @@
                             @endif
                         </td>
                             <td class="table-cell">{{ $item->gestion ?? 'SIN GESTIONAR' }}</td>
+                            <td class="table-cell">{{ $item->uso ?? '-' }}</td>
+<td class="table-cell">{{ $item->contrato ?? '-' }}</td>
+<td class="table-cell">{{ $item->nombre_responsable ?? '-' }}</td>
+<td class="table-cell">{{ $item->cedula ?? '-' }}</td>
+<td class="table-cell">{{ $item->vinculacion ?? '-' }}</td>
+
                             <td class="table-cell">
                                 <div class="action-buttons d-flex align-items-center gap-2">
                                     <button 
