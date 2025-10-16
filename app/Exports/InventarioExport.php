@@ -19,12 +19,25 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class InventarioExport implements FromCollection, WithHeadings, WithMapping, WithStyles, WithColumnWidths, WithEvents, WithDrawings
 {
+    private $modulo;
+
+    public function __construct($modulo = null)
+    {
+        $this->modulo = $modulo;
+    }
+
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return Inventario::orderBy('created_at', 'desc')->get();
+        $query = Inventario::orderBy('created_at', 'desc');
+        
+        if ($this->modulo) {
+            $query->where('lab_module', $this->modulo);
+        }
+        
+        return $query->get();
     }
 
     /**
@@ -51,6 +64,11 @@ class InventarioExport implements FromCollection, WithHeadings, WithMapping, Wit
             'Gestión',
             'Acciones',
             'Estado',
+            'Uso',
+            'Contrato/PCN',
+            'Responsable',
+            'Cédula',
+            'Vinculación',
             'Fecha Creación',
             'Fecha Actualización'
         ];
@@ -81,6 +99,11 @@ class InventarioExport implements FromCollection, WithHeadings, WithMapping, Wit
             $inventario->gestion ?? 'N/A',
             $inventario->acciones ?? 'N/A',
             ucfirst($inventario->estado),
+            ucfirst(str_replace('_', ' ', $inventario->uso ?? 'N/A')),
+            $inventario->contrato ?? 'N/A',
+            $inventario->nombre_responsable ?? 'N/A',
+            $inventario->cedula ?? 'N/A',
+            ucfirst(str_replace('_', ' ', $inventario->vinculacion ?? 'N/A')),
             $inventario->created_at ? $inventario->created_at->format('d/m/Y H:i:s') : 'N/A',
             $inventario->updated_at ? $inventario->updated_at->format('d/m/Y H:i:s') : 'N/A',
         ];
@@ -142,8 +165,13 @@ class InventarioExport implements FromCollection, WithHeadings, WithMapping, Wit
             'P' => 20,  // Gestión
             'Q' => 20,  // Acciones
             'R' => 12,  // Estado
-            'S' => 20,  // Fecha Creación
-            'T' => 20,  // Fecha Actualización
+            'S' => 20,  // Uso
+            'T' => 18,  // Contrato/PCN
+            'U' => 20,  // Responsable
+            'V' => 15,  // Cédula
+            'W' => 20,  // Vinculación
+            'X' => 20,  // Fecha Creación
+            'Y' => 20,  // Fecha Actualización
         ];
     }
 

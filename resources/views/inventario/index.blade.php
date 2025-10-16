@@ -5,6 +5,7 @@
 @section('page-subtitle', 'Gestiona el inventario del laboratorio - módulo Zoología y Botánica')
 
 @section('content')
+
     <div class="modern-inventory-container">
         <div class="card mb-6 modern-card">
             <div class="card-header modern-header">
@@ -16,6 +17,19 @@
                     </a>
                 </div>
             </div>
+
+   <!-- AQUI VAN LOS BOTONES DE EXPORTACIÓN -->
+  @php
+   $moduloActual = $items->first()?->lab_module ?? 'fisico_quimica';
+   @endphp
+   
+   @include('components.export-buttons', [
+       'pdfRoute' => 'inventario.pdf',
+       'excelRoute' => 'inventario.excel',
+       'modulo' => $moduloActual
+   ])
+
+
             <div class="card-body">
                 <!-- Filtros -->
                 <div class="mb-6 modern-filters">
@@ -543,6 +557,7 @@
                 }
 
             </script>
+            
         @endpush
 
 

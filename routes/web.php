@@ -79,6 +79,9 @@ Route::middleware(['simulate.auth'])->group(function () {
     Route::get('/areas', [AreasController::class, 'index'])->name('areas.index');
 });
 
+Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->name('inventario.pdf');
+   Route::get('{modulo}/export/excel', [InventarioController::class, 'exportExcel'])->name('inventario.excel');
+
 // ========================================
 // RUTAS PÚBLICAS (si las necesitas)
 // ========================================

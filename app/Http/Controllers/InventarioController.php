@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Inventario;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InventarioExport;
 
 class InventarioController extends Controller
 {
+
+   
     /**
      * Display a listing of the resource.
      */
@@ -227,8 +232,9 @@ public function edit($id)
                 ]);
             }
 
-            // Si es una petición normal
-            return redirect()->route('inventario.index')
+            // Si es una petición normal, redirigir según el módulo del item
+            $redirectRoute = $this->getRedirectRouteFromLabModule($item->lab_module);
+            return redirect()->route($redirectRoute)
                 ->with('success', 'Item actualizado correctamente');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -272,13 +278,17 @@ public function edit($id)
                 unlink(public_path('uploads/inventario/' . $item->foto));
             }
 
+            // Guardar el lab_module antes de eliminar para redireccionar correctamente
+            $labModule = $item->lab_module;
             $item->delete();
 
-            return redirect()->route('inventario.index')
+            // Redirigir según el módulo del item eliminado
+            $redirectRoute = $this->getRedirectRouteFromLabModule($labModule);
+            return redirect()->route($redirectRoute)
                 ->with('success', 'Item eliminado correctamente');
 
         } catch (\Exception $e) {
-            return redirect()->route('inventario.index')
+            return redirect()->back()
                 ->with('error', 'Error al eliminar el item: ' . $e->getMessage());
         }
     }
@@ -323,4 +333,31 @@ public function edit($id)
                 return 'inventario.index';
         }
     }
+
+    
+ 
+public function exportPdf($modulo)
+{
+    $inventario = Inventario::where('lab_module', $modulo)->get();
+    
+    $stats = [
+        'total_items' => $inventario->count(),
+        'total_value' => $inventario->sum('valor_adq'),
+        'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
+        'estado_regular' => $inventario->where('estado', 'regular')->count(),
+        'estado_malo' => $inventario->where('estado', 'malo')->count(),
+        'gestiones' => $inventario->pluck('gestion')->unique()->count(),
+    ];
+    
+    $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'));
+    $pdf->setPaper('A4', 'portrait');
+    
+    return $pdf->download('inventario_' . $modulo . '_' . date('Y-m-d') . '.pdf');
+}
+
+public function exportExcel($modulo)
+   {
+       return Excel::download(new InventarioExport($modulo), 'inventario_' . $modulo . '_' . date('Y-m-d') . '.xlsx');
+   }
+
 }

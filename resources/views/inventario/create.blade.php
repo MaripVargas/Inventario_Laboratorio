@@ -424,6 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
 <style>
 /* Variables CSS */
 :root {

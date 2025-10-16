@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Inventario;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InventarioExport;
+
 
 class BiotecnologiaController extends Controller
 {
+ 
     public function index()
     {
         $items = Inventario::where('lab_module', 'biotecnologia_vegetal')
@@ -51,8 +56,38 @@ class BiotecnologiaController extends Controller
             'backRouteName' => 'biotecnologia.index',
             'storeRouteName' => 'inventario.store',
             'responsables' => $responsables
+
+
+            
         ]);
+        
     }
+
+   
+public function exportPdf($modulo)
+{
+    $inventario = Inventario::where('lab_module', $modulo)->get();
+    
+    $stats = [
+        'total_items' => $inventario->count(),
+        'total_value' => $inventario->sum('valor_adq'),
+        'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
+        'estado_regular' => $inventario->where('estado', 'regular')->count(),
+        'estado_malo' => $inventario->where('estado', 'malo')->count(),
+        'gestiones' => $inventario->pluck('gestion')->unique()->count(),
+    ];
+    
+    $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'));
+    $pdf->setPaper('A4', 'portrait');
+    
+    return $pdf->download('inventario_' . $modulo . '_' . date('Y-m-d') . '.pdf');
+}
+
+public function exportExcel($modulo)
+   {
+       return Excel::download(new InventarioExport($modulo), 'inventario_' . $modulo . '_' . date('Y-m-d') . '.xlsx');
+   }
+
 }
 
 

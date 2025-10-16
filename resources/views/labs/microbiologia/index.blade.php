@@ -8,6 +8,7 @@
     @include('inventario.index', [
         'items' => $items,
     ])
+    
 @endsection
 
 
