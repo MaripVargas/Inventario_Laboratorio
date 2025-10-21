@@ -70,6 +70,13 @@ class BiotecnologiaController extends Controller
         'responsables' => $responsables,
         'catalogo' => $catalogo
     ]);
+
+    $items = $query->orderBy('created_at', 'desc')
+    ->paginate(10)
+    ->appends($request->all());
+
+    // 📤 Retornar la vista
+    return view('inventario.index', compact('items'));
 }
 
    

@@ -256,7 +256,8 @@
         <!-- Links de paginación -->
         @if($items->hasPages())
             <nav role="navigation" aria-label="Pagination Navigation">
-                {{ $items->links() }}
+              {{ $items->links('pagination::bootstrap-4') }}
+
             </nav>
         @endif
     </div>
