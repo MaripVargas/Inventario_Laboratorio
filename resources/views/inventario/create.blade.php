@@ -161,6 +161,29 @@
                         </div>
                     </div>
 
+    <!-- Tipo de Material -->
+<div class="form-group">
+    <label class="form-label">
+        Tipo de Material <span class="required">*</span>
+    </label>
+    <div class="select-container">
+        <i class="fas fa-cubes select-icon"></i>
+        @php($tipoValue = old('tipo_material', $item->tipo_material ?? ''))
+        <select name="tipo_material" id="tipo_material" class="form-select" required>
+            <option value="">Seleccionar tipo</option>
+            <option value="Equipos" {{ $tipoValue == 'Equipos' ? 'selected' : '' }}>Equipos</option>
+            <option value="Mueblería" {{ $tipoValue == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
+            <option value="Vidrieria" {{ $tipoValue == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
+            
+        </select>
+    </div>
+    @error('tipo_material')
+        <small class="text-danger">{{ $message }}</small>
+    @enderror
+</div>
+
+
+
                     <div class="form-group">
                         <label class="form-label">
                             Descripción del Elemento <span class="required">*</span>
@@ -250,76 +273,72 @@
                                        placeholder="Ej: PCN-2024-001" value="{{ old('contrato') }}">
                             </div>
                         </div>
+                        
                     </div>
                 </div>
 
-                <!-- Información del Responsable -->
-                <div class="form-section">
-                    <h3 class="form-section-title">
-                        <i class="fas fa-user-tie"></i>
-                        Información del Responsable
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="form-group">
-                            <label class="form-label">
-                                Nombre Responsable <span class="required">*</span>
-                            </label>
-                            <div class="select-container">
-                                <i class="fas fa-user select-icon"></i>
-                                <select name="nombre_responsable" id="nombre_responsable" required class="form-select">
-                                    <option value="">Seleccionar responsable</option>
-                                    @php
-                                        $responsables = (new \App\Models\Inventario())
-                                            ::select('nombre_responsable','cedula')
-                                            ->whereNotNull('nombre_responsable')
-                                            ->where('nombre_responsable','!=','')
-                                            ->groupBy('nombre_responsable','cedula')
-                                            ->orderBy('nombre_responsable')
-                                            ->get();
-                                        $catalogo = collect([
-                                            ['nombre_responsable'=>'Carolina','cedula'=>'1234567890'],
-                                            ['nombre_responsable'=>'Maria','cedula'=>'0987654321'],
-                                            ['nombre_responsable'=>'Alcy','cedula'=>'1122334455'],
-                                            ['nombre_responsable'=>'Yoli','cedula'=>'5544332211']
-                                        ])->concat($responsables)
-                                          ->unique('nombre_responsable')
-                                          ->sortBy('nombre_responsable');
-                                    @endphp
-                                    @foreach($catalogo as $resp)
-                                        @php($n = is_array($resp)? $resp['nombre_responsable'] : $resp->nombre_responsable)
-                                        @php($c = is_array($resp)? $resp['cedula'] : $resp->cedula)
-                                        <option value="{{ $n }}" data-cc="{{ $c }}" {{ old('nombre_responsable') == $n ? 'selected' : '' }}>{{ $n }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">
-                                Cédula (C.C) <span class="required">*</span>
-                            </label>
-                            <div class="input-container">
-                                <i class="fas fa-id-card input-icon"></i>
-                                <input type="text" name="cedula" id="cedula" required 
-                                       class="form-input"
-                                       placeholder="Número de cédula" value="{{ old('cedula') }}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">
-                                Tipo de Vinculación <span class="required">*</span>
-                            </label>
-                            <div class="select-container">
-                                <i class="fas fa-briefcase select-icon"></i>
-                                <select name="vinculacion" required class="form-select">
-                                    <option value="">Seleccionar vinculación</option>
-                                    <option value="contrato" {{ old('vinculacion') == 'contrato' ? 'selected' : '' }}>Contrato</option>
-                                    <option value="funcionario_administrativo" {{ old('vinculacion') == 'funcionario_administrativo' ? 'selected' : '' }}>Funcionario Administrativo</option>
-                                    <option value="provisional" {{ old('vinculacion') == 'provisional' ? 'selected' : '' }}>Provisional</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               
+
+
+                
+
+<!-- Información del Responsable -->
+<div class="form-section">
+    <h3 class="form-section-title">
+        <i class="fas fa-user-tie"></i>
+        Información del Responsable
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="form-group">
+            <label class="form-label">
+                Nombre Responsable <span class="required">*</span>
+            </label>
+            <div class="select-container">
+                <i class="fas fa-user select-icon"></i>
+                <select name="nombre_responsable" id="nombre_responsable" required class="form-select">
+                    <option value="">Seleccionar responsable</option>
+                    @foreach($responsables as $responsable)
+                        <option value="{{ $responsable['nombre_responsable'] }}" 
+                                data-cedula="{{ $responsable['cedula'] }}"
+                                {{ old('nombre_responsable') == $responsable['nombre_responsable'] ? 'selected' : '' }}>
+                            {{ $responsable['nombre_responsable'] }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">
+                Cédula (C.C) <span class="required">*</span>
+            </label>
+            <div class="input-container">
+                <i class="fas fa-id-card input-icon"></i>
+                <input type="text" name="cedula" id="cedula" required 
+                       class="form-input" 
+                       placeholder="Número de cédula"
+                       value="{{ old('cedula') }}">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">
+                Tipo de Vinculación <span class="required">*</span>
+            </label>
+            <div class="select-container">
+                <i class="fas fa-briefcase select-icon"></i>
+                <select name="vinculacion" required class="form-select">
+                    <option value="">Seleccionar vinculación</option>
+                    @foreach($catalogo['vinculaciones'] as $vinculacion)
+                        <option value="{{ $vinculacion }}" {{ old('vinculacion') == $vinculacion ? 'selected' : '' }}>
+                            {{ $vinculacion }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- Estado y Acciones -->
                 <div class="form-section">
@@ -386,7 +405,6 @@
         </div>
     </div>
 </div>
-
 <script>
 // Sincronización automática entre Nombre y Cédula
 document.addEventListener('DOMContentLoaded', function() {
@@ -396,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Datos de responsables
     const responsables = Array.from(document.querySelectorAll('#nombre_responsable option'))
         .reduce((acc, opt) => {
-            if (opt.value) acc[opt.value] = opt.getAttribute('data-cc') || '';
+            if (opt.value) acc[opt.value] = opt.getAttribute('data-cedula') || ''; // 🔥 Cambié data-cc por data-cedula
             return acc;
         }, {});
     
@@ -410,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Cuando se escribe una cédula, auto-seleccionar el nombre
     inputCedula.addEventListener('blur', function() {
-        const cedula = this.value;
+        const cedula = this.value.trim();
         for (const [nombre, cc] of Object.entries(responsables)) {
             if (cc === cedula) {
                 selectNombre.value = nombre;

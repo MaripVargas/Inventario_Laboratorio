@@ -29,6 +29,7 @@ class Inventario extends Model
         'acciones',
         'foto',
         'estado',
+         'tipo_material',
         // 👇 Nuevos campos añadidos
         'uso',
         'contrato',
@@ -36,6 +37,7 @@ class Inventario extends Model
         'cedula',
         'vinculacion',
         'lab_module',
+        
     ];
 
     protected $casts = [

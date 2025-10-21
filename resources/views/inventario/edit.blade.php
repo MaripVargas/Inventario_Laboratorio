@@ -204,6 +204,8 @@
             @enderror
         </div>
 
+
+
         <!-- Acciones -->
         <div class="col-md-6">
             <label class="form-label fw-semibold">Acciones</label>
@@ -222,7 +224,7 @@
             <select name="uso" class="form-select @error('uso') is-invalid @enderror">
                 @php($usoValue = old('uso', $item->uso))
                 <option value="">Seleccione</option>
-                <option value="docencia" {{ $usoValue=='docencia' ? 'selected' : '' }}>Formación</option>
+                <option value="Formacion" {{ $usoValue=='Formacion' ? 'selected' : '' }}>Formación</option>
                 <option value="investigacion" {{ $usoValue=='investigacion' ? 'selected' : '' }}>Servicios Tecnológicos</option>
                 <option value="administracion" {{ $usoValue=='administracion' ? 'selected' : '' }}>Investigación</option>
               
@@ -288,9 +290,9 @@
             <select name="vinculacion" class="form-select @error('vinculacion') is-invalid @enderror">
                 @php($vincValue = old('vinculacion', $item->vinculacion))
                 <option value="">Seleccione</option>
-                <option value="planta" {{ $vincValue=='planta' ? 'selected' : '' }}>Contrato</option>
-                <option value="contratista" {{ $vincValue=='contratista' ? 'selected' : '' }}>Funcionario Administrativo</option>
-                <option value="aprendiz" {{ $vincValue=='aprendiz' ? 'selected' : '' }}>Provisional</option>
+                <option value="contrato" {{ $vincValue=='contrato' ? 'selected' : '' }}>Contrato</option>
+                <option value="Funcionario Administrativo" {{ $vincValue=='Funcionario Administrativo' ? 'selected' : '' }}>Funcionario Administrativo</option>
+                <option value="Provisional" {{ $vincValue=='Provisional' ? 'selected' : '' }}>Provisional</option>
               
             </select>
             @error('vinculacion')
@@ -339,6 +341,28 @@
             @enderror
         </div>
     </div>
+
+    <!-- Tipo de Material -->
+<div class="col-md-6">
+    <label class="form-label fw-semibold">
+        Tipo de Material <span class="text-danger">*</span>
+    </label>
+    <select 
+        name="tipo_material" 
+        class="form-select @error('tipo_material') is-invalid @enderror"
+        required>
+        @php($tipoMaterial = old('tipo_material', $item->tipo_material))
+        <option value="">Seleccione tipo</option>
+        <option value="Equipos" {{ $tipoMaterial == 'Equipos' ? 'selected' : '' }}>Equipos</option>
+        <option value="Mueblería" {{ $tipoMaterial == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
+        <option value="Vidrieria" {{ $tipoMaterial == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
+      
+    </select>
+    @error('tipo_material')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
 
     <!-- Nota de campos obligatorios -->
     <div class="alert alert-info mt-3 mb-0">

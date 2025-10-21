@@ -28,40 +28,49 @@ class BiotecnologiaController extends Controller
     }
 
     public function create()
-    {
-        // Obtener lista de responsables únicos con su cédula de la base de datos
-        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
-            ->whereNotNull('nombre_responsable')
-            ->where('nombre_responsable', '!=', '')
-            ->groupBy('nombre_responsable', 'cedula')
-            ->orderBy('nombre_responsable')
-            ->get();
-
-        // Responsables por defecto (catálogo base)
-        $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina', 'cedula' => '1234567890'],
-            ['nombre_responsable' => 'Maria',    'cedula' => '0987654321'],
-            ['nombre_responsable' => 'Alcy',     'cedula' => '1122334455'],
-            ['nombre_responsable' => 'Yoli',     'cedula' => '5544332211'],
-        ]);
-
-        // Combinar y asegurar unicidad
-        $responsables = $defaultResponsables->merge($responsablesDb)->unique(function ($item) {
-            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
-        })->sortBy(function ($item) {
-            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
+{
+    // Obtener lista de responsables únicos con su cédula de la base de datos
+    $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+        ->whereNotNull('nombre_responsable')
+        ->where('nombre_responsable', '!=', '')
+        ->groupBy('nombre_responsable', 'cedula')
+        ->orderBy('nombre_responsable')
+        ->get()
+        ->map(function($item) {
+            return [
+                'nombre_responsable' => $item->nombre_responsable,
+                'cedula' => $item->cedula
+            ];
         });
 
-        return view('labs.biotecnologia.create', [
-            'backRouteName' => 'biotecnologia.index',
-            'storeRouteName' => 'inventario.store',
-            'responsables' => $responsables
+    // Responsables por defecto (catálogo base)
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '0987654321'],
+        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+        ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
+    ]);
 
+    // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
+    $responsables = $defaultResponsables
+        ->concat($responsablesDb)
+        ->unique('nombre_responsable')
+        ->sortBy('nombre_responsable')
+        ->values();
 
-            
-        ]);
-        
-    }
+     $catalogo = [
+        'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
+        'estados' => ['bueno', 'regular', 'malo'],
+        'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
+        'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+    ];
+
+    return view('inventario.create', [
+        'labModule' => 'biotecnologia_vegetal',
+        'responsables' => $responsables,
+        'catalogo' => $catalogo
+    ]);
+}
 
    
 public function exportPdf($modulo)

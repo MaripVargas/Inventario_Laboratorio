@@ -15,48 +15,85 @@ class InventarioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $items = Inventario::where('lab_module', 'zoologia_botanica')
-                          ->orderBy('created_at', 'desc')
-                          ->paginate(10);
-        
-        return view('inventario.index', compact('items'));
+   public function index(Request $request)
+{
+    // Iniciar la consulta base
+    $query = Inventario::where('lab_module', 'zoologia_botanica');
+
+    // 🔍 Filtro por tipo de material
+    if ($request->filled('tipo_material')) {
+        $query->where('tipo_material', $request->tipo_material);
     }
+ // 🔹 Filtrado por nombre del responsable
+    if ($request->filled('nombre_responsable')) {
+        $query->where('nombre_responsable', $request->nombre_responsable);
+    }
+
+    // 🔎 Filtro de búsqueda (si agregaste el input "buscar")
+    if ($request->filled('buscar')) {
+        $buscar = $request->buscar;
+        $query->where(function ($subquery) use ($buscar) {
+            $subquery->where('ir_id', 'like', "%{$buscar}%")
+                     ->orWhere('desc_sku', 'like', "%{$buscar}%")
+                     ->orWhere('descripcion_elemento', 'like', "%{$buscar}%");
+        });
+    }
+
+    // 🔢 Ordenar y paginar
+    $items = $query->orderBy('created_at', 'desc')->paginate(10)->appends($request->all());
+
+    // 📤 Retornar la vista
+    return view('inventario.index', compact('items'));
+}
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        // Obtener lista de responsables únicos con su cédula de la base de datos
-        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
-            ->whereNotNull('nombre_responsable')
-            ->where('nombre_responsable', '!=', '')
-            ->groupBy('nombre_responsable', 'cedula')
-            ->orderBy('nombre_responsable')
-            ->get();
-
-        // Responsables por defecto (catálogo base)
-        $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina', 'cedula' => '1234567890'],
-            ['nombre_responsable' => 'Maria',    'cedula' => '0987654321'],
-            ['nombre_responsable' => 'Alcy',     'cedula' => '1122334455'],
-            ['nombre_responsable' => 'Yoli',     'cedula' => '5544332211'],
-        ]);
-
-        // Combinar y asegurar unicidad
-        $responsables = $defaultResponsables->merge($responsablesDb)->unique(function ($item) {
-            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
-        })->sortBy(function ($item) {
-            return is_array($item) ? $item['nombre_responsable'] : $item->nombre_responsable;
+  public function create()
+{
+    // Obtener lista de responsables únicos con su cédula de la base de datos
+    $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+        ->whereNotNull('nombre_responsable')
+        ->where('nombre_responsable', '!=', '')
+        ->groupBy('nombre_responsable', 'cedula')
+        ->orderBy('nombre_responsable')
+        ->get()
+        ->map(function($item) {
+            return [
+                'nombre_responsable' => $item->nombre_responsable,
+                'cedula' => $item->cedula
+            ];
         });
 
-        return view('inventario.create', [
-            'labModule' => 'zoologia_botanica',
-            'responsables' => $responsables
-        ]);
-    }
+    // Responsables por defecto (catálogo base)
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '0987654321'],
+        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+        ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
+    ]);
+
+    // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
+    $responsables = $defaultResponsables
+        ->concat($responsablesDb)
+        ->unique('nombre_responsable')
+        ->sortBy('nombre_responsable')
+        ->values();
+
+    // Crear el catálogo con los datos necesarios para el formulario
+    $catalogo = [
+        'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
+        'estados' => ['bueno', 'regular', 'malo'],
+        'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
+        'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+    ];
+
+    return view('inventario.create', [
+        'labModule' => 'zoologia_botanica',
+        'responsables' => $responsables,
+        'catalogo' => $catalogo
+    ]);
+}
 
     /**
      * Store a newly created resource in storage.
@@ -82,6 +119,7 @@ class InventarioController extends Controller
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
+             'tipo_material' => 'required|string|max:50',
             'uso' => 'nullable|string|max:255',
             'contrato' => 'nullable|string|max:255',
             'nombre_responsable' => 'nullable|string|max:255',
@@ -136,10 +174,10 @@ public function edit($id)
 
     // Responsables por defecto (catálogo base)
     $defaultResponsables = collect([
-        ['nombre_responsable' => 'Carolina', 'cedula' => '1234567890'],
-        ['nombre_responsable' => 'Maria',    'cedula' => '0987654321'],
-        ['nombre_responsable' => 'Alcy',     'cedula' => '1122334455'],
-        ['nombre_responsable' => 'Yoli',     'cedula' => '5544332211'],
+        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '1234567890'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez',    'cedula' => '0987654321'],
+        ['nombre_responsable' => 'Alcy Rene Ceron',     'cedula' => '76316028'],
+        ['nombre_responsable' => 'Yoli Dayana Moreno',     'cedula' => '34327134'],
     ]);
 
     // Unir catálogo con los existentes en BD, sin duplicar por nombre
@@ -180,6 +218,7 @@ public function edit($id)
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
+            'tipo_material' => 'required|string|max:50',
             'uso' => 'nullable|string|max:255',
             'contrato' => 'nullable|string|max:255',
             'nombre_responsable' => 'nullable|string|max:255',
