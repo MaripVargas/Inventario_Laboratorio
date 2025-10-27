@@ -6,6 +6,9 @@
 
 @section('content')
     @include('inventario.index', ['items' => $items])
+
+    
+    
     
 @endsection
 

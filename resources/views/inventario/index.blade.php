@@ -30,9 +30,10 @@
    ])
 
 
-          <div class="card-body">
+<div class="card-body">
     <!-- Filtros -->
-    <form method="GET" action="{{ route('inventario.index') }}">
+    <form method="GET" action="{{ url()->current() }}" id="filterForm">
+        
         <div class="mb-6 modern-filters">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 
@@ -58,46 +59,54 @@
                         <select 
                             name="tipo_material" 
                             class="modern-select" 
-                            onchange="this.form.submit()">
+                            onchange="this.closest('form').submit()">
                             <option value="">Todos los tipos</option>
                             <option value="Equipos" {{ request('tipo_material') == 'Equipos' ? 'selected' : '' }}>Equipos</option>
                             <option value="Mueblería" {{ request('tipo_material') == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
                             <option value="Vidrieria" {{ request('tipo_material') == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
-                           
                         </select>
                     </div>
                 </div>
 
                 <!-- Responsable -->
-               <form method="GET" action="{{ route('inventario.index') }}">
-    <div class="filter-group">
-        <label class="block text-sm font-medium text-gray-700 mb-2">
-            Filtrar por responsable
-        </label>
-        <div class="select-container">
-            <i class="fas fa-user-tie select-icon"></i>
-            <select name="nombre_responsable" class="modern-select" onchange="this.form.submit()">
-                <option value="">Todos los responsables</option>
-                @php
-                    $responsables = \App\Models\Inventario::select('nombre_responsable')
-                        ->whereNotNull('nombre_responsable')
-                        ->where('nombre_responsable', '!=', '')
-                        ->groupBy('nombre_responsable')
-                        ->orderBy('nombre_responsable')
-                        ->get();
-                @endphp
-                @foreach($responsables as $r)
-                    <option value="{{ $r->nombre_responsable }}" 
-                        {{ request('nombre_responsable') == $r->nombre_responsable ? 'selected' : '' }}>
-                        {{ $r->nombre_responsable }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-</form>
+                <div class="filter-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Filtrar por responsable
+                    </label>
+                    <div class="select-container">
+                        <i class="fas fa-user-tie select-icon"></i>
+                        <select 
+                            name="nombre_responsable" 
+                            class="modern-select" 
+                            onchange="this.closest('form').submit()">
+                            <option value="">Todos los responsables</option>
+                            @php
+                                $responsables = \App\Models\Inventario::select('nombre_responsable')
+                                    ->where('lab_module', $labModule ?? 'zoologia_botanica')
+                                    ->whereNotNull('nombre_responsable')
+                                    ->where('nombre_responsable', '!=', '')
+                                    ->groupBy('nombre_responsable')
+                                    ->orderBy('nombre_responsable')
+                                    ->get();
+                            @endphp
+                            @foreach($responsables as $r)
+                                <option value="{{ $r->nombre_responsable }}" 
+                                    {{ request('nombre_responsable') == $r->nombre_responsable ? 'selected' : '' }}>
+                                    {{ $r->nombre_responsable }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
 
+            </div>
 
+            <!-- Botones -->
+            <div class="mt-4 flex gap-2">
+                
+                <a href="{{ url()->current() }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Limpiar
+                </a>
             </div>
         </div>
     </form>
