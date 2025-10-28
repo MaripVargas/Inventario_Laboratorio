@@ -20,12 +20,31 @@ class BiotecnologiaController extends Controller
 
         // 🔍 Filtro por tipo de material
         if ($request->filled('tipo_material')) {
-            $query->where('tipo_material', $request->tipo_material);
+            $tipoMaterial = $request->tipo_material;
+            // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
+            if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
+                $query->where(function($q) {
+                    $q->where('tipo_material', 'Mueblería')
+                      ->orWhere('tipo_material', 'Muebles');
+                });
+            } elseif ($tipoMaterial == 'Vidriería' || $tipoMaterial == 'Vidrieria') {
+                $query->where(function($q) {
+                    $q->where('tipo_material', 'Vidrieria')
+                      ->orWhere('tipo_material', 'Vidriería');
+                });
+            } else {
+                $query->where('tipo_material', $tipoMaterial);
+            }
         }
         
-        // 🔹 Filtrado por nombre del responsable
+        // 🔹 Filtrado por cuentadante (nombre del responsable)
         if ($request->filled('nombre_responsable')) {
             $query->where('nombre_responsable', $request->nombre_responsable);
+        }
+
+        // 🔢 Filtro por placa
+        if ($request->filled('no_placa')) {
+            $query->where('no_placa', 'like', "%{$request->no_placa}%");
         }
 
         // 🔎 Filtro de búsqueda

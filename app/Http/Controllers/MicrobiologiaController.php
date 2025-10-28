@@ -11,13 +11,60 @@ use App\Exports\InventarioExport;
 class MicrobiologiaController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $items = Inventario::where('lab_module', 'microbiologia')
-                          ->orderBy('created_at', 'desc')
-                          ->paginate(10);
+        $labModule = 'microbiologia';
+        
+        // Consulta base
+        $query = Inventario::where('lab_module', $labModule);
+
+        // 🔍 Filtro por tipo de material
+        if ($request->filled('tipo_material')) {
+            $tipoMaterial = $request->tipo_material;
+            // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
+            if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
+                $query->where(function($q) {
+                    $q->where('tipo_material', 'Mueblería')
+                      ->orWhere('tipo_material', 'Muebles');
+                });
+            } elseif ($tipoMaterial == 'Vidriería' || $tipoMaterial == 'Vidrieria') {
+                $query->where(function($q) {
+                    $q->where('tipo_material', 'Vidrieria')
+                      ->orWhere('tipo_material', 'Vidriería');
+                });
+            } else {
+                $query->where('tipo_material', $tipoMaterial);
+            }
+        }
+        
+        // 🔹 Filtrado por cuentadante (nombre del responsable)
+        if ($request->filled('nombre_responsable')) {
+            $query->where('nombre_responsable', $request->nombre_responsable);
+        }
+
+        // 🔢 Filtro por placa
+        if ($request->filled('no_placa')) {
+            $query->where('no_placa', 'like', "%{$request->no_placa}%");
+        }
+
+        // 🔎 Filtro de búsqueda
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($subquery) use ($buscar) {
+                $subquery->where('ir_id', 'like', "%{$buscar}%")
+                         ->orWhere('desc_sku', 'like', "%{$buscar}%")
+                         ->orWhere('descripcion_elemento', 'like', "%{$buscar}%");
+            });
+        }
+
+        // Paginar y mantener parámetros de filtro
+        $items = $query->orderBy('created_at', 'desc')
+                      ->paginate(10)
+                      ->appends($request->all());
+
         return view('labs.microbiologia.index', [
             'items' => $items,
+            'labModule' => $labModule,
             'createRouteName' => 'microbiologia.create',
             'editBasePath' => 'inventario',
             'storeRouteName' => 'inventario.store',

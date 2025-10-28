@@ -35,7 +35,7 @@
     <form method="GET" action="{{ url()->current() }}" id="filterForm">
         
         <div class="mb-6 modern-filters">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 <!-- Buscar -->
                 <div class="filter-group">
@@ -51,6 +51,21 @@
                     </div>
                 </div>
 
+                <!-- Filtro por Placa -->
+                <div class="filter-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar por Placa</label>
+                    <div class="search-input-container">
+                        <i class="fas fa-hashtag search-icon"></i>
+                        <input 
+                            type="text" 
+                            name="no_placa" 
+                            id="no_placa_filter"
+                            value="{{ request('no_placa') }}" 
+                            placeholder="Buscar por número de placa..."
+                            class="modern-input search-input">
+                    </div>
+                </div>
+
                 <!-- Tipo de Material -->
                 <div class="filter-group">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Material</label>
@@ -62,16 +77,16 @@
                             onchange="this.closest('form').submit()">
                             <option value="">Todos los tipos</option>
                             <option value="Equipos" {{ request('tipo_material') == 'Equipos' ? 'selected' : '' }}>Equipos</option>
-                            <option value="Mueblería" {{ request('tipo_material') == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
-                            <option value="Vidrieria" {{ request('tipo_material') == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
+                            <option value="Muebles" {{ in_array(request('tipo_material'), ['Muebles', 'Mueblería']) ? 'selected' : '' }}>Muebles</option>
+                            <option value="Vidriería" {{ in_array(request('tipo_material'), ['Vidrieria', 'Vidriería']) ? 'selected' : '' }}>Vidriería</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Responsable -->
+                <!-- Cuentadante -->
                 <div class="filter-group">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Filtrar por responsable
+                        Filtrar por Cuentadante
                     </label>
                     <div class="select-container">
                         <i class="fas fa-user-tie select-icon"></i>
@@ -79,7 +94,7 @@
                             name="nombre_responsable" 
                             class="modern-select" 
                             onchange="this.closest('form').submit()">
-                            <option value="">Todos los responsables</option>
+                            <option value="">Todos los cuentadantes</option>
                             @php
                                 $responsables = \App\Models\Inventario::select('nombre_responsable')
                                     ->where('lab_module', $labModule ?? 'zoologia_botanica')
@@ -303,6 +318,30 @@
 
         @push('scripts')
             <script>
+                // Filtro automático por placa con debounce
+                document.addEventListener('DOMContentLoaded', function() {
+                    const placaInput = document.getElementById('no_placa_filter');
+                    const filterForm = document.getElementById('filterForm');
+                    let placaTimeout;
+                    
+                    if (placaInput && filterForm) {
+                        placaInput.addEventListener('input', function() {
+                            clearTimeout(placaTimeout);
+                            placaTimeout = setTimeout(function() {
+                                filterForm.submit();
+                            }, 800); // Esperar 800ms después de que el usuario deje de escribir
+                        });
+                        
+                        // También enviar al presionar Enter
+                        placaInput.addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter') {
+                                clearTimeout(placaTimeout);
+                                filterForm.submit();
+                            }
+                        });
+                    }
+                });
+
                 // Función para abrir el modal y cargar el formulario
                 function openEditModal(itemId) {
                     console.log('🔄 Abriendo modal para item:', itemId);
@@ -728,7 +767,10 @@
 .overflow-x-auto { overflow-x: auto; }
 
 @media (min-width: 768px) {
-    .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+    .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 /* ========================================
