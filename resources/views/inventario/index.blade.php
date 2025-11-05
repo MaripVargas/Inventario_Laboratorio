@@ -135,7 +135,7 @@
         <span>Desliza horizontalmente para ver más información</span>
     </div>
     <div class="overflow-x-auto modern-table-wrapper">
-        <table class="modern-table" style="min-width: 2400px; table-layout: fixed;">
+        <table class="modern-table" style="min-width: 2700px; table-layout: fixed;">
             <thead>
                 <tr>
                     <th class="table-header" style="width: 100px;">IR ID</th>
@@ -160,6 +160,8 @@
                     <th class="table-header" style="width: 180px;">Nombre Responsable</th>
                     <th class="table-header" style="width: 130px;">Cédula</th>
                     <th class="table-header" style="width: 150px;">Vinculación</th>
+                    <th class="table-header" style="width: 120px;">Fecha Registro</th>
+                    <th class="table-header" style="width: 180px;">Usuario Registra</th>
                     <th class="table-header sticky-column" style="width: 120px;">Acciones</th>
                 </tr>
             </thead>
@@ -226,6 +228,8 @@
                         <td class="table-cell">{{ $item->nombre_responsable ?? '-' }}</td>
                         <td class="table-cell">{{ $item->cedula ?? '-' }}</td>
                         <td class="table-cell">{{ $item->vinculacion ?? '-' }}</td>
+                        <td class="table-cell">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
+                        <td class="table-cell">{{ $item->usuario_registra ?? '-' }}</td>
                         <td class="table-cell sticky-column">
                             <div class="action-buttons d-flex align-items-center gap-2">
                                 <button type="button" class="btn btn-warning btn-sm" title="Editar"
@@ -247,7 +251,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="23" class="empty-state">
+                        <td colspan="25" class="empty-state">
                             <div class="empty-state-content">
                                 <i class="fas fa-box-open"></i>
                                 <h3>No hay items en el inventario</h3>
@@ -584,7 +588,7 @@
                             emptyRow = document.createElement('tr');
                             emptyRow.className = 'no-results-row';
                             emptyRow.innerHTML = `
-                        <td colspan="18" class="empty-state">
+                        <td colspan="25" class="empty-state">
                             <div class="empty-state-content">
                                 <i class="fas fa-search"></i>
                                 <h3>No se encontraron items con este estado</h3>

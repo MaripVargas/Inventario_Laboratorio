@@ -390,6 +390,29 @@
                     </div>
                 </div>
 
+                <!-- Información de Registro -->
+                <div class="form-section">
+                    <h3 class="form-section-title">
+                        <i class="fas fa-user-plus"></i>
+                        Información de Registro
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                Nombre de quien registra <span class="required">*</span>
+                            </label>
+                            <div class="input-container">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" name="usuario_registra" required 
+                                       class="form-input"
+                                       placeholder="Ingrese su nombre"
+                                       value="{{ old('usuario_registra', auth()->user()->name ?? '') }}">
+                            </div>
+                            <p class="form-hint">Nombre de la persona que está registrando este item</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Botones de Acción -->
                 <div class="form-actions">
                     <a href="{{ route($backRouteName ?? 'inventario.index') }}" class="modern-btn modern-btn-secondary">
