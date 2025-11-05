@@ -5,6 +5,13 @@
     @method('PUT')
 
     <div class="row g-3">
+        <!-- ====== SECCIÓN: IDENTIFICACIÓN ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3">
+                <i class="fas fa-id-card me-2"></i>Identificación
+            </h6>
+        </div>
+
         <!-- IR ID (Obligatorio) -->
         <div class="col-md-4">
             <label class="form-label fw-semibold">
@@ -17,19 +24,6 @@
                 class="form-control @error('ir_id') is-invalid @enderror"
                 required>
             @error('ir_id')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Código Regional -->
-        <div class="col-md-4">
-            <label class="form-label fw-semibold">Código Regional</label>
-            <input 
-                type="text" 
-                name="cod_regional" 
-                value="{{ old('cod_regional', $item->cod_regional) }}" 
-                class="form-control @error('cod_regional') is-invalid @enderror">
-            @error('cod_regional')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
@@ -47,34 +41,8 @@
             @enderror
         </div>
 
-        <!-- Código Centro -->
-        <div class="col-md-4">
-            <label class="form-label fw-semibold">Código Centro</label>
-            <input 
-                type="text" 
-                name="cod_centro" 
-                value="{{ old('cod_centro', $item->cod_centro) }}" 
-                class="form-control @error('cod_centro') is-invalid @enderror">
-            @error('cod_centro')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Descripción Almacén -->
-        <div class="col-md-6">
-            <label class="form-label fw-semibold">Descripción Almacén</label>
-            <input 
-                type="text" 
-                name="desc_almacen" 
-                value="{{ old('desc_almacen', $item->desc_almacen) }}" 
-                class="form-control @error('desc_almacen') is-invalid @enderror">
-            @error('desc_almacen')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
         <!-- No. Placa (Obligatorio) -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label class="form-label fw-semibold">
                 No. Placa <span class="text-danger">*</span>
             </label>
@@ -89,8 +57,34 @@
             @enderror
         </div>
 
+        <!-- Código Regional -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Código Regional</label>
+            <input 
+                type="text" 
+                name="cod_regional" 
+                value="{{ old('cod_regional', $item->cod_regional) }}" 
+                class="form-control @error('cod_regional') is-invalid @enderror">
+            @error('cod_regional')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Código Centro -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Código Centro</label>
+            <input 
+                type="text" 
+                name="cod_centro" 
+                value="{{ old('cod_centro', $item->cod_centro) }}" 
+                class="form-control @error('cod_centro') is-invalid @enderror">
+            @error('cod_centro')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
         <!-- Consecutivo -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label class="form-label fw-semibold">Consecutivo</label>
             <input 
                 type="text" 
@@ -100,6 +94,26 @@
             @error('consecutivo')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+        </div>
+
+        <!-- Descripción Almacén -->
+        <div class="col-md-12">
+            <label class="form-label fw-semibold">Descripción Almacén</label>
+            <input 
+                type="text" 
+                name="desc_almacen" 
+                value="{{ old('desc_almacen', $item->desc_almacen) }}" 
+                class="form-control @error('desc_almacen') is-invalid @enderror">
+            @error('desc_almacen')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- ====== SECCIÓN: DESCRIPCIÓN DEL ELEMENTO ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">
+                <i class="fas fa-box me-2"></i>Descripción del Elemento
+            </h6>
         </div>
 
         <!-- Descripción SKU (Obligatorio) -->
@@ -114,6 +128,26 @@
                 class="form-control @error('desc_sku') is-invalid @enderror"
                 required>
             @error('desc_sku')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Tipo de Material (Obligatorio) -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">
+                Tipo de Material <span class="text-danger">*</span>
+            </label>
+            <select 
+                name="tipo_material" 
+                class="form-select @error('tipo_material') is-invalid @enderror"
+                required>
+                @php($tipoMaterial = old('tipo_material', $item->tipo_material))
+                <option value="">Seleccione tipo</option>
+                <option value="Equipos" {{ $tipoMaterial == 'Equipos' ? 'selected' : '' }}>Equipos</option>
+                <option value="Mueblería" {{ $tipoMaterial == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
+                <option value="Vidrieria" {{ $tipoMaterial == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
+            </select>
+            @error('tipo_material')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
@@ -158,8 +192,15 @@
             @enderror
         </div>
 
+        <!-- ====== SECCIÓN: ADQUISICIÓN ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">
+                <i class="fas fa-shopping-cart me-2"></i>Información de Adquisición
+            </h6>
+        </div>
+
         <!-- Fecha de Adquisición (Obligatorio) -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label class="form-label fw-semibold">
                 Fecha de Adquisición <span class="text-danger">*</span>
             </label>
@@ -175,7 +216,7 @@
         </div>
 
         <!-- Valor de Adquisición (Obligatorio) -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label class="form-label fw-semibold">
                 Valor de Adquisición <span class="text-danger">*</span>
             </label>
@@ -191,8 +232,28 @@
             @enderror
         </div>
 
+        <!-- Contrato -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Contrato</label>
+            <input 
+                type="text" 
+                name="contrato" 
+                value="{{ old('contrato', $item->contrato) }}" 
+                class="form-control @error('contrato') is-invalid @enderror">
+            @error('contrato')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- ====== SECCIÓN: GESTIÓN Y USO ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">
+                <i class="fas fa-cogs me-2"></i>Gestión y Uso
+            </h6>
+        </div>
+
         <!-- Gestión -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label class="form-label fw-semibold">Gestión</label>
             <input 
                 type="text" 
@@ -200,20 +261,6 @@
                 value="{{ old('gestion', $item->gestion) }}" 
                 class="form-control @error('gestion') is-invalid @enderror">
             @error('gestion')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
-
-
-        <!-- Acciones -->
-        <div class="col-md-6">
-            <label class="form-label fw-semibold">Acciones</label>
-            <textarea 
-                name="acciones" 
-                rows="2" 
-                class="form-control @error('acciones') is-invalid @enderror">{{ old('acciones', $item->acciones) }}</textarea>
-            @error('acciones')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
@@ -227,27 +274,51 @@
                 <option value="Formacion" {{ $usoValue=='Formacion' ? 'selected' : '' }}>Formación</option>
                 <option value="investigacion" {{ $usoValue=='investigacion' ? 'selected' : '' }}>Servicios Tecnológicos</option>
                 <option value="administracion" {{ $usoValue=='administracion' ? 'selected' : '' }}>Investigación</option>
-              
             </select>
             @error('uso')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
-        <!-- Contrato (texto) -->
+        <!-- Estado (Obligatorio) -->
         <div class="col-md-4">
-            <label class="form-label fw-semibold">Contrato</label>
-            <input 
-                type="text" 
-                name="contrato" 
-                value="{{ old('contrato', $item->contrato) }}" 
-                class="form-control @error('contrato') is-invalid @enderror">
-            @error('contrato')
+            <label class="form-label fw-semibold">
+                Estado <span class="text-danger">*</span>
+            </label>
+            <select 
+                name="estado" 
+                class="form-select @error('estado') is-invalid @enderror"
+                required>
+                <option value="">Seleccione un estado</option>
+                <option value="bueno" {{ old('estado', $item->estado) == 'bueno' ? 'selected' : '' }}>Bueno</option>
+                <option value="regular" {{ old('estado', $item->estado) == 'regular' ? 'selected' : '' }}>Regular</option>
+                <option value="malo" {{ old('estado', $item->estado) == 'malo' ? 'selected' : '' }}>Malo</option>
+            </select>
+            @error('estado')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
-        <!-- Nombre Responsable (select con autocarga de cédula) -->
+        <!-- Acciones -->
+        <div class="col-md-12">
+            <label class="form-label fw-semibold">Acciones</label>
+            <textarea 
+                name="acciones" 
+                rows="2" 
+                class="form-control @error('acciones') is-invalid @enderror">{{ old('acciones', $item->acciones) }}</textarea>
+            @error('acciones')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- ====== SECCIÓN: RESPONSABLE ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">
+                <i class="fas fa-user me-2"></i>Información del Responsable
+            </h6>
+        </div>
+
+        <!-- Nombre Responsable -->
         <div class="col-md-4">
             <label class="form-label fw-semibold">Nombre del Responsable</label>
             <select name="nombre_responsable" id="nombre_responsable" class="form-select @error('nombre_responsable') is-invalid @enderror">
@@ -271,12 +342,13 @@
             @enderror
         </div>
 
-        <!-- Cédula (auto-actualiza según responsable) -->
+        <!-- Cédula -->
         <div class="col-md-4">
             <label class="form-label fw-semibold">Cédula</label>
             <input 
                 type="text" 
-                name="cedula" id="cedula" 
+                name="cedula" 
+                id="cedula" 
                 value="{{ old('cedula', $item->cedula) }}" 
                 class="form-control @error('cedula') is-invalid @enderror">
             @error('cedula')
@@ -293,15 +365,54 @@
                 <option value="contrato" {{ $vincValue=='contrato' ? 'selected' : '' }}>Contrato</option>
                 <option value="Funcionario Administrativo" {{ $vincValue=='Funcionario Administrativo' ? 'selected' : '' }}>Funcionario Administrativo</option>
                 <option value="Provisional" {{ $vincValue=='Provisional' ? 'selected' : '' }}>Provisional</option>
-              
             </select>
             @error('vinculacion')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
 
-        <!-- Foto -->
+        <!-- ====== SECCIÓN: REGISTRO Y AUDITORÍA ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">
+                <i class="fas fa-clock me-2"></i>Información de Registro
+            </h6>
+        </div>
+
+        <!-- Fecha Registro -->
         <div class="col-md-6">
+            <label class="form-label fw-semibold">Fecha Registro</label>
+            <input 
+                type="datetime-local" 
+                name="fecha_registro" 
+                value="{{ old('fecha_registro', $item->fecha_registro ? $item->fecha_registro->format('Y-m-d\TH:i') : '') }}" 
+                class="form-control @error('fecha_registro') is-invalid @enderror">
+            @error('fecha_registro')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- Usuario Registra -->
+        <div class="col-md-6">
+            <label class="form-label fw-semibold">Usuario Registra</label>
+            <input 
+                type="text" 
+                name="usuario_registra" 
+                value="{{ old('usuario_registra', $item->usuario_registra) }}" 
+                class="form-control @error('usuario_registra') is-invalid @enderror">
+            @error('usuario_registra')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <!-- ====== SECCIÓN: MULTIMEDIA ====== -->
+        <div class="col-12">
+            <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">
+                <i class="fas fa-image me-2"></i>Fotografía
+            </h6>
+        </div>
+
+        <!-- Foto -->
+        <div class="col-md-12">
             <label class="form-label fw-semibold">Foto</label>
             <input 
                 type="file" 
@@ -312,57 +423,16 @@
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
             @if($item->foto)
-    <div class="mt-2">
-        <img src="{{ asset('storage/'.$item->foto) }}" 
-             alt="Foto actual" 
-             width="100" 
-             class="rounded shadow-sm border">
-        <small class="d-block text-muted mt-1">Foto actual</small>
-    </div>
-@endif
- 
-
-        <!-- Estado (Obligatorio) -->
-        <div class="col-md-6">
-            <label class="form-label fw-semibold">
-                Estado <span class="text-danger">*</span>
-            </label>
-            <select 
-                name="estado" 
-                class="form-select @error('estado') is-invalid @enderror"
-                required>
-                <option value="">Seleccione un estado</option>
-                <option value="bueno" {{ old('estado', $item->estado) == 'bueno' ? 'selected' : '' }}>Bueno</option>
-                <option value="regular" {{ old('estado', $item->estado) == 'regular' ? 'selected' : '' }}>Regular</option>
-                <option value="malo" {{ old('estado', $item->estado) == 'malo' ? 'selected' : '' }}>Malo</option>
-            </select>
-            @error('estado')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+                <div class="mt-2">
+                    <img src="{{ asset('storage/'.$item->foto) }}" 
+                         alt="Foto actual" 
+                         width="100" 
+                         class="rounded shadow-sm border">
+                    <small class="d-block text-muted mt-1">Foto actual</small>
+                </div>
+            @endif
         </div>
     </div>
-
-    <!-- Tipo de Material -->
-<div class="col-md-6">
-    <label class="form-label fw-semibold">
-        Tipo de Material <span class="text-danger">*</span>
-    </label>
-    <select 
-        name="tipo_material" 
-        class="form-select @error('tipo_material') is-invalid @enderror"
-        required>
-        @php($tipoMaterial = old('tipo_material', $item->tipo_material))
-        <option value="">Seleccione tipo</option>
-        <option value="Equipos" {{ $tipoMaterial == 'Equipos' ? 'selected' : '' }}>Equipos</option>
-        <option value="Mueblería" {{ $tipoMaterial == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
-        <option value="Vidrieria" {{ $tipoMaterial == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
-      
-    </select>
-    @error('tipo_material')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
 
     <!-- Nota de campos obligatorios -->
     <div class="alert alert-info mt-3 mb-0">

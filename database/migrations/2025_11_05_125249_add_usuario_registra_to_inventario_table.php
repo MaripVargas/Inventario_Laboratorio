@@ -17,6 +17,9 @@ class AddUsuarioRegistraToInventarioTable extends Migration
             if (!Schema::hasColumn('inventario', 'usuario_registra')) {
                 $table->string('usuario_registra')->nullable()->after('lab_module');
             }
+            if (!Schema::hasColumn('inventario', 'fecha_registro')) {
+                $table->datetime('fecha_registro')->nullable()->after('usuario_registra');
+            }
         });
     }
 
@@ -30,6 +33,9 @@ class AddUsuarioRegistraToInventarioTable extends Migration
         Schema::table('inventario', function (Blueprint $table) {
             if (Schema::hasColumn('inventario', 'usuario_registra')) {
                 $table->dropColumn('usuario_registra');
+            }
+            if (Schema::hasColumn('inventario', 'fecha_registro')) {
+                $table->dropColumn('fecha_registro');
             }
         });
     }
