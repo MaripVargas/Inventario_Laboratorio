@@ -89,11 +89,11 @@ $items = $query->orderBy('created_at', 'desc')
     // Responsables por defecto (catálogo base)
     $defaultResponsables = collect([
         ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
-        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '	52962110'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
         ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
         ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
-         ['nombre_responsable'=>'Kathryn Yadira Pacheco Guzman', 'cedula'=>'	38142927'],
-          ['nombre_responsable'=>'Pastrana Granados Eduardo', 'cedula'=>'	7719513'],
+         ['nombre_responsable'=>'Kathryn Yadira Pacheco Guzman', 'cedula'=>'38142927'],
+          ['nombre_responsable'=>'Pastrana Granados Eduardo', 'cedula'=>'7719513'],
     ]);
 
     // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
