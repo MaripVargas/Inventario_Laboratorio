@@ -148,6 +148,7 @@ $items = $query->orderBy('created_at', 'desc')
             'nombre_responsable' => 'nullable|string|max:255',
             'cedula' => 'nullable|string|max:50',
             'vinculacion' => 'nullable|string|max:255',
+            'usuario_registra' => 'required|string|max:255',
         ]);
 
         // Manejar la subida de la foto
@@ -247,6 +248,7 @@ public function edit($id)
             'nombre_responsable' => 'nullable|string|max:255',
             'cedula' => 'nullable|string|max:50',
             'vinculacion' => 'nullable|string|max:255',
+            'usuario_registra' => 'nullable|string|max:255',
         ], [
             // Mensajes personalizados en español
             'ir_id.required' => 'El campo IR ID es obligatorio',

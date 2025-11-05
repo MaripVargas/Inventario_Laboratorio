@@ -30,13 +30,13 @@ class Inventario extends Model
         'foto',
         'estado',
          'tipo_material',
-        // 👇 Nuevos campos añadidos
         'uso',
         'contrato',
         'nombre_responsable',
         'cedula',
         'vinculacion',
         'lab_module',
+        'usuario_registra',
         
     ];
 
