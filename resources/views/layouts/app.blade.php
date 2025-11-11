@@ -625,7 +625,7 @@
         <a href="{{ route('biotecnologia.index') }}" 
            class="submenu-item {{ request()->routeIs('biotecnologia.index') ? 'active' : '' }}">
             <span class="submenu-icon">📦</span>
-            Inventario General
+             Equipos y Muebles
         </a>
         <a href="{{route ('biotecnologia.utileria.index')}}" class="submenu-item">
             <span class="submenu-icon">🧰</span>
