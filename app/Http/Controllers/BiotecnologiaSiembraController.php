@@ -7,11 +7,21 @@ use Illuminate\Http\Request;
 
 class BiotecnologiaSiembraController extends Controller
 {
-    public function index()
-    {
-        $items = BiotecnologiaSiembra::orderBy('id', 'desc')->get();
-        return view('labs.biotecnologia.siembra.index', compact('items'));
-    }
+         public function index(Request $request)
+{
+    $buscar = $request->input('buscar');
+
+    $items = \App\Models\BiotecnologiaSiembra::query()
+        ->when($buscar, function ($query, $buscar) {
+            $query->where('nombre_item', 'like', "%{$buscar}%")
+                  ->orWhere('detalle', 'like', "%{$buscar}%");
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10) // 👈 Muestra solo 10 por página
+        ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
+
+    return view('labs.biotecnologia.siembra.index', compact('items', 'buscar'));
+}
 
     public function create()
     {

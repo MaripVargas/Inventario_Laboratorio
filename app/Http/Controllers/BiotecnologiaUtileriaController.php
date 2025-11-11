@@ -11,12 +11,22 @@ class BiotecnologiaUtileriaController extends Controller
     /**
      * Mostrar todos los registros
      */
-    public function index()
-    {
-       $items = BiotecnologiaUtileria::orderBy('id', 'desc')->get();
-return view('labs.biotecnologia.utileria.index', compact('items'));
+     public function index(Request $request)
+{
+    $buscar = $request->input('buscar');
 
-    }
+    $items = \App\Models\BiotecnologiaUtileria::query()
+        ->when($buscar, function ($query, $buscar) {
+            $query->where('nombre_item', 'like', "%{$buscar}%")
+                  ->orWhere('detalle', 'like', "%{$buscar}%");
+        })
+        ->orderBy('id', 'desc')
+        ->paginate(10) // 👈 Muestra solo 10 por página
+        ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
+
+    return view('labs.biotecnologia.utileria.index', compact('items', 'buscar'));
+}
+
 
     /**
      * Mostrar formulario para crear nuevo registro

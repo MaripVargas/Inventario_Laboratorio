@@ -17,34 +17,50 @@
             </div>
         </div>
 
-        {{-- FILTRO DE BÚSQUEDA --}}
-        <div class="card-body">
-            <form method="GET" action="{{ url()->current() }}" id="filterForm">
-                <div class="mb-6 modern-filters">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div class="filter-group">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Buscar por nombre</label>
-                            <div class="search-input-container">
-                                <i class="fas fa-search search-icon"></i>
-                                <input 
-                                    type="text" 
-                                    name="buscar" 
-                                    value="{{ request('buscar') }}" 
-                                    placeholder="Ej: Etanol, Cloroformo..."
-                                    class="modern-input search-input"
-                                    oninput="document.getElementById('filterForm').submit()">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 flex gap-2">
-                        <a href="{{ url()->current() }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Limpiar
-                        </a>
+    
+  {{-- FILTRO DE BÚSQUEDA --}}
+<div class="card-body">
+    <form method="GET" action="{{ url()->current() }}" id="filterForm">
+        <div class="mb-6 modern-filters">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="filter-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Buscar por nombre</label>
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input 
+                            type="text" 
+                            name="buscar" 
+                            value="{{ request('buscar') }}" 
+                            placeholder="Ej: Matraz, Probeta, Pipeta..."
+                            class="modern-input search-input"
+                            id="buscarInput">
                     </div>
                 </div>
-            </form>
+            </div>
+
+            <div class="mt-4 flex gap-2">
+                <a href="{{ url()->current() }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Limpiar
+                </a>
+            </div>
         </div>
+    </form>
+</div>
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    let debounceTimer;
+
+    $('#buscarInput').on('input', function() {
+        clearTimeout(debounceTimer); // Reinicia el contador
+        debounceTimer = setTimeout(() => {
+            $('#filterForm').submit(); // Envía el formulario después de 2 segundos sin escribir
+        }, 1500)// 00 ms = 2 segundos
+    });
+});
+</script>
+@endpush
 
         {{-- TABLA DE ITEMS --}}
         <div class="table-container">
