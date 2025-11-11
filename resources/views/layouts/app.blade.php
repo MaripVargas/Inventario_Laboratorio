@@ -600,14 +600,30 @@
             Inicio
         </a>
 
-        <!-- 🔹 Zoología y Botánica -->
-        <a href="{{ route('inventario.index') }}" 
-           class="menu-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}">
-            <div class="menu-icon">
-                <i class="fas fa-boxes"></i>
+        <!-- 🔹 Zoología y Botánica (con submenu) -->
+        <div class="menu-item-wrapper">
+            <a href="#"
+               class="menu-item submenu-toggle {{ request()->routeIs('inventario.*') || request()->routeIs('zoologia.*') ? 'active' : '' }}"
+               onclick="toggleSubmenu(event, 'submenuZoologia')">
+                <div class="menu-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                Lab. Zoología y Botánica
+                <i class="fas fa-chevron-down submenu-arrow"></i>
+            </a>
+            <div id="submenuZoologia" class="submenu">
+                <a href="{{ route('inventario.index') }}"
+                   class="submenu-item {{ request()->routeIs('inventario.index') ? 'active' : '' }}">
+                    <span class="submenu-icon">📦</span>
+                    Inventario General
+                </a>
+                <a href="{{ route('zoologia.vidrieria.index') }}"
+                   class="submenu-item {{ request()->routeIs('zoologia.vidrieria.*') ? 'active' : '' }}">
+                    <span class="submenu-icon">⚗️</span>
+                    Vidriería
+                </a>
             </div>
-            Lab. Zoología y Botánica
-        </a>
+        </div>
 
 <!-- Menú desplegable de Biotecnología -->
 <div class="menu-item-wrapper">
@@ -638,6 +654,10 @@
         <a href="{{ route('biotecnologia.reactivos.index') }}" class="submenu-item">
             <span class="submenu-icon">🧪</span>
             Reactivos
+        </a>
+        <a href="{{ route('biotecnologia.siembra.index') }}" class="submenu-item">
+            <span class="submenu-icon">🌱</span>
+            Siembra
         </a>
     </div>
 </div>

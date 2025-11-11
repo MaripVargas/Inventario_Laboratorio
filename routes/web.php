@@ -9,6 +9,8 @@ use App\Http\Controllers\MicrobiologiaController;
 use App\Http\Controllers\BiotecnologiaUtileriaController;
 use App\Http\Controllers\BiotecnologiaVidrieriaController;
 use App\Http\Controllers\BiotecnologiaReactivosController;
+use App\Http\Controllers\BiotecnologiaSiembraController;
+use App\Http\Controllers\ZoologiaVidrieriaController;
 use App\Http\Controllers\AreasController;
 
 
@@ -82,6 +84,11 @@ Route::middleware(['simulate.auth'])->group(function () {
     // ÁREAS
     // ========================================
     Route::get('/areas', [AreasController::class, 'index'])->name('areas.index');
+
+    // Submódulos Zoología y Botánica
+    Route::prefix('zoologia')->name('zoologia.')->group(function () {
+        Route::resource('vidrieria', ZoologiaVidrieriaController::class)->names('vidrieria');
+    });
 });
 
 Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->name('inventario.pdf');
@@ -92,4 +99,7 @@ Route::prefix('biotecnologia')->group(function () {
     Route::resource('utileria', BiotecnologiaUtileriaController::class)->names('biotecnologia.utileria');
     Route::resource('vidrieria', BiotecnologiaVidrieriaController::class)->names('biotecnologia.vidrieria');
     Route::resource('reactivos', BiotecnologiaReactivosController::class)->names('biotecnologia.reactivos');
+    Route::resource('siembra', BiotecnologiaSiembraController::class)->names('biotecnologia.siembra');
+    // Ruta adicional para edición en página (además del modal JSON)
+    Route::get('siembra/{id}/editar', [BiotecnologiaSiembraController::class, 'editForm'])->name('biotecnologia.siembra.editForm');
 });
