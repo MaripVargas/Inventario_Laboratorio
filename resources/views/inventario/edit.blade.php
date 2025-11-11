@@ -299,18 +299,6 @@
             @enderror
         </div>
 
-        <!-- Acciones -->
-        <div class="col-md-12">
-            <label class="form-label fw-semibold">Acciones</label>
-            <textarea 
-                name="acciones" 
-                rows="2" 
-                class="form-control @error('acciones') is-invalid @enderror">{{ old('acciones', $item->acciones) }}</textarea>
-            @error('acciones')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-
         <!-- ====== SECCIÓN: RESPONSABLE ====== -->
         <div class="col-12">
             <h6 class="text-muted border-bottom pb-2 mb-3 mt-3">

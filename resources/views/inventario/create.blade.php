@@ -376,18 +376,6 @@
                             <p class="form-hint">Formatos permitidos: JPEG, PNG, JPG, GIF. Tamaño máximo: 2MB</p>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            Acciones
-                        </label>
-                        <div class="textarea-container">
-                            <i class="fas fa-tasks textarea-icon"></i>
-                            <textarea name="acciones" rows="3"
-                                      class="form-textarea"
-                                      placeholder="Acciones realizadas o pendientes...">{{ old('acciones') }}</textarea>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Información de Registro -->
