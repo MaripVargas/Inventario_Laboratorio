@@ -6,7 +6,11 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\BiotecnologiaController;
 use App\Http\Controllers\FisicoQuimicaController;
 use App\Http\Controllers\MicrobiologiaController;
+use App\Http\Controllers\BiotecnologiaUtileriaController;
+use App\Http\Controllers\BiotecnologiaVidrieriaController;
+use App\Http\Controllers\BiotecnologiaReactivosController;
 use App\Http\Controllers\AreasController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +71,7 @@ Route::middleware(['simulate.auth'])->group(function () {
     Route::get('/biotecnologia', [BiotecnologiaController::class, 'index'])->name('biotecnologia.index');
     Route::get('/biotecnologia/create', [BiotecnologiaController::class, 'create'])->name('biotecnologia.create');
 
+
     Route::get('/fisicoquimica', [FisicoQuimicaController::class, 'index'])->name('fisicoquimica.index');
     Route::get('/fisicoquimica/create', [FisicoQuimicaController::class, 'create'])->name('fisicoquimica.create');
 
@@ -82,9 +87,9 @@ Route::middleware(['simulate.auth'])->group(function () {
 Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->name('inventario.pdf');
    Route::get('{modulo}/export/excel', [InventarioController::class, 'exportExcel'])->name('inventario.excel');
 
-// ========================================
-// RUTAS PÚBLICAS (si las necesitas)
-// ========================================
-// Route::get('/about', function () {
-//     return view('about');
-// })->name('about');
+// Rutas para Submenu de Biotecnología
+Route::prefix('biotecnologia')->group(function () {
+    Route::resource('utileria', BiotecnologiaUtileriaController::class)->names('biotecnologia.utileria');
+    Route::resource('vidrieria', BiotecnologiaVidrieriaController::class)->names('biotecnologia.vidrieria');
+    Route::resource('reactivos', BiotecnologiaReactivosController::class)->names('biotecnologia.reactivos');
+});

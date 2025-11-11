@@ -13,19 +13,35 @@ class DashboardController extends Controller
     /**
      * Display the dashboard.
      */
-    public function index()
-    {
-        $stats = [
-            'total_items' => Inventario::count(),
-            'gestiones' => Inventario::distinct('gestion')->count('gestion'),
-            'estado_malo' => Inventario::where('estado', 'malo')->count(),
-        ];
-        
-        // Obtener todos los items del inventario para mostrar en la tabla
-        $inventario = Inventario::orderBy('created_at', 'desc')->get();
-        
-        return view('dashboard', compact('stats', 'inventario'));
-    }
+   public function index()
+{
+    $totalItems = Inventario::count();
+    $goodItems = Inventario::where('estado', 'bueno')->count();
+    $badItems = Inventario::where('estado', 'malo')->count();
+    $regularItems = Inventario::where('estado', 'regular')->count();
+
+    // Evita división por cero
+    $goodPercentage = $totalItems > 0 ? round(($goodItems / $totalItems) * 100, 2) : 0;
+    $badPercentage = $totalItems > 0 ? round(($badItems / $totalItems) * 100, 2) : 0;
+    $regularPercentage = $totalItems > 0 ? round(($regularItems / $totalItems) * 100, 2) : 0;
+
+    $stats = [
+        'total_items' => $totalItems,
+        'gestiones' => Inventario::distinct('gestion')->count('gestion'),
+        'estado_bueno' => $goodItems,
+        'estado_regular' => $regularItems,
+        'estado_malo' => $badItems,
+        'good_percentage' => $goodPercentage,
+        'regular_percentage' => $regularPercentage,
+        'bad_percentage' => $badPercentage,
+    ];
+
+    // Obtener todos los items del inventario para mostrar en la tabla
+    $inventario = Inventario::orderBy('created_at', 'desc')->get();
+
+    return view('dashboard', compact('stats', 'inventario', 'goodPercentage'));
+}
+
 
     /**
      * Export inventory data to PDF

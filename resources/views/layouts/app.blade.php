@@ -421,6 +421,65 @@
             animation: fadeIn 0.3s ease-out;
         }
 
+        /* ========================================
+   SUBMENÚ DESPLEGABLE
+   ======================================== */
+.menu-item-wrapper {
+    position: relative;
+}
+
+.submenu-toggle {
+    justify-content: space-between;
+}
+
+.submenu-arrow {
+    margin-left: auto;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.submenu-toggle.open .submenu-arrow {
+    transform: rotate(180deg);
+}
+
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.submenu.open {
+    max-height: 300px;
+}
+
+.submenu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 50px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.submenu-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    padding-left: 55px;
+}
+
+.submenu-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-left: 3px solid #fff;
+}
+
+.submenu-icon {
+    margin-right: 10px;
+    font-size: 1rem;
+}
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -443,68 +502,165 @@
                 padding: 1rem;
                 max-height: 60vh;
             }
+
+
+
+/* Toggle del submenú */
+.submenu-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submenu-arrow {
+    margin-left: auto;
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.submenu-toggle.open .submenu-arrow {
+    transform: rotate(180deg);
+}
+
+/* Contenedor del submenú */
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.submenu.open {
+    max-height: 300px;
+}
+
+/* Items del submenú */
+.submenu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 50px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.submenu-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    padding-left: 55px;
+}
+
+.submenu-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-left: 3px solid #fff;
+}
+
+.submenu-icon {
+    margin-right: 10px;
+    font-size: 1rem;
+}
         }
+
+
     </style>
 
     @stack('styles')
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-info">
-                    <h3>{{ Auth::user()->name ?? 'Usuario' }}</h3>
-                </div>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
             </div>
-            <div class="user-role">
-                Administrador
-            </div>
-            <div class="user-dropdown">
-                <i class="fas fa-chevron-down"></i>
+            <div class="user-info">
+                <h3>{{ Auth::user()->name ?? 'Usuario' }}</h3>
             </div>
         </div>
-
-        <nav class="sidebar-menu">
-            <a href="{{ route('dashboard') }}" class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <div class="menu-icon">
-                    <i class="fas fa-home"></i>
-                </div>
-                Inicio
-            </a>
-            
-            <a href="{{ route('inventario.index') }}" class="menu-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}">
-                <div class="menu-icon">
-                    <i class="fas fa-boxes"></i>
-                </div>
-                Lab. Zoologia y Botanica 
-            </a>
-            
-            <a href="{{ Route::has('biotecnologia.index') ? route('biotecnologia.index') : '#' }}" class="menu-item {{ request()->routeIs('biotecnologia.*') ? 'active' : '' }}">
-                <div class="menu-icon">
-                    <i class="fas fa-seedling"></i>
-                </div>
-                Lab. Biotecnologia Vegetal
-            </a>
-
-            <a href="{{ Route::has('fisicoquimica.index') ? route('fisicoquimica.index') : '#' }}" class="menu-item {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}">
-                <div class="menu-icon">
-                    <i class="fas fa-flask"></i>
-                </div>
-                Lab. Fisico Quimica
-            </a>
-
-            <a href="{{ Route::has('microbiologia.index') ? route('microbiologia.index') : '#' }}" class="menu-item {{ request()->routeIs('microbiologia.*') ? 'active' : '' }}">
-                <div class="menu-icon">
-                    <i class="fas fa-bacteria"></i>
-                </div>
-                Lab. microbiologia
-            </a>
-        </nav>
+        <div class="user-role">
+            Administrador
+        </div>
+        <div class="user-dropdown">
+            <i class="fas fa-chevron-down"></i>
+        </div>
     </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="sidebar-menu">
+
+        <a href="{{ route('dashboard') }}" 
+           class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <div class="menu-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            Inicio
+        </a>
+
+        <!-- 🔹 Zoología y Botánica -->
+        <a href="{{ route('inventario.index') }}" 
+           class="menu-item {{ request()->routeIs('inventario.*') ? 'active' : '' }}">
+            <div class="menu-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            Lab. Zoología y Botánica
+        </a>
+
+<!-- Menú desplegable de Biotecnología -->
+<div class="menu-item-wrapper">
+    <a href="#" 
+       class="menu-item submenu-toggle {{ request()->routeIs('biotecnologia.*') ? 'active' : '' }}"
+       onclick="toggleSubmenu(event, 'submenuBiotec')">
+        <div class="menu-icon">
+            <i class="fas fa-leaf"></i>
+        </div>
+        Lab. Biotecnología Vegetal
+        <i class="fas fa-chevron-down submenu-arrow"></i>
+    </a>
+
+    <div id="submenuBiotec" class="submenu">
+        <a href="{{ route('biotecnologia.index') }}" 
+           class="submenu-item {{ request()->routeIs('biotecnologia.index') ? 'active' : '' }}">
+            <span class="submenu-icon">📦</span>
+            Inventario General
+        </a>
+        <a href="{{route ('biotecnologia.utileria.index')}}" class="submenu-item">
+            <span class="submenu-icon">🧰</span>
+            Utilería
+        </a>
+        <a href="{{ route('biotecnologia.vidrieria.index') }}" class="submenu-item">
+            <span class="submenu-icon">⚗️</span>
+            Vidriería
+        </a>
+        <a href="{{ route('biotecnologia.reactivos.index') }}" class="submenu-item">
+            <span class="submenu-icon">🧪</span>
+            Reactivos
+        </a>
+    </div>
+</div>
+
+
+        <a href="{{ Route::has('fisicoquimica.index') ? route('fisicoquimica.index') : '#' }}" 
+           class="menu-item {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}">
+            <div class="menu-icon">
+                <i class="fas fa-flask"></i>
+            </div>
+            Lab. Fisico Química
+        </a>
+
+        <a href="{{ Route::has('microbiologia.index') ? route('microbiologia.index') : '#' }}" 
+           class="menu-item {{ request()->routeIs('microbiologia.*') ? 'active' : '' }}">
+            <div class="menu-icon">
+                <i class="fas fa-bacteria"></i>
+            </div>
+            Lab. Microbiología
+        </a>
+    </nav>
+</div>
+
 
     <!-- Main Content -->
     <div class="main-content">
@@ -549,6 +705,8 @@
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Script para verificar que Bootstrap está cargado -->
     <script>
         // Verificar que Bootstrap se haya cargado correctamente
@@ -566,7 +724,21 @@
                 console.log('✅ SweetAlert2 cargado correctamente');
             }
         });
+
+   function toggleSubmenu(event, submenuId) {
+    event.preventDefault();
+    
+    const submenu = document.getElementById(submenuId);
+    const toggle = event.currentTarget;
+    
+    submenu.classList.toggle('open');
+    toggle.classList.toggle('open');
+}
+
     </script>
+
+   
+
 
     @stack('scripts')
 </body>
