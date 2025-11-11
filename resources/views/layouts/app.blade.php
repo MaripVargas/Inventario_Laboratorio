@@ -761,5 +761,56 @@
 
 
     @stack('scripts')
+
+    <!-- Modal global para ver imágenes en grande -->
+    <div id="imageModal" class="image-modal" style="display:none" onclick="closeImageModal()">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+            <img id="modalImage" src="" alt="Imagen">
+            <div class="image-modal-info">
+                <p id="modalImageInfo">Vista previa</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .image-modal{position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,.9);backdrop-filter:blur(5px);display:none}
+    .image-modal-content{position:relative;margin:auto;padding:20px;width:90%;max-width:800px;top:50%;transform:translateY(-50%);background:#fff;border-radius:12px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+    .image-modal-close{position:absolute;top:15px;right:20px;color:#999;font-size:28px;font-weight:bold;cursor:pointer;z-index:1001}
+    .image-modal-content img{width:100%;height:auto;max-height:70vh;object-fit:contain;border-radius:8px}
+    .image-modal-info{text-align:center;margin-top:12px;padding:10px;background:#f8f9fa;border-radius:8px}
+    </style>
+
+    <script>
+    // Apertura/cierre del modal de imágenes (global)
+    function openImageModal(src, infoText = 'Vista previa') {
+        const modal = document.getElementById('imageModal');
+        const img = document.getElementById('modalImage');
+        const info = document.getElementById('modalImageInfo');
+        img.src = src;
+        info.textContent = infoText;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Delegación: hacer clic sobre cualquier .table-image para abrir el modal
+    document.addEventListener('click', function (e) {
+        const img = e.target.closest('.table-image');
+        if (img) {
+            openImageModal(img.src, img.alt || 'Vista previa');
+        }
+    });
+
+    // Cerrar con ESC
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeImageModal();
+    });
+    </script>
 </body>
 </html>
