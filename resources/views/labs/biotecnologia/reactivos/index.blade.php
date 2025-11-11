@@ -74,9 +74,12 @@
                                 <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                        <a href="{{ route('biotecnologia.reactivos.edit', $item->id) }}" class="btn btn-warning btn-sm" title="Editar">
-                                            <i class="fas fa-edit"></i>
+                                        <a href="{{ route('biotecnologia.reactivos.edit', $item->id) }}" 
+                                           class="btn btn-warning btn-sm btn-edit" 
+                                           data-id="{{ $item->id }}" title="Editar">
+                                           <i class="fas fa-edit"></i>
                                         </a>
+
                                         <form action="{{ route('biotecnologia.reactivos.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -118,54 +121,106 @@
     </div>
 </div>
 
-
-        <!-- Modal Bootstrap para Editar -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="editModalLabel">
-                            <i class="fas fa-edit me-2"></i>Editar Item
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Cerrar"></button>
+<!-- Modal Bootstrap para Editar -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Item
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <div class="text-center py-5" id="loadingSpinner">
+                    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Cargando...</span>
                     </div>
-                    <div class="modal-body" id="editModalBody">
-                        <!-- Spinner de carga -->
-                        <div class="text-center py-5" id="loadingSpinner">
-                            <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Cargando...</span>
-                            </div>
-                            <p class="mt-3 text-muted">Cargando formulario...</p>
-                        </div>
-                    </div>
+                    <p class="mt-3 text-muted">Cargando formulario...</p>
                 </div>
             </div>
-        </div
+        </div>
+    </div>
+</div>
+
+@endsection
 
 @push('scripts')
 <script>
-@if(session('success'))
-Swal.fire({
-    icon: 'success',
-    title: '¡Éxito!',
-    text: '{{ session('success') }}',
-    confirmButtonColor: '#28a745',
-    timer: 2500
-});
-@endif
+$(document).ready(function() {
+    // Mensajes de sesión con SweetAlert
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#28a745',
+            timer: 2500
+        });
+    @endif
 
-@if(session('error'))
-Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: '{{ session('error') }}',
-    confirmButtonColor: '#dc3545'
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
+        });
+    @endif
+
+    // Modal editar
+    $('.btn-edit').click(function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');  
+        let modalBody = $('#editModalBody');
+
+        // Mostrar spinner
+        modalBody.html($('#loadingSpinner').clone());
+        $('#editModal').modal('show');
+
+        // AJAX GET
+        $.get(url, function(data) {
+            let formHtml = `
+                <form method="POST" action="${url.replace('/edit','')}">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" name="${data.nombre_reactivo ? 'nombre_reactivo' : 'nombre_item'}" 
+                               value="${data.nombre_reactivo ?? data.nombre_item}" class="form-control" required />
+                    </div>
+                    ${data.cantidad !== undefined ? `<div class="mb-3">
+                        <label>Cantidad</label>
+                        <input type="number" name="cantidad" value="${data.cantidad ?? ''}" class="form-control" />
+                    </div>` : ''}
+                    ${data.unidad !== undefined ? `<div class="mb-3">
+                        <label>Unidad</label>
+                        <input type="text" name="unidad" value="${data.unidad ?? ''}" class="form-control" />
+                    </div>` : ''}
+                    ${data.concentracion !== undefined ? `<div class="mb-3">
+                        <label>Concentración</label>
+                        <input type="text" name="concentracion" value="${data.concentracion ?? ''}" class="form-control" />
+                    </div>` : ''}
+                    ${data.volumen !== undefined ? `<div class="mb-3">
+                        <label>Volumen</label>
+                        <input type="text" name="volumen" value="${data.volumen ?? ''}" class="form-control" />
+                    </div>` : ''}
+                    ${data.detalle !== undefined ? `<div class="mb-3">
+                        <label>Detalle</label>
+                        <textarea name="detalle" class="form-control">${data.detalle ?? ''}</textarea>
+                    </div>` : ''}
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form>
+            `;
+            modalBody.html(formHtml);
+        });
+    });
 });
-@endif
 </script>
 @endpush
+
+
 
 
 @push('styles')
@@ -937,5 +992,6 @@ Swal.fire({
 </style>
 @endpush
 
-@endsection
+
+
 

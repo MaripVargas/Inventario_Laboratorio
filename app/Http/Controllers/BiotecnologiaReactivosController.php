@@ -33,8 +33,7 @@ class BiotecnologiaReactivosController extends Controller
         return redirect()->route('biotecnologia.reactivos.index')
                          ->with('success', 'Reactivo agregado correctamente.');
     }
-
-   public function edit($id)
+public function edit($id)
 {
     try {
         $item = BiotecnologiaReactivos::findOrFail($id);

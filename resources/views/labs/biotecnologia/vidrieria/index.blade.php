@@ -74,9 +74,10 @@
                                 <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                        <a href="{{ route('biotecnologia.vidrieria.edit', $item->id) }}" class="btn btn-warning btn-sm" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                       <a href="{{ route('biotecnologia.vidrieria.edit', $item->id) }}" class="btn btn-warning btn-sm btn-edit" title="Editar">
+    <i class="fas fa-edit"></i>
+</a>
+
                                         <form action="{{ route('biotecnologia.vidrieria.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -117,27 +118,81 @@
         @endif
     </div>
 </div>
-
 @push('scripts')
 <script>
-@if(session('success'))
-Swal.fire({
-    icon: 'success',
-    title: '¡Éxito!',
-    text: '{{ session('success') }}',
-    confirmButtonColor: '#28a745',
-    timer: 2500
-});
-@endif
+$(document).ready(function() {
+    // Mensajes de sesión con SweetAlert
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#28a745',
+            timer: 2500
+        });
+    @endif
 
-@if(session('error'))
-Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: '{{ session('error') }}',
-    confirmButtonColor: '#dc3545'
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc3545'
+        });
+    @endif
+
+    // Modal editar vidriería
+    $('.btn-edit').click(function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');  
+        let modalBody = $('#editModalBody');
+
+        // Mostrar spinner
+        modalBody.html($('#loadingSpinner').clone());
+        $('#editModal').modal('show');
+
+        // Token CSRF
+        let csrfToken = '{{ csrf_token() }}';
+
+        // AJAX GET
+        $.get(url, function(data) {
+            let formHtml = `
+                <form method="POST" action="${url.replace('/edit','')}">
+                    <input type="hidden" name="_token" value="${csrfToken}">
+                    <input type="hidden" name="_method" value="PUT">
+                    
+                    <div class="mb-3">
+                        <label>Nombre del ítem</label>
+                        <input type="text" name="nombre_item" value="${data.nombre_item ?? ''}" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Cantidad</label>
+                        <input type="number" name="cantidad" value="${data.cantidad ?? ''}" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Unidad</label>
+                        <input type="text" name="unidad" value="${data.unidad ?? ''}" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Volumen</label>
+                        <input type="text" name="volumen" value="${data.volumen ?? ''}" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Detalle</label>
+                        <textarea name="detalle" class="form-control">${data.detalle ?? ''}</textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                </form>
+            `;
+            modalBody.html(formHtml);
+        });
+    });
 });
-@endif
 </script>
 @endpush
 
@@ -164,7 +219,7 @@ Swal.fire({
                     </div>
                 </div>
             </div>
-        </div
+        </div>
 
 @push('styles')
 <style>
