@@ -20,7 +20,7 @@ class BiotecnologiaSiembraController extends Controller
         ->paginate(10) // 👈 Muestra solo 10 por página
         ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
 
-    return view('labs.biotecnologia.siembra.index', compact('items', 'buscar'));
+    return view('labs.biotecnologia.siembRa.index', compact('items', 'buscar'));
 }
 
     public function create()
