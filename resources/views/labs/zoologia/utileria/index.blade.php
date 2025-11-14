@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Vidriería - Biotecnología')
+@section('title', 'Utilería - Biotecnología')
 @section('page-title', 'Laboratorio de Biotecnología')
-@section('page-subtitle', 'Gestión de vidriería del laboratorio')
+@section('page-subtitle', 'Gestión de utilería del laboratorio')
 
 @section('content')
 
@@ -10,13 +10,22 @@
     <div class="card mb-6 modern-card">
         <div class="card-header modern-header">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-900">Lista de Vidriería</h2>
-                <a href="{{ route('zoologia.vidrieria.create') }}" class="modern-btn modern-btn-primary">
-                    <i class="fas fa-plus"></i> Agregar Vidriería
+                <h2 class="text-xl font-semibold text-gray-900">Lista de Artículos de Utilería</h2>
+                <a href="{{ route('zoologia.utileria.create') }}" class="modern-btn modern-btn-primary">
+                    <i class="fas fa-plus"></i> Agregar Artículo
                 </a>
             </div>
         </div>
 
+      {{-- BOTONES DE EXPORTACIÓN (si los usas en otros módulos) 
+         @include('components.export-buttons', [
+            'pdfRoute' => 'biotecnologia.utileria.pdf',
+            'excelRoute' => 'biotecnologia.utileria.excel',
+            'modulo' => 'biotecnologia_utileria'
+        ])
+            --}}
+
+ 
   {{-- FILTRO DE BÚSQUEDA --}}
 <div class="card-body">
     <form method="GET" action="{{ url()->current() }}" id="filterForm">
@@ -69,10 +78,9 @@ $(document).ready(function() {
                         <tr>
                             <th class="table-header" style="width: 80px;">#</th>
                             <th class="table-header" style="width: 250px;">Nombre del Artículo</th>
-                            <th class="table-header" style="width: 150px;">Volumen</th>
                             <th class="table-header" style="width: 150px;">Cantidad</th>
                             <th class="table-header" style="width: 150px;">Unidad</th>
-                            <th class="table-header" style="width: 200px;">Detalle</th>
+                            <th class="table-header" style="width: 180px;">Detalle</th>
                             <th class="table-header" style="width: 250px;">Fecha de Registro</th>
                             <th class="table-header sticky-column" style="width: 120px;">Acciones</th>
                         </tr>
@@ -82,22 +90,21 @@ $(document).ready(function() {
                             <tr class="table-row">
                                 <td class="table-cell">{{ $loop->iteration }}</td>
                                 <td class="table-cell font-semibold text-gray-800">{{ $item->nombre_item }}</td>
-                                <td class="table-cell">{{ $item->volumen ?? '-' }}</td>
                                 <td class="table-cell">{{ $item->cantidad ?? '-' }}</td>
                                 <td class="table-cell">{{ $item->unidad ?? '-' }}</td>
                                 <td class="table-cell">{{ $item->detalle ?? '-' }}</td>
-                                <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                                <td class="table-cell">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                       <a href="{{ route('zoologia.vidrieria.edit', $item->id) }}" class="btn btn-warning btn-sm btn-edit" title="Editar">
+                                        <a href="#" class="btn btn-warning btn-sm btn-edit" data-id="{{ $item->id }}" title="Editar">
     <i class="fas fa-edit"></i>
 </a>
 
-                                        <form action="{{ route('zoologia.vidrieria.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('zoologia.utileria.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm action-btn-delete" title="Eliminar"
-                                                onclick="return confirm('¿Eliminar este artículo de vidriería?')">
+                                                onclick="return confirm('¿Eliminar este artículo?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -106,11 +113,11 @@ $(document).ready(function() {
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="empty-state">
+                                <td colspan="7" class="empty-state">
                                     <div class="empty-state-content">
                                         <i class="fas fa-box-open"></i>
-                                        <h3>No hay artículos de vidriería registrados</h3>
-                                        <p>Agrega un nuevo artículo</p>
+                                        <h3>No hay artículos registrados</h3>
+                                        <p>Agrega un nuevo artículo de utilería</p>
                                     </div>
                                 </td>
                             </tr>
@@ -120,7 +127,7 @@ $(document).ready(function() {
             </div>
         </div>
 
-        {{-- PAGINACIÓN --}}
+        {{-- PAGINACIÓN (si la agregas en el controlador) --}}
         @if(method_exists($items, 'links'))
             <div class="pagination-container">
                 <div class="flex justify-between items-center flex-wrap gap-4">
@@ -133,108 +140,77 @@ $(document).ready(function() {
         @endif
     </div>
 </div>
+
+{{-- MENSAJES DE SESIÓN --}}
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Mensajes de sesión con SweetAlert
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: '{{ session('success') }}',
-            confirmButtonColor: '#28a745',
-            timer: 2500
-        });
-    @endif
-
-    @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ session('error') }}',
-            confirmButtonColor: '#dc3545'
-        });
-    @endif
-
-    // Modal editar vidriería
-    $('.btn-edit').click(function(e) {
-        e.preventDefault();
-        let url = $(this).attr('href');  
-        let modalBody = $('#editModalBody');
-
-        // Mostrar spinner
-        modalBody.html($('#loadingSpinner').clone());
-        $('#editModal').modal('show');
-
-        // Token CSRF
-        let csrfToken = '{{ csrf_token() }}';
-
-        // AJAX GET
-        $.get(url, function(data) {
-            let formHtml = `
-                <form method="POST" action="${url.replace('/edit','')}">
-                    <input type="hidden" name="_token" value="${csrfToken}">
-                    <input type="hidden" name="_method" value="PUT">
-                    
-                    <div class="mb-3">
-                        <label>Nombre del ítem</label>
-                        <input type="text" name="nombre_item" value="${data.nombre_item ?? ''}" class="form-control" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Cantidad</label>
-                        <input type="number" name="cantidad" value="${data.cantidad ?? ''}" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Unidad</label>
-                        <input type="text" name="unidad" value="${data.unidad ?? ''}" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Volumen</label>
-                        <input type="text" name="volumen" value="${data.volumen ?? ''}" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Detalle</label>
-                        <textarea name="detalle" class="form-control">${data.detalle ?? ''}</textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Actualizar</button>
-                </form>
-            `;
-            modalBody.html(formHtml);
-        });
-    });
+@if(session('success'))
+Swal.fire({
+    icon: 'success',
+    title: '¡Éxito!',
+    text: '{{ session('success') }}',
+    confirmButtonColor: '#28a745',
+    timer: 2500
 });
+@endif
+
+@if(session('error'))
+Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: '{{ session('error') }}',
+    confirmButtonColor: '#dc3545'
+});
+@endif
 </script>
 @endpush
 
-        <!-- Modal Bootstrap para Editar -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="editModalLabel">
-                            <i class="fas fa-edit me-2"></i>Editar Item
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body" id="editModalBody">
-                        <!-- Spinner de carga -->
-                        <div class="text-center py-5" id="loadingSpinner">
-                            <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Cargando...</span>
-                            </div>
-                            <p class="mt-3 text-muted">Cargando formulario...</p>
+{{-- MODAL DE EDICIÓN MODERNO --}}
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="fas fa-edit"></i> Editar Artículo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="loadingSpinner">
+                    <div class="spinner-border" role="status"></div>
+                    <p>Cargando...</p>
+                </div>
+                <form id="editForm" style="display:none;" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="nombre_item">Nombre del artículo</label>
+                            <input type="text" name="nombre_item" id="nombre_item" class="modern-input">
+                        </div>
+                        <div>
+                            <label for="cantidad">Cantidad</label>
+                            <input type="number" name="cantidad" id="cantidad" class="modern-input">
+                        </div>
+                        <div>
+                            <label for="unidad">Unidad</label>
+                            <input type="text" name="unidad" id="unidad" class="modern-input">
+                        </div>
+                        <div>
+                            <label for="detalle">Detalle</label>
+                            <textarea name="detalle" id="detalle" rows="3" class="modern-input"></textarea>
                         </div>
                     </div>
-                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-guardar" form="editForm">Guardar cambios</button>
             </div>
         </div>
+    </div>
+</div>
+
 
 @push('styles')
 <style>
@@ -1000,9 +976,198 @@ $(document).ready(function() {
     background: linear-gradient(135deg, #2563eb, #059669);
 }
 
+
+    /* ============================
+   MODAL DE EDICIÓN MODERNO
+   ============================ */
+#editModal .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+    box-shadow: var(--shadow-xl);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+#editModal .modal-header {
+    background: linear-gradient(135deg, var(--danger-color), #f87171);
+    color: white;
+    padding: 1rem 1.25rem;
+    border-bottom: none;
+}
+
+#editModal .modal-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#editModal .btn-close {
+    filter: invert(1);
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+#editModal .btn-close:hover {
+    opacity: 1;
+}
+
+#editModal .modal-body {
+    background: var(--gray-50);
+    padding: 1.5rem;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+/* Spinner de carga */
+#editModal #loadingSpinner {
+    text-align: center;
+    padding: 3rem 0;
+}
+
+#editModal #loadingSpinner .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: var(--danger-color);
+}
+
+#editModal #loadingSpinner p {
+    margin-top: 1rem;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+/* Formularios dentro del modal */
+#editModal form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+#editModal label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+    margin-bottom: 0.35rem;
+}
+
+#editModal input,
+#editModal select,
+#editModal textarea {
+    width: 100%;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 0.65rem 0.85rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+}
+
+#editModal input:focus,
+#editModal select:focus,
+#editModal textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Botones del formulario */
+#editModal .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--gray-200);
+    background: #fff;
+}
+
+#editModal .btn-cancelar {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    font-weight: 500;
+    border-radius: 10px;
+    padding: 0.6rem 1.25rem;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#editModal .btn-cancelar:hover {
+    background: var(--gray-200);
+    transform: translateY(-1px);
+}
+
+#editModal .btn-guardar {
+    background: linear-gradient(135deg, var(--success-color), #34d399);
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.6rem 1.25rem;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#editModal .btn-guardar:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+
+
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    const editForm = document.getElementById('editForm');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const itemId = this.dataset.id;
+
+            // Mostrar spinner y ocultar formulario
+            loadingSpinner.style.display = 'block';
+            editForm.style.display = 'none';
+
+            // Abrir modal
+            editModal.show();
+
+            // Cargar datos vía fetch
+            fetch(`/zoologia/utileria/${itemId}/edit`)
+                .then(res => res.json())
+                .then(data => {
+                    // Llenar formulario
+                    document.getElementById('nombre_item').value = data.nombre_item || '';
+                    document.getElementById('cantidad').value = data.cantidad || '';
+                    document.getElementById('unidad').value = data.unidad || '';
+                    document.getElementById('detalle').value = data.detalle || '';
+
+                    // Cambiar action del formulario
+                    editForm.action = `/zoologia/utileria/${itemId}`;
+
+                    // Mostrar formulario y ocultar spinner
+                    loadingSpinner.style.display = 'none';
+                    editForm.style.display = 'grid';
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudieron cargar los datos',
+                        confirmButtonColor: '#dc3545'
+                    });
+                    editModal.hide();
+                });
+        });
+    });
+});
+</script>
+
 @endpush
 
 @endsection
-
-

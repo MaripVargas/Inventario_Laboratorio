@@ -1,26 +1,19 @@
-<form action="{{ route('zoologia.vidrieria.update', $item->id) }}" method="POST" id="editForm">
+<form action="{{ route('zoologia.reactivos.update', $item->id) }}" method="POST" id="editForm">
     @csrf
     @method('PUT')
 
     <div class="row g-3">
         <div class="col-12">
             <h6 class="text-muted border-bottom pb-2 mb-3">
-                <i class="fas fa-flask me-2"></i>Editar artículo de vidriería
+                <i class="fas fa-vial me-2"></i>Editar reactivo
             </h6>
         </div>
 
         <!-- Nombre -->
         <div class="col-md-6">
-            <label class="form-label fw-semibold">Nombre del Artículo <span class="text-danger">*</span></label>
-            <input type="text" name="nombre_item" value="{{ old('nombre_item', $item->nombre_item) }}" class="form-control @error('nombre_item') is-invalid @enderror" required>
-            @error('nombre_item') <div class="invalid-feedback">{{ $message }}</div> @enderror
-        </div>
-
-        <!-- Volumen -->
-        <div class="col-md-3">
-            <label class="form-label fw-semibold">Volumen</label>
-            <input type="text" name="volumen" value="{{ old('volumen', $item->volumen) }}" class="form-control @error('volumen') is-invalid @enderror">
-            @error('volumen') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            <label class="form-label fw-semibold">Nombre del Reactivo <span class="text-danger">*</span></label>
+            <input type="text" name="nombre_reactivo" value="{{ old('nombre_reactivo', $item->nombre_reactivo) }}" class="form-control @error('nombre_reactivo') is-invalid @enderror" required>
+            @error('nombre_reactivo') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
         <!-- Cantidad -->
@@ -37,6 +30,13 @@
             @error('unidad') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
+        <!-- Concentración -->
+        <div class="col-md-4">
+            <label class="form-label fw-semibold">Concentración</label>
+            <input type="text" name="concentracion" value="{{ old('concentracion', $item->concentracion) }}" class="form-control @error('concentracion') is-invalid @enderror">
+            @error('concentracion') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        </div>
+
         <!-- Detalle -->
         <div class="col-md-12">
             <label class="form-label fw-semibold">Detalle</label>
@@ -50,7 +50,9 @@
         <button type="submit" class="btn btn-danger"><i class="fas fa-save me-1"></i>Guardar Cambios</button>
     </div>
 </form>
+
 <style>
+
     /* ============================
    MODAL DE EDICIÓN MODERNO
    ============================ */
@@ -187,4 +189,3 @@
     transform: translateY(-2px);
 }
 </style>
-

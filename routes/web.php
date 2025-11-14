@@ -11,6 +11,8 @@ use App\Http\Controllers\BiotecnologiaVidrieriaController;
 use App\Http\Controllers\BiotecnologiaReactivosController;
 use App\Http\Controllers\BiotecnologiaSiembraController;
 use App\Http\Controllers\ZoologiaVidrieriaController;
+use App\Http\Controllers\ZoologiaUtileriaController;
+use App\Http\Controllers\ZoologiaReactivosController;
 use App\Http\Controllers\AreasController;
 
 
@@ -85,10 +87,12 @@ Route::middleware(['simulate.auth'])->group(function () {
     // ========================================
     Route::get('/areas', [AreasController::class, 'index'])->name('areas.index');
 
-    // Submódulos Zoología y Botánica
-    Route::prefix('zoologia')->name('zoologia.')->group(function () {
-        Route::resource('vidrieria', ZoologiaVidrieriaController::class)->names('vidrieria');
-    });
+   Route::prefix('zoologia')->group(function () {
+    Route::resource('utileria', ZoologiaUtileriaController::class)->names('zoologia.utileria');
+    Route::resource('vidrieria', ZoologiaVidrieriaController::class)->names('zoologia.vidrieria');
+    Route::resource('reactivos', ZoologiaReactivosController::class)->names('zoologia.reactivos');
+   
+});
 });
 
 Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->name('inventario.pdf');

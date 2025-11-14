@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Vidriería - Biotecnología')
+@section('title', 'Reactivos - Biotecnología')
 @section('page-title', 'Laboratorio de Biotecnología')
-@section('page-subtitle', 'Gestión de vidriería del laboratorio')
+@section('page-subtitle', 'Gestión de reactivos del laboratorio')
 
 @section('content')
 
@@ -10,13 +10,14 @@
     <div class="card mb-6 modern-card">
         <div class="card-header modern-header">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-900">Lista de Vidriería</h2>
-                <a href="{{ route('zoologia.vidrieria.create') }}" class="modern-btn modern-btn-primary">
-                    <i class="fas fa-plus"></i> Agregar Vidriería
+                <h2 class="text-xl font-semibold text-gray-900">Lista de Reactivos</h2>
+                <a href="{{ route('zoologia.reactivos.create') }}" class="modern-btn modern-btn-primary">
+                    <i class="fas fa-plus"></i> Agregar Reactivo
                 </a>
             </div>
         </div>
 
+    
   {{-- FILTRO DE BÚSQUEDA --}}
 <div class="card-body">
     <form method="GET" action="{{ url()->current() }}" id="filterForm">
@@ -68,11 +69,11 @@ $(document).ready(function() {
                     <thead>
                         <tr>
                             <th class="table-header" style="width: 80px;">#</th>
-                            <th class="table-header" style="width: 250px;">Nombre del Artículo</th>
-                            <th class="table-header" style="width: 150px;">Volumen</th>
+                            <th class="table-header" style="width: 250px;">Nombre del Reactivo</th>
                             <th class="table-header" style="width: 150px;">Cantidad</th>
                             <th class="table-header" style="width: 150px;">Unidad</th>
-                            <th class="table-header" style="width: 200px;">Detalle</th>
+                            <th class="table-header" style="width: 180px;">Concentración</th>
+                            <th class="table-header" style="width: 250px;">Detalle</th>
                             <th class="table-header" style="width: 250px;">Fecha de Registro</th>
                             <th class="table-header sticky-column" style="width: 120px;">Acciones</th>
                         </tr>
@@ -81,23 +82,25 @@ $(document).ready(function() {
                         @forelse($items as $item)
                             <tr class="table-row">
                                 <td class="table-cell">{{ $loop->iteration }}</td>
-                                <td class="table-cell font-semibold text-gray-800">{{ $item->nombre_item }}</td>
-                                <td class="table-cell">{{ $item->volumen ?? '-' }}</td>
+                                <td class="table-cell font-semibold text-gray-800">{{ $item->nombre_reactivo }}</td>
                                 <td class="table-cell">{{ $item->cantidad ?? '-' }}</td>
                                 <td class="table-cell">{{ $item->unidad ?? '-' }}</td>
+                                <td class="table-cell">{{ $item->concentracion ?? '-' }}</td>
                                 <td class="table-cell">{{ $item->detalle ?? '-' }}</td>
                                 <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                       <a href="{{ route('zoologia.vidrieria.edit', $item->id) }}" class="btn btn-warning btn-sm btn-edit" title="Editar">
-    <i class="fas fa-edit"></i>
-</a>
+                                        <a href="{{ route('biotecnologia.reactivos.edit', $item->id) }}" 
+                                           class="btn btn-warning btn-sm btn-edit" 
+                                           data-id="{{ $item->id }}" title="Editar">
+                                           <i class="fas fa-edit"></i>
+                                        </a>
 
-                                        <form action="{{ route('zoologia.vidrieria.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('biotecnologia.reactivos.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm action-btn-delete" title="Eliminar"
-                                                onclick="return confirm('¿Eliminar este artículo de vidriería?')">
+                                                onclick="return confirm('¿Eliminar este reactivo?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -109,8 +112,8 @@ $(document).ready(function() {
                                 <td colspan="8" class="empty-state">
                                     <div class="empty-state-content">
                                         <i class="fas fa-box-open"></i>
-                                        <h3>No hay artículos de vidriería registrados</h3>
-                                        <p>Agrega un nuevo artículo</p>
+                                        <h3>No hay reactivos registrados</h3>
+                                        <p>Agrega un nuevo reactivo químico</p>
                                     </div>
                                 </td>
                             </tr>
@@ -133,6 +136,32 @@ $(document).ready(function() {
         @endif
     </div>
 </div>
+
+<!-- Modal Bootstrap para Editar -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="fas fa-edit me-2"></i>Editar Item
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <div class="text-center py-5" id="loadingSpinner">
+                    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3 text-muted">Cargando formulario...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
 @push('scripts')
 <script>
 $(document).ready(function() {
@@ -156,7 +185,7 @@ $(document).ready(function() {
         });
     @endif
 
-    // Modal editar vidriería
+    // Modal editar
     $('.btn-edit').click(function(e) {
         e.preventDefault();
         let url = $(this).attr('href');  
@@ -166,41 +195,37 @@ $(document).ready(function() {
         modalBody.html($('#loadingSpinner').clone());
         $('#editModal').modal('show');
 
-        // Token CSRF
-        let csrfToken = '{{ csrf_token() }}';
-
         // AJAX GET
         $.get(url, function(data) {
             let formHtml = `
                 <form method="POST" action="${url.replace('/edit','')}">
-                    <input type="hidden" name="_token" value="${csrfToken}">
-                    <input type="hidden" name="_method" value="PUT">
-                    
+                    @csrf
+                    @method('PUT')
                     <div class="mb-3">
-                        <label>Nombre del ítem</label>
-                        <input type="text" name="nombre_item" value="${data.nombre_item ?? ''}" class="form-control" required />
+                        <label>Nombre</label>
+                        <input type="text" name="${data.nombre_reactivo ? 'nombre_reactivo' : 'nombre_item'}" 
+                               value="${data.nombre_reactivo ?? data.nombre_item}" class="form-control" required />
                     </div>
-
-                    <div class="mb-3">
+                    ${data.cantidad !== undefined ? `<div class="mb-3">
                         <label>Cantidad</label>
                         <input type="number" name="cantidad" value="${data.cantidad ?? ''}" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
+                    </div>` : ''}
+                    ${data.unidad !== undefined ? `<div class="mb-3">
                         <label>Unidad</label>
                         <input type="text" name="unidad" value="${data.unidad ?? ''}" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
+                    </div>` : ''}
+                    ${data.concentracion !== undefined ? `<div class="mb-3">
+                        <label>Concentración</label>
+                        <input type="text" name="concentracion" value="${data.concentracion ?? ''}" class="form-control" />
+                    </div>` : ''}
+                    ${data.volumen !== undefined ? `<div class="mb-3">
                         <label>Volumen</label>
                         <input type="text" name="volumen" value="${data.volumen ?? ''}" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
+                    </div>` : ''}
+                    ${data.detalle !== undefined ? `<div class="mb-3">
                         <label>Detalle</label>
                         <textarea name="detalle" class="form-control">${data.detalle ?? ''}</textarea>
-                    </div>
-
+                    </div>` : ''}
                     <button type="submit" class="btn btn-primary">Actualizar</button>
                 </form>
             `;
@@ -211,30 +236,8 @@ $(document).ready(function() {
 </script>
 @endpush
 
-        <!-- Modal Bootstrap para Editar -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
-            data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title" id="editModalLabel">
-                            <i class="fas fa-edit me-2"></i>Editar Item
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body" id="editModalBody">
-                        <!-- Spinner de carga -->
-                        <div class="text-center py-5" id="loadingSpinner">
-                            <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
-                                <span class="visually-hidden">Cargando...</span>
-                            </div>
-                            <p class="mt-3 text-muted">Cargando formulario...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+
 
 @push('styles')
 <style>
@@ -1000,9 +1003,11 @@ $(document).ready(function() {
     background: linear-gradient(135deg, #2563eb, #059669);
 }
 
+
+
 </style>
 @endpush
 
-@endsection
+
 
 

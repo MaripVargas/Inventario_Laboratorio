@@ -1,26 +1,19 @@
-<form action="{{ route('zoologia.vidrieria.update', $item->id) }}" method="POST" id="editForm">
+<form action="{{ route('zoologia.utileria.update', $item->id) }}" method="POST" id="editForm">
     @csrf
     @method('PUT')
 
     <div class="row g-3">
         <div class="col-12">
             <h6 class="text-muted border-bottom pb-2 mb-3">
-                <i class="fas fa-flask me-2"></i>Editar artículo de vidriería
+                <i class="fas fa-box me-2"></i>Editar artículo de utilería
             </h6>
         </div>
 
-        <!-- Nombre -->
+        <!-- Nombre del artículo -->
         <div class="col-md-6">
             <label class="form-label fw-semibold">Nombre del Artículo <span class="text-danger">*</span></label>
             <input type="text" name="nombre_item" value="{{ old('nombre_item', $item->nombre_item) }}" class="form-control @error('nombre_item') is-invalid @enderror" required>
             @error('nombre_item') <div class="invalid-feedback">{{ $message }}</div> @enderror
-        </div>
-
-        <!-- Volumen -->
-        <div class="col-md-3">
-            <label class="form-label fw-semibold">Volumen</label>
-            <input type="text" name="volumen" value="{{ old('volumen', $item->volumen) }}" class="form-control @error('volumen') is-invalid @enderror">
-            @error('volumen') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
 
         <!-- Cantidad -->
@@ -45,6 +38,7 @@
         </div>
     </div>
 
+    <!-- Botones -->
     <div class="d-flex justify-content-end gap-2 mt-4">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>Cancelar</button>
         <button type="submit" class="btn btn-danger"><i class="fas fa-save me-1"></i>Guardar Cambios</button>
@@ -187,4 +181,3 @@
     transform: translateY(-2px);
 }
 </style>
-

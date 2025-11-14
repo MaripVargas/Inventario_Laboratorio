@@ -574,18 +574,12 @@
 <div class="sidebar">
     <div class="sidebar-header">
         <div class="user-profile">
-            <div class="user-avatar">
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="user-info">
-                <h3>{{ Auth::user()->name ?? 'Usuario' }}</h3>
-            </div>
+            
+           
         </div>
-        <div class="user-role">
-            Administrador
-        </div>
+       
         <div class="user-dropdown">
-            <i class="fas fa-chevron-down"></i>
+           
         </div>
     </div>
 
@@ -617,11 +611,18 @@
                     <span class="submenu-icon">📦</span>
                     Inventario General
                 </a>
-                <a href="{{ route('zoologia.vidrieria.index') }}"
-                   class="submenu-item {{ request()->routeIs('zoologia.vidrieria.*') ? 'active' : '' }}">
-                    <span class="submenu-icon">⚗️</span>
-                    Vidriería
-                </a>
+               <a href="{{route('zoologia.utileria.index')}}" class="submenu-item">
+            <span class="submenu-icon">🧰</span>
+            Utilería
+        </a>
+        <a href="{{ route('zoologia.vidrieria.index') }}" class="submenu-item">
+            <span class="submenu-icon">⚗️</span>
+            Vidriería
+        </a>
+        <a href="{{ route('zoologia.reactivos.index') }}" class="submenu-item">
+            <span class="submenu-icon">🧪</span>
+            Reactivos
+        </a>
             </div>
         </div>
 

@@ -1,37 +1,29 @@
 @extends('layouts.app')
 
-@section('title', 'Agregar Vidriería')
+@section('title', 'Agregar Reactivo')
 @section('page-title', 'Laboratorio de Biotecnología')
-@section('page-subtitle', 'Registrar nuevo material de vidriería')
+@section('page-subtitle', 'Registrar nuevo reactivo químico')
 
 @section('content')
 <div class="max-w-4xl mx-auto modern-form-container">
     <div class="card modern-form-card">
         <div class="card-header modern-form-header flex justify-between items-center">
-            <h2 class="text-xl font-semibold text-gray-900">Nueva Vidriería</h2>
-            <a href="{{ route('zoologia.vidrieria.index') }}" class="modern-btn modern-btn-secondary">
+            <h2 class="text-xl font-semibold text-gray-900">Nuevo Reactivo</h2>
+            <a href="{{ route('zoologia.reactivos.index') }}" class="modern-btn modern-btn-secondary">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
         </div>
 
         <div class="card-body">
-            <form action="{{ route('zoologia.vidrieria.store') }}" method="POST" class="modern-form space-y-6">
+            <form action="{{ route('zoologia.reactivos.store') }}" method="POST" class="modern-form space-y-6">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="form-group">
-                        <label class="form-label">Nombre del Artículo <span class="required">*</span></label>
+                        <label class="form-label">Nombre del Reactivo <span class="required">*</span></label>
                         <div class="input-container">
-                            <i class="fas fa-vial input-icon"></i>
-                            <input type="text" name="nombre_item" required class="form-input" placeholder="Ej: Probeta, Matraz..." value="{{ old('nombre_item') }}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Volumen</label>
-                        <div class="input-container">
-                            <i class="fas fa-fill-drip input-icon"></i>
-                            <input type="text" name="volumen" class="form-input" placeholder="Ej: 500 mL" value="{{ old('volumen') }}">
+                            <i class="fas fa-flask input-icon"></i>
+                            <input type="text" name="nombre_reactivo" required class="form-input" placeholder="Ej: Ácido clorhídrico" value="{{ old('nombre_reactivo') }}">
                         </div>
                     </div>
 
@@ -39,7 +31,7 @@
                         <label class="form-label">Cantidad</label>
                         <div class="input-container">
                             <i class="fas fa-sort-numeric-up input-icon"></i>
-                            <input type="number" name="cantidad" class="form-input" placeholder="Ej: 8" value="{{ old('cantidad') }}">
+                            <input type="number" name="cantidad" class="form-input" placeholder="Ej: 2" value="{{ old('cantidad') }}">
                         </div>
                     </div>
 
@@ -47,7 +39,15 @@
                         <label class="form-label">Unidad</label>
                         <div class="input-container">
                             <i class="fas fa-balance-scale input-icon"></i>
-                            <input type="text" name="unidad" class="form-input" placeholder="Ej: piezas, unidades..." value="{{ old('unidad') }}">
+                            <input type="text" name="unidad" class="form-input" placeholder="Ej: L, mL, tarro..." value="{{ old('unidad') }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Concentración</label>
+                        <div class="input-container">
+                            <i class="fas fa-percent input-icon"></i>
+                            <input type="text" name="concentracion" class="form-input" placeholder="Ej: 45%" value="{{ old('concentracion') }}">
                         </div>
                     </div>
 
@@ -55,29 +55,28 @@
                         <label class="form-label">Detalle</label>
                         <div class="textarea-container">
                             <i class="fas fa-align-left textarea-icon"></i>
-                            <textarea name="detalle" rows="3" class="form-textarea" placeholder="Observaciones o descripción del material...">{{ old('detalle') }}</textarea>
+                            <textarea name="detalle" rows="3" class="form-textarea" placeholder="Detalles sobre el reactivo, condiciones, precauciones...">{{ old('detalle') }}</textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('zoologia.vidrieria.index') }}" class="modern-btn modern-btn-secondary">
+                    <a href="{{ route('zoologia.reactivos.index') }}" class="modern-btn modern-btn-secondary">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
                     <button type="submit" class="modern-btn modern-btn-primary">
-                        <i class="fas fa-save"></i> Guardar Vidriería
+                        <i class="fas fa-save"></i> Guardar Reactivo
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 <style>
-/* === ESTILOS FORMULARIO VIDRIERÍA === */
+/* === ESTILOS FORMULARIO REACTIVOS === */
 :root {
-    --primary-color: #8b5cf6;
-    --success-color: #10b981;
+    --primary-color: #059669;
+    --success-color: #16a34a;
     --danger-color: #ef4444;
     --gray-200: #e5e7eb;
     --gray-700: #374151;
@@ -89,10 +88,10 @@
     max-width: 60rem;
     margin: 2rem auto;
     padding: 2rem;
-    background: linear-gradient(135deg, #ffffff, #faf5ff);
-    border: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, #ffffff, #ecfdf5);
     border-radius: 20px;
-    box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.1);
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 10px 15px -3px rgba(16,185,129,0.1);
 }
 
 /* --- encabezado --- */
@@ -123,7 +122,7 @@
 }
 .form-input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+    box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
 }
 
 /* --- botones --- */
@@ -134,7 +133,7 @@
     margin-top: 2rem;
 }
 .modern-btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), #a78bfa);
+    background: linear-gradient(135deg, var(--primary-color), #34d399);
     color: white;
     border-radius: 12px;
     padding: 0.75rem 1.25rem;
