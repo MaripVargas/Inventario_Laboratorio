@@ -676,13 +676,36 @@
             Lab. Fisico Química
         </a>
 
-        <a href="{{ Route::has('microbiologia.index') ? route('microbiologia.index') : '#' }}" 
-           class="menu-item {{ request()->routeIs('microbiologia.*') ? 'active' : '' }}">
-            <div class="menu-icon">
-                <i class="fas fa-bacteria"></i>
-            </div>
-            Lab. Microbiología
+       <div class="menu-item-wrapper">
+    <a href="#" 
+       class="menu-item submenu-toggle {{ request()->routeIs('microbiologia.*') ? 'active' : '' }}"
+       onclick="toggleSubmenu(event, 'submenuMicrobiologia')">
+        <div class="menu-icon">
+            <i class="fas fa-leaf"></i>
+        </div>
+        Lab. Microbiología
+        <i class="fas fa-chevron-down submenu-arrow"></i>
+    </a>
+        <div id="submenuMicrobiologia" class="submenu">
+                <a href="{{ route('microbiologia.index') }}"
+                   class="submenu-item {{ request()->routeIs('microbiologia.index') ? 'active' : '' }}">
+                    <span class="submenu-icon">📦</span>
+                    Inventario General
+                </a>
+               <a href="{{route('microbiologia.utileria.index')}}" class="submenu-item">
+            <span class="submenu-icon">🧰</span>
+            Utilería
         </a>
+        <a href="{{ route('microbiologia.vidrieria.index') }}" class="submenu-item">
+            <span class="submenu-icon">⚗️</span>
+            Vidriería
+        </a>
+        <a href="{{ route('microbiologia.reactivos.index') }}" class="submenu-item">
+            <span class="submenu-icon">🧪</span>
+            Reactivos
+        </a>
+            </div>
+        </div>
     </nav>
 </div>
 

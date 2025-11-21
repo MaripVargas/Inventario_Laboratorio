@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Agregar Artículo de Utilería')
-@section('page-title', 'Laboratorio de Biotecnología')
+@section('page-title', 'Laboratorio de Microbiologia')
 @section('page-subtitle', 'Registrar nuevo artículo de utilería')
 
 @section('content')
@@ -9,13 +9,13 @@
     <div class="card modern-form-card">
         <div class="card-header modern-form-header flex justify-between items-center">
             <h2 class="text-xl font-semibold text-gray-900">Nuevo Artículo de Utilería</h2>
-            <a href="{{ route('zoologia.utileria.index') }}" class="modern-btn modern-btn-secondary">
+            <a href="{{ route('microbiologia.utileria.index') }}" class="modern-btn modern-btn-secondary">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
         </div>
 
         <div class="card-body">
-            <form action="{{ route('zoologia.utileria.store') }}" method="POST" class="modern-form space-y-6">
+            <form action="{{ route('microbiologia.utileria.store') }}" method="POST" class="modern-form space-y-6">
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('zoologia.utileria.index') }}" class="modern-btn modern-btn-secondary">
+                    <a href="{{ route('microbiologia.utileria.index') }}" class="modern-btn modern-btn-secondary">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
                     <button type="submit" class="modern-btn modern-btn-primary">
