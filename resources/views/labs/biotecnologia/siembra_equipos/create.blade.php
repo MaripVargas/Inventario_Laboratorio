@@ -91,7 +91,14 @@
                         <label class="form-label">Vinculación</label>
                         <div class="input-container">
                             <i class="fas fa-briefcase input-icon"></i>
-                            <input type="text" name="vinculacion" class="form-input" value="{{ old('vinculacion') }}" list="vinculacionesList">
+                            <select name="vinculacion" class="form-input custom-select" id="vinculacion_select">
+                                <option value="">Seleccionar vinculación</option>
+                                @foreach(($catalogos['vinculaciones'] ?? []) as $vinculacion)
+                                    <option value="{{ $vinculacion }}" {{ old('vinculacion') == $vinculacion ? 'selected' : '' }}>
+                                        {{ $vinculacion }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -159,11 +166,6 @@
 @push('scripts')
 <datalist id="cedulasList">
     @foreach(($catalogos['cedulas'] ?? []) as $value)
-        <option value="{{ $value }}">
-    @endforeach
-</datalist>
-<datalist id="vinculacionesList">
-    @foreach(($catalogos['vinculaciones'] ?? []) as $value)
         <option value="{{ $value }}">
     @endforeach
 </datalist>
