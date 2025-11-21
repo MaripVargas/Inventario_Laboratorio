@@ -10,6 +10,7 @@ use App\Http\Controllers\BiotecnologiaUtileriaController;
 use App\Http\Controllers\BiotecnologiaVidrieriaController;
 use App\Http\Controllers\BiotecnologiaReactivosController;
 use App\Http\Controllers\BiotecnologiaSiembraController;
+use App\Http\Controllers\BiotecnologiaSiembraEquiposController;
 use App\Http\Controllers\ZoologiaVidrieriaController;
 use App\Http\Controllers\ZoologiaUtileriaController;
 use App\Http\Controllers\ZoologiaReactivosController;
@@ -106,4 +107,5 @@ Route::prefix('biotecnologia')->group(function () {
     Route::resource('siembra', BiotecnologiaSiembraController::class)->names('biotecnologia.siembra');
     // Ruta adicional para edición en página (además del modal JSON)
     Route::get('siembra/{id}/editar', [BiotecnologiaSiembraController::class, 'editForm'])->name('biotecnologia.siembra.editForm');
+    Route::resource('siembra-equipos', BiotecnologiaSiembraEquiposController::class)->names('biotecnologia.siembra_equipos');
 });

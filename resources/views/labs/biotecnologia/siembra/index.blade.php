@@ -38,9 +38,12 @@
                 </div>
             </div>
 
-            <div class="mt-4 flex gap-2">
+            <div class="mt-4 flex gap-2 flex-wrap">
                 <a href="{{ url()->current() }}" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Limpiar
+                </a>
+                <a href="{{ route('biotecnologia.siembra_equipos.index') }}" class="modern-btn modern-btn-secondary">
+                    <i class="fas fa-tools"></i> Equipos
                 </a>
             </div>
         </div>
@@ -68,7 +71,7 @@ $(document).ready(function() {
                     <thead>
                         <tr>
                             <th class="table-header" style="width: 80px;">#</th>
-                            <th class="table-header" style="width: 250px;">Nombre de la Siembra</th>
+                            <th class="table-header" style="width: 250px;">Nombre </th>
                             <th class="table-header" style="width: 150px;">Cantidad</th>
                             <th class="table-header" style="width: 150px;">Unidad</th>
                             <th class="table-header" style="width: 200px;">Detalle</th>
@@ -207,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     @method('PUT')
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="nombre_siembra">Nombre de la siembra</label>
+                            <label for="nombre_siembra">Nombre</label>
                             <input type="text" name="nombre_siembra" id="nombre_siembra" class="modern-input">
                         </div>
                         <div>
