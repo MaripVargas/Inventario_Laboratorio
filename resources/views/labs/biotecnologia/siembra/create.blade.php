@@ -20,7 +20,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="form-group">
-                        <label class="form-label">Nombre de la Siembra <span class="required">*</span></label>
+                        <label class="form-label">Nombre  <spa class="required">*</span></label>
                         <div class="input-container">
                             <i class="fas fa-seedling input-icon"></i>
                             <input type="text" name="nombre_siembra" required class="form-input" placeholder="Ej: Explante de..." value="{{ old('nombre_siembra') }}">

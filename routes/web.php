@@ -17,13 +17,11 @@ use App\Http\Controllers\BiotecnologiaUtileriaController;
 use App\Http\Controllers\BiotecnologiaVidrieriaController;
 use App\Http\Controllers\BiotecnologiaReactivosController;
 use App\Http\Controllers\BiotecnologiaSiembraController;
+use App\Http\Controllers\BiotecnologiaSiembraEquiposController;
 
-// Microbiología - submódulos
-use App\Http\Controllers\MicrobiologiaUtileriaController;
-use App\Http\Controllers\MicrobiologiaVidrieriaController;
-use App\Http\Controllers\MicrobiologiaReactivosController;
 
-// Zoología - submódulos
+
+use App\Http\Controllers\ZoologiaVidrieriaController;
 use App\Http\Controllers\ZoologiaUtileriaController;
 use App\Http\Controllers\ZoologiaVidrieriaController;
 use App\Http\Controllers\ZoologiaReactivosController;
@@ -129,8 +127,7 @@ Route::prefix('biotecnologia')->group(function () {
     Route::resource('vidrieria', BiotecnologiaVidrieriaController::class)->names('biotecnologia.vidrieria');
     Route::resource('reactivos', BiotecnologiaReactivosController::class)->names('biotecnologia.reactivos');
     Route::resource('siembra', BiotecnologiaSiembraController::class)->names('biotecnologia.siembra');
-
-    // Ruta adicional
-    Route::get('siembra/{id}/editar', [BiotecnologiaSiembraController::class, 'editForm'])
-        ->name('biotecnologia.siembra.editForm');
+    // Ruta adicional para edición en página (además del modal JSON)
+    Route::get('siembra/{id}/editar', [BiotecnologiaSiembraController::class, 'editForm'])->name('biotecnologia.siembra.editForm');
+    Route::resource('siembra-equipos', BiotecnologiaSiembraEquiposController::class)->names('biotecnologia.siembra_equipos');
 });
