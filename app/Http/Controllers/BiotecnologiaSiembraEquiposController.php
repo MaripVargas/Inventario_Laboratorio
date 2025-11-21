@@ -97,6 +97,16 @@ class BiotecnologiaSiembraEquiposController extends Controller
 
     private function getCatalogos()
     {
+        // Responsables por defecto (catálogo base)
+        $defaultResponsables = collect([
+            ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
+            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+            ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
+            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+            ['nombre_responsable' => 'Pastrana Granados Eduardo', 'cedula' => '7719513'],
+        ]);
+
         $equipos = BiotecnologiaSiembraEquipo::select(
             'nombre_responsable',
             'cedula',
@@ -111,16 +121,44 @@ class BiotecnologiaSiembraEquiposController extends Controller
             'usuario_registra'
         )->get();
 
+        // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
         $merged = $equipos->concat($inventario);
 
-        $responsables = $merged
+        $responsablesDb = $merged
             ->filter(fn ($item) => !empty($item->nombre_responsable))
             ->map(fn ($item) => [
                 'nombre' => $item->nombre_responsable,
                 'cedula' => $item->cedula,
+            ]);
+
+        // Combinar responsables por defecto con los de la BD
+        $responsables = $defaultResponsables
+            ->map(fn ($item) => [
+                'nombre' => $item['nombre_responsable'],
+                'cedula' => $item['cedula'],
             ])
+            ->concat($responsablesDb)
             ->unique(fn ($item) => $item['nombre'] . '|' . ($item['cedula'] ?? ''))
             ->sortBy('nombre')
+            ->values();
+
+        // Vinculaciones por defecto
+        $defaultVinculaciones = collect([
+            'Funcionario Administrativo',
+            'Contrato',
+            'Provisional'
+        ]);
+
+        $vinculacionesDb = $merged
+            ->pluck('vinculacion')
+            ->filter()
+            ->unique();
+
+        // Combinar vinculaciones por defecto con las de la BD
+        $vinculaciones = $defaultVinculaciones
+            ->concat($vinculacionesDb)
+            ->unique()
+            ->sort()
             ->values();
 
         $pluckUnique = fn ($field) => $merged
@@ -133,7 +171,7 @@ class BiotecnologiaSiembraEquiposController extends Controller
         return [
             'responsables' => $responsables,
             'cedulas' => $pluckUnique('cedula'),
-            'vinculaciones' => $pluckUnique('vinculacion'),
+            'vinculaciones' => $vinculaciones,
             'usuarios' => $pluckUnique('usuario_registra'),
         ];
     }
