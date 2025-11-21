@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Reactivos - Biotecnología')
-@section('page-title', 'Laboratorio de Biotecnología')
+@section('title', 'Reactivos - Microbiologia')
+@section('page-title', 'Laboratorio de Microbiologia')
 @section('page-subtitle', 'Gestión de reactivos del laboratorio')
 
 @section('content')
