@@ -660,6 +660,10 @@
             <span class="submenu-icon">🌱</span>
             Siembra
         </a>
+        <a href="{{ route('biotecnologia.incubacion.index') }}" class="submenu-item">
+            <span class="submenu-icon">🥚</span>
+            Incubación
+        </a>
     </div>
 </div>
 
