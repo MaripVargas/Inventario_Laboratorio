@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Utilería - Biotecnología')
-@section('page-title', 'Laboratorio de Biotecnología')
+@section('title', 'Utilería - Microbiologia')
+@section('page-title', 'Laboratorio de Microbiologia')
 @section('page-subtitle', 'Gestión de utilería del laboratorio')
 
 @section('content')

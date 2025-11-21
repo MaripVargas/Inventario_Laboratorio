@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ZoologiaUtileria;
+use App\Models\MicrobiologiaUtileria;
 use Illuminate\Http\Request;
 
 
-class ZoologiaUtileriaController extends Controller
+class MicrobiologiaUtileriaController extends Controller
 {
     /**
      * Mostrar todos los registros
@@ -15,7 +15,7 @@ class ZoologiaUtileriaController extends Controller
 {
     $buscar = $request->input('buscar');
 
-    $items = \App\Models\ZoologiaUtileria::query()
+    $items = \App\Models\MicrobiologiaUtileria::query()
         ->when($buscar, function ($query, $buscar) {
             $query->where('nombre_item', 'like', "%{$buscar}%")
                   ->orWhere('detalle', 'like', "%{$buscar}%");
@@ -24,7 +24,7 @@ class ZoologiaUtileriaController extends Controller
         ->paginate(10) // 👈 Muestra solo 10 por página
         ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
 
-    return view('labs.zoologia.utileria.index', compact('items', 'buscar'));
+    return view('labs.microbiologia.utileria.index', compact('items', 'buscar'));
 }
 
 
@@ -33,7 +33,7 @@ class ZoologiaUtileriaController extends Controller
      */
     public function create()
     {
-        return view('labs.zoologia.utileria.create');
+        return view('labs.microbiologia.utileria.create');
     }
 
     /**
@@ -48,9 +48,9 @@ class ZoologiaUtileriaController extends Controller
             'detalle' => 'nullable|string|max:500',
         ]);
 
-        ZoologiaUtileria::create($request->all());
+        MicrobiologiaUtileria::create($request->all());
 
-        return redirect()->route('zoologia.utileria.index')
+        return redirect()->route('microbiologia.utileria.index')
                          ->with('success', 'Artículo agregado correctamente.');
     }
 
@@ -60,7 +60,7 @@ class ZoologiaUtileriaController extends Controller
 public function edit($id)
 {
     try {
-        $item = ZoologiaUtileria::findOrFail($id); // <--- Cambiado Item por BiotecnologiaUtileria
+        $item =MicrobiologiaUtileria::findOrFail($id); // <--- Cambiado Item por BiotecnologiaUtileria
 
         return response()->json([
             'id' => $item->id,
@@ -89,10 +89,10 @@ public function edit($id)
             'detalle' => 'nullable|string|max:500',
         ]);
 
-        $item = ZoologiaUtileria::findOrFail($id);
+        $item = MicrobiologiaUtileria::findOrFail($id);
         $item->update($request->all());
 
-        return redirect()->route('zoologia.utileria.index')
+        return redirect()->route('microbiologia.utileria.index')
                          ->with('success', 'Artículo actualizado correctamente.');
     }
 
@@ -101,10 +101,10 @@ public function edit($id)
      */
     public function destroy($id)
     {
-        $item = ZoologiaUtileria::findOrFail($id);
+        $item = MicrobiologiaUtileria::findOrFail($id);
         $item->delete();
 
-        return redirect()->route('zoologia.utileria.index')
+        return redirect()->route('microbiologia.utileria.index')
                          ->with('success', 'Artículo eliminado correctamente.');
     }
 }
