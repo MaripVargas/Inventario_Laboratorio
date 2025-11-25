@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BiotecnologiaIncubacionExport;
 use App\Models\BiotecnologiaIncubacion;
 use App\Models\Inventario;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BiotecnologiaIncubacionController extends Controller
 {
@@ -14,34 +17,8 @@ class BiotecnologiaIncubacionController extends Controller
      */
     public function index(Request $request)
     {
-        $query = BiotecnologiaIncubacion::query();
-
-        // Filtro de búsqueda
-        if ($request->filled('buscar')) {
-            $buscar = $request->buscar;
-            $query->where(function ($subquery) use ($buscar) {
-                $subquery->where('ir_id', 'like', "%{$buscar}%")
-                         ->orWhere('desc_sku', 'like', "%{$buscar}%")
-                         ->orWhere('descripcion_elemento', 'like', "%{$buscar}%");
-            });
-        }
-
-        // Filtro por tipo de material
-        if ($request->filled('tipo_material')) {
-            $query->where('tipo_material', $request->tipo_material);
-        }
-
-        // Filtro por placa
-        if ($request->filled('no_placa')) {
-            $query->where('no_placa', 'like', "%{$request->no_placa}%");
-        }
-
-        // Filtro por responsable
-        if ($request->filled('nombre_responsable')) {
-            $query->where('nombre_responsable', $request->nombre_responsable);
-        }
-
-        $items = $query->orderBy('created_at', 'desc')
+        $items = $this->filteredQuery($request)
+            ->orderByDesc('created_at')
             ->paginate(10)
             ->appends($request->all());
 
@@ -195,6 +172,32 @@ class BiotecnologiaIncubacionController extends Controller
                         ->with('success', 'Item eliminado exitosamente.');
     }
 
+    public function exportPdf(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('ir_id')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.biotecnologia.incubacion', [
+            'items' => $items,
+            'generatedAt' => now(),
+        ])->setPaper('A3', 'landscape');
+
+        return $pdf->download('biotecnologia_incubacion_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('ir_id')
+            ->get();
+
+        return Excel::download(
+            new BiotecnologiaIncubacionExport($items),
+            'biotecnologia_incubacion_' . now()->format('Y-m-d_His') . '.xlsx'
+        );
+    }
+
     /**
      * Obtener catálogos para los formularios
      */
@@ -269,6 +272,29 @@ class BiotecnologiaIncubacionController extends Controller
             'vinculaciones' => $vinculaciones,
             'usuarios' => $usuarios,
         ];
+    }
+
+    protected function filteredQuery(Request $request)
+    {
+        return BiotecnologiaIncubacion::query()
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $buscar = $request->buscar;
+                $query->where(function ($subquery) use ($buscar) {
+                    $subquery->where('ir_id', 'like', "%{$buscar}%")
+                        ->orWhere('desc_sku', 'like', "%{$buscar}%")
+                        ->orWhere('descripcion_elemento', 'like', "%{$buscar}%")
+                        ->orWhere('no_placa', 'like', "%{$buscar}%");
+                });
+            })
+            ->when($request->filled('tipo_material'), function ($query) use ($request) {
+                $query->where('tipo_material', $request->tipo_material);
+            })
+            ->when($request->filled('no_placa'), function ($query) use ($request) {
+                $query->where('no_placa', 'like', "%{$request->no_placa}%");
+            })
+            ->when($request->filled('nombre_responsable'), function ($query) use ($request) {
+                $query->where('nombre_responsable', $request->nombre_responsable);
+            });
     }
 }
 

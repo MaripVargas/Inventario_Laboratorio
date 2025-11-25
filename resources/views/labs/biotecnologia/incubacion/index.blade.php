@@ -17,11 +17,16 @@
             </div>
         </div>
 
+            @include('components.export-buttons', [
+                'pdfRoute' => 'biotecnologia.incubacion.export.pdf',
+                'excelRoute' => 'biotecnologia.incubacion.export.excel'
+            ])
+
         {{-- FILTRO DE BÚSQUEDA --}}
         <div class="card-body">
             <form method="GET" action="{{ url()->current() }}" id="filterForm">
                 <div class="mb-6 modern-filters">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <!-- Buscar -->
                         <div class="filter-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Buscar</label>
@@ -68,9 +73,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                         <!-- Cuentadante -->
                         <div class="filter-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Filtrar por Cuentadante</label>
@@ -610,6 +613,30 @@ $(document).ready(function() {
 .btn-secondary:hover {
     background: var(--gray-600);
     transform: translateY(-1px);
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
 }
 
 .btn-warning {

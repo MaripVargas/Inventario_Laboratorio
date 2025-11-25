@@ -115,13 +115,28 @@ Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->n
 // Rutas para Submenu de Biotecnología
 Route::prefix('biotecnologia')->group(function () {
     Route::resource('utileria', BiotecnologiaUtileriaController::class)->names('biotecnologia.utileria');
+    Route::get('utileria/export/pdf', [BiotecnologiaUtileriaController::class, 'exportPdf'])->name('biotecnologia.utileria.export.pdf');
+    Route::get('utileria/export/excel', [BiotecnologiaUtileriaController::class, 'exportExcel'])->name('biotecnologia.utileria.export.excel');
+
     Route::resource('vidrieria', BiotecnologiaVidrieriaController::class)->names('biotecnologia.vidrieria');
+    Route::get('vidrieria/export/pdf', [BiotecnologiaVidrieriaController::class, 'exportPdf'])->name('biotecnologia.vidrieria.export.pdf');
+    Route::get('vidrieria/export/excel', [BiotecnologiaVidrieriaController::class, 'exportExcel'])->name('biotecnologia.vidrieria.export.excel');
+
     Route::resource('reactivos', BiotecnologiaReactivosController::class)->names('biotecnologia.reactivos');
+    Route::get('reactivos/export/pdf', [BiotecnologiaReactivosController::class, 'exportPdf'])->name('biotecnologia.reactivos.export.pdf');
+    Route::get('reactivos/export/excel', [BiotecnologiaReactivosController::class, 'exportExcel'])->name('biotecnologia.reactivos.export.excel');
+
     Route::resource('siembra', BiotecnologiaSiembraController::class)->names('biotecnologia.siembra');
+    Route::get('siembra/export/pdf', [BiotecnologiaSiembraController::class, 'exportPdf'])->name('biotecnologia.siembra.export.pdf');
+    Route::get('siembra/export/excel', [BiotecnologiaSiembraController::class, 'exportExcel'])->name('biotecnologia.siembra.export.excel');
     // Ruta adicional para edición en página (además del modal JSON)
     Route::get('siembra/{id}/editar', [BiotecnologiaSiembraController::class, 'editForm'])->name('biotecnologia.siembra.editForm');
     Route::resource('siembra-equipos', BiotecnologiaSiembraEquiposController::class)->names('biotecnologia.siembra_equipos');
+    Route::get('siembra-equipos/export/pdf', [BiotecnologiaSiembraEquiposController::class, 'exportPdf'])->name('biotecnologia.siembra_equipos.export.pdf');
+    Route::get('siembra-equipos/export/excel', [BiotecnologiaSiembraEquiposController::class, 'exportExcel'])->name('biotecnologia.siembra_equipos.export.excel');
     Route::resource('incubacion', BiotecnologiaIncubacionController::class)->names('biotecnologia.incubacion');
+    Route::get('incubacion/export/pdf', [BiotecnologiaIncubacionController::class, 'exportPdf'])->name('biotecnologia.incubacion.export.pdf');
+    Route::get('incubacion/export/excel', [BiotecnologiaIncubacionController::class, 'exportExcel'])->name('biotecnologia.incubacion.export.excel');
 
     
 

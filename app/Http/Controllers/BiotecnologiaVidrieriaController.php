@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BiotecnologiaVidrieriaExport;
 use App\Models\BiotecnologiaVidrieria;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BiotecnologiaVidrieriaController extends Controller
 {
     public function index(Request $request)
-{
-    $buscar = $request->input('buscar');
+    {
+        $items = $this->filteredQuery($request)
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
 
-    $items = \App\Models\BiotecnologiaVidrieria::query()
-        ->when($buscar, function ($query, $buscar) {
-            $query->where('nombre_item', 'like', "%{$buscar}%")
-                  ->orWhere('detalle', 'like', "%{$buscar}%");
-        })
-        ->orderBy('id', 'desc')
-        ->paginate(10) // 👈 Muestra solo 10 por página
-        ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
-
-    return view('labs.biotecnologia.vidrieria.index', compact('items', 'buscar'));
-}
-
+        return view('labs.biotecnologia.vidrieria.index', [
+            'items' => $items,
+            'buscar' => $request->input('buscar'),
+        ]);
+    }
 
     public function create()
     {
@@ -45,25 +44,25 @@ class BiotecnologiaVidrieriaController extends Controller
                          ->with('success', 'Material agregado correctamente.');
     }
 
-  public function edit($id)
-{
-    try {
-        $item = BiotecnologiaVidrieria::findOrFail($id);
+    public function edit($id)
+    {
+        try {
+            $item = BiotecnologiaVidrieria::findOrFail($id);
 
-        return response()->json([
-            'id' => $item->id,
-            'nombre_item' => $item->nombre_item,
-            'volumen' => $item->volumen,
-            'cantidad' => $item->cantidad,
-            'unidad' => $item->unidad,
-            'detalle' => $item->detalle,
-        ]);
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return response()->json(['error' => 'Material no encontrado'], 404);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error interno', 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'id' => $item->id,
+                'nombre_item' => $item->nombre_item,
+                'volumen' => $item->volumen,
+                'cantidad' => $item->cantidad,
+                'unidad' => $item->unidad,
+                'detalle' => $item->detalle,
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Material no encontrado'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error interno', 'message' => $e->getMessage()], 500);
+        }
     }
-}
 
     public function update(Request $request, $id)
     {
@@ -89,5 +88,44 @@ class BiotecnologiaVidrieriaController extends Controller
 
         return redirect()->route('biotecnologia.vidrieria.index')
                          ->with('success', 'Material eliminado correctamente.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_item')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.biotecnologia.vidrieria', [
+            'items' => $items,
+            'generatedAt' => now(),
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->download('biotecnologia_vidrieria_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_item')
+            ->get();
+
+        return Excel::download(
+            new BiotecnologiaVidrieriaExport($items),
+            'biotecnologia_vidrieria_' . now()->format('Y-m-d_His') . '.xlsx'
+        );
+    }
+
+    protected function filteredQuery(Request $request)
+    {
+        return BiotecnologiaVidrieria::query()
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $buscar = $request->input('buscar');
+                $query->where(function ($inner) use ($buscar) {
+                    $inner->where('nombre_item', 'like', "%{$buscar}%")
+                        ->orWhere('detalle', 'like', "%{$buscar}%")
+                        ->orWhere('volumen', 'like', "%{$buscar}%");
+                });
+            });
     }
 }
