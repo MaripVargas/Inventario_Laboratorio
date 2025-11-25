@@ -17,6 +17,11 @@
             </div>
         </div>
 
+        @include('components.export-buttons', [
+            'pdfRoute' => 'biotecnologia.reactivos.export.pdf',
+            'excelRoute' => 'biotecnologia.reactivos.export.excel'
+        ])
+
     
   {{-- FILTRO DE BÚSQUEDA --}}
 <div class="card-body">

@@ -21,6 +21,11 @@
             </div>
         </div>
 
+        @include('components.export-buttons', [
+            'pdfRoute' => 'biotecnologia.siembra_equipos.export.pdf',
+            'excelRoute' => 'biotecnologia.siembra_equipos.export.excel'
+        ])
+
         <div class="card-body">
             <form method="GET" action="{{ url()->current() }}" id="filterEquiposForm">
                 <div class="mb-6 modern-filters">

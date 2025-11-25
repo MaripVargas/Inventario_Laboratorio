@@ -5,13 +5,29 @@ $showPdf = $showPdf ?? true;
 $showExcel = $showExcel ?? true;
 $class = $class ?? '';
 $modulo = $modulo ?? '';
+
+$pdfParams = ($modulo === null || $modulo === '') ? [] : $modulo;
+$excelParams = ($modulo === null || $modulo === '') ? [] : $modulo;
+
+$queryParams = $queryParams ?? request()->query();
+
+$appendQuery = function ($url) use ($queryParams) {
+    if (!$url || empty($queryParams)) {
+        return $url;
+    }
+
+    return $url . '?' . http_build_query($queryParams);
+};
+
+$pdfUrl = $pdfRoute ? $appendQuery(route($pdfRoute, $pdfParams)) : '#';
+$excelUrl = $excelRoute ? $appendQuery(route($excelRoute, $excelParams)) : '#';
 @endphp
 
 
 <div class="export-buttons-container {{ $class }}">
     <div class="export-buttons-grid">
         @if($showPdf && $pdfRoute)
-            <a href="{{ route($pdfRoute, $modulo) }}" class="export-btn export-btn-pdf" download>
+            <a href="{{ $pdfUrl }}" class="export-btn export-btn-pdf" download>
                 <div class="export-icon">
                     <i class="fas fa-file-pdf"></i>
                 </div>
@@ -26,7 +42,7 @@ $modulo = $modulo ?? '';
         @endif
 
         @if($showExcel && $excelRoute)
-            <a href="{{ route($excelRoute, $modulo) }}" class="export-btn export-btn-excel" download>
+            <a href="{{ $excelUrl }}" class="export-btn export-btn-excel" download>
                 <div class="export-icon">
                     <i class="fas fa-file-excel"></i>
                 </div>

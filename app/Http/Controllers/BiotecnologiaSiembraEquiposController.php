@@ -2,26 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BiotecnologiaSiembraEquiposExport;
 use App\Models\BiotecnologiaSiembraEquipo;
 use App\Models\Inventario;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BiotecnologiaSiembraEquiposController extends Controller
 {
     public function index(Request $request)
     {
-        $query = BiotecnologiaSiembraEquipo::query();
-
-        if ($request->filled('buscar')) {
-            $buscar = $request->buscar;
-            $query->where(function ($q) use ($buscar) {
-                $q->where('nombre', 'like', "%{$buscar}%")
-                  ->orWhere('no_placa', 'like', "%{$buscar}%")
-                  ->orWhere('nombre_responsable', 'like', "%{$buscar}%");
-            });
-        }
-
-        $items = $query->orderByDesc('id')->get();
+        $items = $this->filteredQuery($request)
+            ->orderByDesc('id')
+            ->get();
 
         return view('labs.biotecnologia.siembra_equipos.index', compact('items'));
     }
@@ -93,6 +87,32 @@ class BiotecnologiaSiembraEquiposController extends Controller
 
         return redirect()->route('biotecnologia.siembra_equipos.index')
                          ->with('success', 'Equipo de siembra eliminado correctamente.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.biotecnologia.siembra_equipos', [
+            'items' => $items,
+            'generatedAt' => now(),
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->download('biotecnologia_siembra_equipos_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre')
+            ->get();
+
+        return Excel::download(
+            new BiotecnologiaSiembraEquiposExport($items),
+            'biotecnologia_siembra_equipos_' . now()->format('Y-m-d_His') . '.xlsx'
+        );
     }
 
     private function getCatalogos()
@@ -174,6 +194,19 @@ class BiotecnologiaSiembraEquiposController extends Controller
             'vinculaciones' => $vinculaciones,
             'usuarios' => $pluckUnique('usuario_registra'),
         ];
+    }
+
+    protected function filteredQuery(Request $request)
+    {
+        return BiotecnologiaSiembraEquipo::query()
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $buscar = $request->buscar;
+                $query->where(function ($q) use ($buscar) {
+                    $q->where('nombre', 'like', "%{$buscar}%")
+                        ->orWhere('no_placa', 'like', "%{$buscar}%")
+                        ->orWhere('nombre_responsable', 'like', "%{$buscar}%");
+                });
+            });
     }
 }
 
