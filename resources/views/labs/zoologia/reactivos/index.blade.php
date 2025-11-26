@@ -47,21 +47,6 @@
     </form>
 </div>
 
-@push('scripts')
-<script>
-$(document).ready(function() {
-    let debounceTimer;
-
-    $('#buscarInput').on('input', function() {
-        clearTimeout(debounceTimer); // Reinicia el contador
-        debounceTimer = setTimeout(() => {
-            $('#filterForm').submit(); // Envía el formulario después de 2 segundos sin escribir
-        }, 1500)// 00 ms = 2 segundos
-    });
-});
-</script>
-@endpush
-
         {{-- TABLA DE ITEMS --}}
         <div class="table-container">
             <div class="overflow-x-auto modern-table-wrapper">
@@ -90,13 +75,16 @@ $(document).ready(function() {
                                 <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                        <a href="{{ route('biotecnologia.reactivos.edit', $item->id) }}" 
-                                           class="btn btn-warning btn-sm btn-edit" 
-                                           data-id="{{ $item->id }}" title="Editar">
-                                           <i class="fas fa-edit"></i>
-                                        </a>
+                                        {{-- MODIFICADO: Cambiar de <a> a <button> y agregar data-url --}}
+                                        <button type="button"
+                                                class="btn btn-warning btn-sm btn-edit" 
+                                                data-id="{{ $item->id }}"
+                                                data-url="{{ route('zoologia.reactivos.edit', $item->id) }}"
+                                                title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
 
-                                        <form action="{{ route('biotecnologia.reactivos.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('zoologia.reactivos.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm action-btn-delete" title="Eliminar"
@@ -165,7 +153,21 @@ $(document).ready(function() {
 @push('scripts')
 <script>
 $(document).ready(function() {
-    // Mensajes de sesión con SweetAlert
+    // ========================================
+    // BÚSQUEDA CON DEBOUNCE
+    // ========================================
+    let debounceTimer;
+
+    $('#buscarInput').on('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            $('#filterForm').submit();
+        }, 1500);
+    });
+
+    // ========================================
+    // MENSAJES DE SESIÓN CON SWEETALERT
+    // ========================================
     @if(session('success'))
         Swal.fire({
             icon: 'success',
@@ -185,52 +187,61 @@ $(document).ready(function() {
         });
     @endif
 
-    // Modal editar
-    $('.btn-edit').click(function(e) {
+    // ========================================
+    // ABRIR MODAL DE EDICIÓN CON AJAX
+    // ========================================
+    $('.btn-edit').on('click', function(e) {
         e.preventDefault();
-        let url = $(this).attr('href');  
-        let modalBody = $('#editModalBody');
-
-        // Mostrar spinner
-        modalBody.html($('#loadingSpinner').clone());
+        
+        const itemId = $(this).data('id');
+        const editUrl = $(this).data('url');
+        
+        console.log('Abriendo modal para editar item:', itemId);
+        console.log('URL:', editUrl);
+        
+        // Mostrar modal y spinner
         $('#editModal').modal('show');
-
-        // AJAX GET
-        $.get(url, function(data) {
-            let formHtml = `
-                <form method="POST" action="${url.replace('/edit','')}">
-                    @csrf
-                    @method('PUT')
-                    <div class="mb-3">
-                        <label>Nombre</label>
-                        <input type="text" name="${data.nombre_reactivo ? 'nombre_reactivo' : 'nombre_item'}" 
-                               value="${data.nombre_reactivo ?? data.nombre_item}" class="form-control" required />
+        $('#loadingSpinner').show();
+        
+        
+        // Cargar formulario con AJAX
+        $.ajax({
+            url: editUrl,
+            type: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                console.log('Formulario cargado exitosamente');
+                $('#loadingSpinner').hide();
+                $('#editModalBody').html(response);
+            },
+            error: function(xhr) {
+                console.error('Error al cargar formulario:', xhr);
+                $('#loadingSpinner').hide();
+                $('#editModalBody').html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Error al cargar el formulario.</strong>
+                        <p class="mb-0">Por favor, intenta nuevamente o recarga la página.</p>
                     </div>
-                    ${data.cantidad !== undefined ? `<div class="mb-3">
-                        <label>Cantidad</label>
-                        <input type="number" name="cantidad" value="${data.cantidad ?? ''}" class="form-control" />
-                    </div>` : ''}
-                    ${data.unidad !== undefined ? `<div class="mb-3">
-                        <label>Unidad</label>
-                        <input type="text" name="unidad" value="${data.unidad ?? ''}" class="form-control" />
-                    </div>` : ''}
-                    ${data.concentracion !== undefined ? `<div class="mb-3">
-                        <label>Concentración</label>
-                        <input type="text" name="concentracion" value="${data.concentracion ?? ''}" class="form-control" />
-                    </div>` : ''}
-                    ${data.volumen !== undefined ? `<div class="mb-3">
-                        <label>Volumen</label>
-                        <input type="text" name="volumen" value="${data.volumen ?? ''}" class="form-control" />
-                    </div>` : ''}
-                    ${data.detalle !== undefined ? `<div class="mb-3">
-                        <label>Detalle</label>
-                        <textarea name="detalle" class="form-control">${data.detalle ?? ''}</textarea>
-                    </div>` : ''}
-                    <button type="submit" class="btn btn-primary">Actualizar</button>
-                </form>
-            `;
-            modalBody.html(formHtml);
+                `);
+            }
         });
+    });
+
+    // ========================================
+    // LIMPIAR MODAL AL CERRARLO
+    // ========================================
+    $('#editModal').on('hidden.bs.modal', function () {
+        $('#editModalBody').html(`
+            <div class="text-center py-5" id="loadingSpinner">
+                <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-3 text-muted">Cargando formulario...</p>
+            </div>
+        `);
     });
 });
 </script>
