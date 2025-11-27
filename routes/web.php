@@ -5,6 +5,17 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\BiotecnologiaController;
 use App\Http\Controllers\FisicoQuimicaController;
+use App\Http\Controllers\FisicoquimicaAdsorcionAtomicaController;
+use App\Http\Controllers\FisicoquimicaSecadoSuelosController;
+use App\Http\Controllers\FisicoquimicaAreaAdministrativaController;
+use App\Http\Controllers\FisicoquimicaDepositoController;
+use App\Http\Controllers\FisicoquimicaAreaBalanzasController;
+use App\Http\Controllers\FisicoquimicaLaboratorioAnalisisController;
+use App\Http\Controllers\FisicoquimicaAdsorcionAtomicaEquiposController;
+use App\Http\Controllers\FisicoquimicaSecadoSuelosEquiposController;
+use App\Http\Controllers\FisicoquimicaDepositoEquiposController;
+use App\Http\Controllers\FisicoquimicaAreaBalanzasEquiposController;
+use App\Http\Controllers\FisicoquimicaLaboratorioAnalisisEquiposController;
 use App\Http\Controllers\MicrobiologiaController;
 use App\Http\Controllers\BiotecnologiaUtileriaController;
 use App\Http\Controllers\BiotecnologiaVidrieriaController;
@@ -115,6 +126,85 @@ Route::middleware(['simulate.auth'])->group(function () {
    
 });
 
+});
+
+Route::prefix('fisicoquimica')->name('fisicoquimica.')->middleware(['simulate.auth'])->group(function () {
+    Route::resource('adsorcion-atomica', FisicoquimicaAdsorcionAtomicaController::class)
+        ->names('adsorcion');
+    Route::get('adsorcion-atomica/export/pdf', [FisicoquimicaAdsorcionAtomicaController::class, 'exportPdf'])
+        ->name('adsorcion.export.pdf');
+    Route::get('adsorcion-atomica/export/excel', [FisicoquimicaAdsorcionAtomicaController::class, 'exportExcel'])
+        ->name('adsorcion.export.excel');
+
+    Route::resource('adsorcion-atomica-equipos', FisicoquimicaAdsorcionAtomicaEquiposController::class)
+        ->names('adsorcion_equipos');
+    Route::get('adsorcion-atomica-equipos/export/pdf', [FisicoquimicaAdsorcionAtomicaEquiposController::class, 'exportPdf'])
+        ->name('adsorcion_equipos.export.pdf');
+    Route::get('adsorcion-atomica-equipos/export/excel', [FisicoquimicaAdsorcionAtomicaEquiposController::class, 'exportExcel'])
+        ->name('adsorcion_equipos.export.excel');
+
+    Route::resource('secado-suelos', FisicoquimicaSecadoSuelosController::class)
+        ->names('secado_suelos');
+    Route::get('secado-suelos/export/pdf', [FisicoquimicaSecadoSuelosController::class, 'exportPdf'])
+        ->name('secado_suelos.export.pdf');
+    Route::get('secado-suelos/export/excel', [FisicoquimicaSecadoSuelosController::class, 'exportExcel'])
+        ->name('secado_suelos.export.excel');
+
+    Route::resource('secado-suelos-equipos', FisicoquimicaSecadoSuelosEquiposController::class)
+        ->names('secado_suelos_equipos');
+    Route::get('secado-suelos-equipos/export/pdf', [FisicoquimicaSecadoSuelosEquiposController::class, 'exportPdf'])
+        ->name('secado_suelos_equipos.export.pdf');
+    Route::get('secado-suelos-equipos/export/excel', [FisicoquimicaSecadoSuelosEquiposController::class, 'exportExcel'])
+        ->name('secado_suelos_equipos.export.excel');
+
+    Route::resource('area-administrativa', FisicoquimicaAreaAdministrativaController::class)
+        ->names('area_administrativa');
+    Route::get('area-administrativa/export/pdf', [FisicoquimicaAreaAdministrativaController::class, 'exportPdf'])
+        ->name('area_administrativa.export.pdf');
+    Route::get('area-administrativa/export/excel', [FisicoquimicaAreaAdministrativaController::class, 'exportExcel'])
+        ->name('area_administrativa.export.excel');
+
+    Route::resource('deposito', FisicoquimicaDepositoController::class)
+        ->names('deposito');
+    Route::get('deposito/export/pdf', [FisicoquimicaDepositoController::class, 'exportPdf'])
+        ->name('deposito.export.pdf');
+    Route::get('deposito/export/excel', [FisicoquimicaDepositoController::class, 'exportExcel'])
+        ->name('deposito.export.excel');
+
+    Route::resource('deposito-equipos', FisicoquimicaDepositoEquiposController::class)
+        ->names('deposito_equipos');
+    Route::get('deposito-equipos/export/pdf', [FisicoquimicaDepositoEquiposController::class, 'exportPdf'])
+        ->name('deposito_equipos.export.pdf');
+    Route::get('deposito-equipos/export/excel', [FisicoquimicaDepositoEquiposController::class, 'exportExcel'])
+        ->name('deposito_equipos.export.excel');
+
+    Route::resource('area-balanzas', FisicoquimicaAreaBalanzasController::class)
+        ->names('area_balanzas');
+    Route::get('area-balanzas/export/pdf', [FisicoquimicaAreaBalanzasController::class, 'exportPdf'])
+        ->name('area_balanzas.export.pdf');
+    Route::get('area-balanzas/export/excel', [FisicoquimicaAreaBalanzasController::class, 'exportExcel'])
+        ->name('area_balanzas.export.excel');
+
+    Route::resource('area-balanzas-equipos', FisicoquimicaAreaBalanzasEquiposController::class)
+        ->names('area_balanzas_equipos');
+    Route::get('area-balanzas-equipos/export/pdf', [FisicoquimicaAreaBalanzasEquiposController::class, 'exportPdf'])
+        ->name('area_balanzas_equipos.export.pdf');
+    Route::get('area-balanzas-equipos/export/excel', [FisicoquimicaAreaBalanzasEquiposController::class, 'exportExcel'])
+        ->name('area_balanzas_equipos.export.excel');
+
+    Route::resource('laboratorio-analisis', FisicoquimicaLaboratorioAnalisisController::class)
+        ->names('laboratorio_analisis');
+    Route::get('laboratorio-analisis/export/pdf', [FisicoquimicaLaboratorioAnalisisController::class, 'exportPdf'])
+        ->name('laboratorio_analisis.export.pdf');
+    Route::get('laboratorio-analisis/export/excel', [FisicoquimicaLaboratorioAnalisisController::class, 'exportExcel'])
+        ->name('laboratorio_analisis.export.excel');
+
+    Route::resource('laboratorio-analisis-equipos', FisicoquimicaLaboratorioAnalisisEquiposController::class)
+        ->names('laboratorio_analisis_equipos');
+    Route::get('laboratorio-analisis-equipos/export/pdf', [FisicoquimicaLaboratorioAnalisisEquiposController::class, 'exportPdf'])
+        ->name('laboratorio_analisis_equipos.export.pdf');
+    Route::get('laboratorio-analisis-equipos/export/excel', [FisicoquimicaLaboratorioAnalisisEquiposController::class, 'exportExcel'])
+        ->name('laboratorio_analisis_equipos.export.excel');
 });
 
 Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->name('inventario.pdf');
