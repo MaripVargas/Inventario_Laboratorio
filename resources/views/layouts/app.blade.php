@@ -668,13 +668,48 @@
 </div>
 
 
-        <a href="{{ Route::has('fisicoquimica.index') ? route('fisicoquimica.index') : '#' }}" 
-           class="menu-item {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}">
-            <div class="menu-icon">
-                <i class="fas fa-flask"></i>
+        <div class="menu-item-wrapper">
+            <a href="#"
+               class="menu-item submenu-toggle {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}"
+               onclick="toggleSubmenu(event, 'submenuFisico')">
+                <div class="menu-icon">
+                    <i class="fas fa-flask"></i>
+                </div>
+                Lab. Fisico Química
+                <i class="fas fa-chevron-down submenu-arrow"></i>
+            </a>
+            <div id="submenuFisico" class="submenu">
+                <a href="{{ route('fisicoquimica.index') }}"
+                   class="submenu-item {{ request()->routeIs('fisicoquimica.index') ? 'active' : '' }}">
+                    <span class="submenu-icon">📦</span>
+                    Inventario General
+                </a>
+                <a href="{{ route('fisicoquimica.adsorcion.index') }}" class="submenu-item">
+                    <span class="submenu-icon">🧪</span>
+                    Adsorción atómica
+                </a>
+                <a href="{{ route('fisicoquimica.secado_suelos.index') }}" class="submenu-item">
+                    <span class="submenu-icon">🌾</span>
+                    Secado de suelos
+                </a>
+                <a href="{{ route('fisicoquimica.area_administrativa.index') }}" class="submenu-item">
+                    <span class="submenu-icon">🏢</span>
+                    Área administrativa
+                </a>
+                <a href="{{ route('fisicoquimica.deposito.index') }}" class="submenu-item">
+                    <span class="submenu-icon">📥</span>
+                    Depósito
+                </a>
+                <a href="{{ route('fisicoquimica.area_balanzas.index') }}" class="submenu-item">
+                    <span class="submenu-icon">⚖️</span>
+                    Área de balanzas
+                </a>
+                <a href="{{ route('fisicoquimica.laboratorio_analisis.index') }}" class="submenu-item">
+                    <span class="submenu-icon">🧬</span>
+                    Laboratorio de análisis
+                </a>
             </div>
-            Lab. Fisico Química
-        </a>
+        </div>
 
        <div class="menu-item-wrapper">
     <a href="#" 
