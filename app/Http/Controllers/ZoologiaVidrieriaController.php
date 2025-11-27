@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ZoologiaVidrieriaExport;
 use App\Models\ZoologiaVidrieria;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ZoologiaVidrieriaController extends Controller
 {
     public function index(Request $request)
 {
-    $buscar = $request->input('buscar');
-
-    $items = \App\Models\ZoologiaVidrieria::query()
-        ->when($buscar, function ($query, $buscar) {
-            $query->where('nombre_item', 'like', "%{$buscar}%")
-                  ->orWhere('detalle', 'like', "%{$buscar}%");
-        })
+    $items = $this->filteredQuery($request)
         ->orderBy('id', 'desc')
-        ->paginate(10) // 👈 Muestra solo 10 por página
-        ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
+        ->paginate(10)
+        ->withQueryString();
+
+    $buscar = $request->input('buscar');
 
     return view('labs.zoologia.vidrieria.index', compact('items', 'buscar'));
 }
@@ -89,5 +88,43 @@ class ZoologiaVidrieriaController extends Controller
 
         return redirect()->route('zoologia.vidrieria.index')
                          ->with('success', 'Material eliminado correctamente.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_item')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.zoologia.vidrieria', [
+            'items' => $items,
+            'generatedAt' => now(),
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->download('zoologia_vidrieria_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_item')
+            ->get();
+
+        return Excel::download(
+            new ZoologiaVidrieriaExport($items),
+            'zoologia_vidrieria_' . now()->format('Y-m-d_His') . '.xlsx'
+        );
+    }
+
+    protected function filteredQuery(Request $request)
+    {
+        return ZoologiaVidrieria::query()
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $buscar = $request->input('buscar');
+                $query->where(function ($inner) use ($buscar) {
+                    $inner->where('nombre_item', 'like', "%{$buscar}%")
+                        ->orWhere('detalle', 'like', "%{$buscar}%");
+                });
+            });
     }
 }

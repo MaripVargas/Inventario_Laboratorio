@@ -17,13 +17,10 @@
             </div>
         </div>
 
-      {{-- BOTONES DE EXPORTACIÓN (si los usas en otros módulos) 
-         @include('components.export-buttons', [
-            'pdfRoute' => 'biotecnologia.utileria.pdf',
-            'excelRoute' => 'biotecnologia.utileria.excel',
-            'modulo' => 'biotecnologia_utileria'
+        @include('components.export-buttons', [
+            'pdfRoute' => 'zoologia.utileria.export.pdf',
+            'excelRoute' => 'zoologia.utileria.export.excel'
         ])
-            --}}
 
  
   {{-- FILTRO DE BÚSQUEDA --}}

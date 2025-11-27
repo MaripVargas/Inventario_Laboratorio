@@ -95,8 +95,16 @@ Route::middleware(['simulate.auth'])->group(function () {
 
    Route::prefix('zoologia')->group(function () {
     Route::resource('utileria', ZoologiaUtileriaController::class)->names('zoologia.utileria');
+    Route::get('utileria/export/pdf', [ZoologiaUtileriaController::class, 'exportPdf'])->name('zoologia.utileria.export.pdf');
+    Route::get('utileria/export/excel', [ZoologiaUtileriaController::class, 'exportExcel'])->name('zoologia.utileria.export.excel');
+
     Route::resource('vidrieria', ZoologiaVidrieriaController::class)->names('zoologia.vidrieria');
+    Route::get('vidrieria/export/pdf', [ZoologiaVidrieriaController::class, 'exportPdf'])->name('zoologia.vidrieria.export.pdf');
+    Route::get('vidrieria/export/excel', [ZoologiaVidrieriaController::class, 'exportExcel'])->name('zoologia.vidrieria.export.excel');
+
     Route::resource('reactivos', ZoologiaReactivosController::class)->names('zoologia.reactivos');
+    Route::get('reactivos/export/pdf', [ZoologiaReactivosController::class, 'exportPdf'])->name('zoologia.reactivos.export.pdf');
+    Route::get('reactivos/export/excel', [ZoologiaReactivosController::class, 'exportExcel'])->name('zoologia.reactivos.export.excel');
    
 });
 

@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ZoologiaReactivosExport;
 use App\Models\ZoologiaReactivos;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ZoologiaReactivosController extends Controller
 {
      public function index(Request $request)
 {
-    $buscar = $request->input('buscar');
-
-    $items = \App\Models\ZoologiaReactivos::query()
-        ->when($buscar, function ($query, $buscar) {
-           $query->where('nombre_reactivo', 'like', "%{$buscar}%")
-      ->orWhere('detalle', 'like', "%{$buscar}%");
-
-        })
+    $items = $this->filteredQuery($request)
         ->orderBy('id', 'desc')
-        ->paginate(10) // 👈 Muestra solo 10 por página
-        ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
+        ->paginate(10)
+        ->withQueryString();
+
+    $buscar = $request->input('buscar');
 
     return view('labs.zoologia.reactivos.index', compact('items', 'buscar'));
 }
@@ -84,5 +82,43 @@ public function edit($id)
 
         return redirect()->route('zoologia.reactivos.index')
                          ->with('success', 'Reactivo eliminado correctamente.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_reactivo')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.zoologia.reactivos', [
+            'items' => $items,
+            'generatedAt' => now(),
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->download('zoologia_reactivos_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_reactivo')
+            ->get();
+
+        return Excel::download(
+            new ZoologiaReactivosExport($items),
+            'zoologia_reactivos_' . now()->format('Y-m-d_His') . '.xlsx'
+        );
+    }
+
+    protected function filteredQuery(Request $request)
+    {
+        return ZoologiaReactivos::query()
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $buscar = $request->input('buscar');
+                $query->where(function ($inner) use ($buscar) {
+                    $inner->where('nombre_reactivo', 'like', "%{$buscar}%")
+                        ->orWhere('detalle', 'like', "%{$buscar}%");
+                });
+            });
     }
 }
