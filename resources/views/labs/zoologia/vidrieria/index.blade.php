@@ -17,6 +17,11 @@
             </div>
         </div>
 
+        @include('components.export-buttons', [
+            'pdfRoute' => 'zoologia.vidrieria.export.pdf',
+            'excelRoute' => 'zoologia.vidrieria.export.excel'
+        ])
+
   {{-- FILTRO DE BÚSQUEDA --}}
 <div class="card-body">
     <form method="GET" action="{{ url()->current() }}" id="filterForm">

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ZoologiaUtileriaExport;
 use App\Models\ZoologiaUtileria;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ZoologiaUtileriaController extends Controller
 {
@@ -13,16 +15,12 @@ class ZoologiaUtileriaController extends Controller
      */
      public function index(Request $request)
 {
-    $buscar = $request->input('buscar');
-
-    $items = \App\Models\ZoologiaUtileria::query()
-        ->when($buscar, function ($query, $buscar) {
-            $query->where('nombre_item', 'like', "%{$buscar}%")
-                  ->orWhere('detalle', 'like', "%{$buscar}%");
-        })
+    $items = $this->filteredQuery($request)
         ->orderBy('id', 'desc')
-        ->paginate(10) // 👈 Muestra solo 10 por página
-        ->withQueryString(); // 👈 Mantiene el valor del filtro al cambiar de página
+        ->paginate(10)
+        ->withQueryString();
+
+    $buscar = $request->input('buscar');
 
     return view('labs.zoologia.utileria.index', compact('items', 'buscar'));
 }
@@ -106,5 +104,43 @@ public function edit($id)
 
         return redirect()->route('zoologia.utileria.index')
                          ->with('success', 'Artículo eliminado correctamente.');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_item')
+            ->get();
+
+        $pdf = Pdf::loadView('exports.zoologia.utileria', [
+            'items' => $items,
+            'generatedAt' => now(),
+        ])->setPaper('A4', 'landscape');
+
+        return $pdf->download('zoologia_utileria_' . now()->format('Y-m-d_His') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $items = $this->filteredQuery($request)
+            ->orderBy('nombre_item')
+            ->get();
+
+        return Excel::download(
+            new ZoologiaUtileriaExport($items),
+            'zoologia_utileria_' . now()->format('Y-m-d_His') . '.xlsx'
+        );
+    }
+
+    protected function filteredQuery(Request $request)
+    {
+        return ZoologiaUtileria::query()
+            ->when($request->filled('buscar'), function ($query) use ($request) {
+                $buscar = $request->input('buscar');
+                $query->where(function ($inner) use ($buscar) {
+                    $inner->where('nombre_item', 'like', "%{$buscar}%")
+                        ->orWhere('detalle', 'like', "%{$buscar}%");
+                });
+            });
     }
 }
