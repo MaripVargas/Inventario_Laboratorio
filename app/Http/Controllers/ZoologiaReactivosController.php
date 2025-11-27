@@ -13,8 +13,9 @@ class ZoologiaReactivosController extends Controller
 
     $items = \App\Models\ZoologiaReactivos::query()
         ->when($buscar, function ($query, $buscar) {
-            $query->where('nombre_item', 'like', "%{$buscar}%")
-                  ->orWhere('detalle', 'like', "%{$buscar}%");
+           $query->where('nombre_reactivo', 'like', "%{$buscar}%")
+      ->orWhere('detalle', 'like', "%{$buscar}%");
+
         })
         ->orderBy('id', 'desc')
         ->paginate(10) // 👈 Muestra solo 10 por página
@@ -49,20 +50,14 @@ public function edit($id)
     try {
         $item = ZoologiaReactivos::findOrFail($id);
 
-        return response()->json([
-            'id' => $item->id,
-            'nombre_reactivo' => $item->nombre_reactivo,
-            'cantidad' => $item->cantidad,
-            'unidad' => $item->unidad,
-            'concentracion' => $item->concentracion,
-            'detalle' => $item->detalle,
-        ]);
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return response()->json(['error' => 'Reactivo no encontrado'], 404);
+        // Devuelve la vista parcial con el formulario
+        return view('labs.zoologia.reactivos.edit', compact('item'))->render();
+
     } catch (\Exception $e) {
-        return response()->json(['error' => 'Error interno', 'message' => $e->getMessage()], 500);
+        return response()->json(['error' => 'Error al cargar el formulario'], 500);
     }
 }
+
 
 
     public function update(Request $request, $id)
