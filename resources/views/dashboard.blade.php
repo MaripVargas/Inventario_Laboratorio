@@ -1,104 +1,603 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Dashboard - Sistema de Inventario')
 @section('page-title', 'Dashboard')
-@section('page-subtitle', 'Bienvenido al sistema de inventario del laboratorio')
+@section('page-subtitle', 'Vista general del inventario de laboratorios')
 
 @section('content')
-<!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap 5 JS (incluye Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-    <!-- Card de Resumen -->
-    <div class="stats-card stats-card-blue">
-        <div class="card-body">
-            <div class="flex items-center">
-                <div class="stats-icon stats-icon-blue">
-                    <i class="fas fa-boxes text-xl"></i>
+<div class="dashboard-container">
+    {{-- HERO SECTION --}}
+    <div class="dashboard-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <i class="fas fa-chart-line"></i>
+                Sistema de Inventario de Laboratorios
+            </h1>
+            <p class="hero-subtitle">
+                Gestión integral de inventarios de Biotecnología, Físico Química, Zoología y Microbiología
+            </p>
+            <div class="hero-stats-mini">
+                <div class="mini-stat">
+                    <span class="mini-stat-value">{{ number_format($stats['totales']['general']) }}</span>
+                    <span class="mini-stat-label">Items Totales</span>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Total de Items</h3>
-                    <p class="text-3xl font-bold text-blue-600 counter" data-target="{{ $stats['total_items'] }}">0</p>
+                <div class="mini-stat-divider"></div>
+                <div class="mini-stat">
+                    <span class="mini-stat-value">{{ $stats['totales']['laboratorios'] }}</span>
+                    <span class="mini-stat-label">Laboratorios</span>
                 </div>
-            </div>
-            <div class="stats-progress">
-                <div class="stats-progress-bar stats-progress-blue" style="width: 85%"></div>
+                <div class="mini-stat-divider"></div>
+                <div class="mini-stat">
+                    <span class="mini-stat-value">24</span>
+                    <span class="mini-stat-label">Módulos Activos</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Card de Categorías -->
-    <div class="stats-card stats-card-green">
-        <div class="card-body">
-            <div class="flex items-center">
-                <div class="stats-icon stats-icon-green">
-                    <i class="fas fa-tags text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Gestiones</h3>
-                    <p class="text-3xl font-bold text-green-600 counter" data-target="{{ $stats['gestiones'] }}">0</p>
+    {{-- MAIN STATS CARDS --}}
+    <div class="stats-grid">
+        <div class="stat-card stat-card-primary">
+            <div class="stat-card-icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+            <div class="stat-card-content">
+                <h3 class="stat-card-label">Inventario General</h3>
+                <p class="stat-card-value counter" data-target="{{ $stats['inventario']['total'] }}">0</p>
+                <div class="stat-card-footer">
+                    <span class="stat-card-change positive">
+                        <i class="fas fa-chart-line"></i>
+                        {{ $stats['inventario']['gestiones'] }} gestiones
+                    </span>
                 </div>
             </div>
-            <div class="stats-progress">
-                <div class="stats-progress-bar stats-progress-green" style="width: 70%"></div>
+            <div class="stat-card-progress">
+                <div class="progress-bar" style="width: {{ min(($stats['inventario']['total'] / max($stats['totales']['general'], 1)) * 100, 100) }}%"></div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-success">
+            <div class="stat-card-icon">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <div class="stat-card-content">
+                <h3 class="stat-card-label">Biotecnología Vegetal</h3>
+                <p class="stat-card-value counter" data-target="{{ $stats['biotecnologia']['total'] }}">0</p>
+                <div class="stat-card-footer">
+                    <span class="stat-card-change">
+                        <i class="fas fa-flask"></i>
+                        6 módulos
+                    </span>
+                </div>
+            </div>
+            <div class="stat-card-progress">
+                <div class="progress-bar" style="width: {{ min(($stats['biotecnologia']['total'] / max($stats['totales']['general'], 1)) * 100, 100) }}%"></div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-info">
+            <div class="stat-card-icon">
+                <i class="fas fa-flask"></i>
+            </div>
+            <div class="stat-card-content">
+                <h3 class="stat-card-label">Físico Química</h3>
+                <p class="stat-card-value counter" data-target="{{ $stats['fisicoquimica']['total'] }}">0</p>
+                <div class="stat-card-footer">
+                    <span class="stat-card-change">
+                        <i class="fas fa-cube"></i>
+                        11 módulos
+                    </span>
+                </div>
+            </div>
+            <div class="stat-card-progress">
+                <div class="progress-bar" style="width: {{ min(($stats['fisicoquimica']['total'] / max($stats['totales']['general'], 1)) * 100, 100) }}%"></div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-warning">
+            <div class="stat-card-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="stat-card-content">
+                <h3 class="stat-card-label">Zoología y Botánica</h3>
+                <p class="stat-card-value counter" data-target="{{ $stats['zoologia']['total'] }}">0</p>
+                <div class="stat-card-footer">
+                    <span class="stat-card-change">
+                        <i class="fas fa-layer-group"></i>
+                        3 módulos
+                    </span>
+                </div>
+            </div>
+            <div class="stat-card-progress">
+                <div class="progress-bar" style="width: {{ min(($stats['zoologia']['total'] / max($stats['totales']['general'], 1)) * 100, 100) }}%"></div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-purple">
+            <div class="stat-card-icon">
+                <i class="fas fa-microscope"></i>
+            </div>
+            <div class="stat-card-content">
+                <h3 class="stat-card-label">Microbiología</h3>
+                <p class="stat-card-value counter" data-target="{{ $stats['microbiologia']['total'] }}">0</p>
+                <div class="stat-card-footer">
+                    <span class="stat-card-change">
+                        <i class="fas fa-vial"></i>
+                        3 módulos
+                    </span>
+                </div>
+            </div>
+            <div class="stat-card-progress">
+                <div class="progress-bar" style="width: {{ min(($stats['microbiologia']['total'] / max($stats['totales']['general'], 1)) * 100, 100) }}%"></div>
+            </div>
+        </div>
+
+        <div class="stat-card stat-card-danger">
+            <div class="stat-card-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-card-content">
+                <h3 class="stat-card-label">Estado Malo</h3>
+                <p class="stat-card-value counter" data-target="{{ $stats['inventario']['malo'] }}">0</p>
+                <div class="stat-card-footer">
+                    <span class="stat-card-change negative">
+                        <i class="fas fa-percentage"></i>
+                        {{ $stats['porcentajes']['malo'] }}% del total
+                    </span>
+                </div>
+            </div>
+            <div class="stat-card-progress">
+                <div class="progress-bar" style="width: {{ $stats['porcentajes']['malo'] }}%"></div>
             </div>
         </div>
     </div>
 
-    <!-- Card de Stock Bajo -->
-    <div class="stats-card stats-card-red">
-        <div class="card-body">
-            <div class="flex items-center">
-                <div class="stats-icon stats-icon-red">
-                    <i class="fas fa-exclamation-triangle text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Estado Malo</h3>
-                    <p class="text-3xl font-bold text-red-600 counter" data-target="{{ $stats['estado_malo'] }}">0</p>
+    {{-- CHARTS AND DETAILS SECTION --}}
+    <div class="dashboard-grid">
+        {{-- CHART: Distribución por Laboratorio --}}
+        <div class="dashboard-card chart-card">
+            <div class="card-header-modern">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Distribución por Laboratorio
+                </h3>
+            </div>
+            <div class="card-body">
+                <canvas id="labDistributionChart"></canvas>
+            </div>
+        </div>
+
+        {{-- DETAILED STATS: Biotecnología --}}
+        <div class="dashboard-card detail-card">
+            <div class="card-header-modern">
+                <h3 class="card-title">
+                    <i class="fas fa-seedling"></i>
+                    Lab. Biotecnología Vegetal
+                </h3>
+                <a href="{{ route('biotecnologia.index') }}" class="card-link">
+                    Ver todo <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="module-stats-list">
+                    <div class="module-stat-item">
+                        <span class="module-icon">🔧</span>
+                        <div class="module-info">
+                            <span class="module-name">Utilería</span>
+                            <span class="module-count">{{ $stats['biotecnologia']['utileria'] }} items</span>
+                        </div>
+                        <a href="{{ route('biotecnologia.utileria.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🧪</span>
+                        <div class="module-info">
+                            <span class="module-name">Vidriería</span>
+                            <span class="module-count">{{ $stats['biotecnologia']['vidrieria'] }} items</span>
+                        </div>
+                        <a href="{{ route('biotecnologia.vidrieria.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">⚗️</span>
+                        <div class="module-info">
+                            <span class="module-name">Reactivos</span>
+                            <span class="module-count">{{ $stats['biotecnologia']['reactivos'] }} items</span>
+                        </div>
+                        <a href="{{ route('biotecnologia.reactivos.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🌱</span>
+                        <div class="module-info">
+                            <span class="module-name">Siembra</span>
+                            <span class="module-count">{{ $stats['biotecnologia']['siembra'] }} items</span>
+                        </div>
+                        <a href="{{ route('biotecnologia.siembra.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🔬</span>
+                        <div class="module-info">
+                            <span class="module-name">Equipos Siembra</span>
+                            <span class="module-count">{{ $stats['biotecnologia']['equipos'] }} items</span>
+                        </div>
+                        <a href="{{ route('biotecnologia.siembra_equipos.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🥚</span>
+                        <div class="module-info">
+                            <span class="module-name">Incubación</span>
+                            <span class="module-count">{{ $stats['biotecnologia']['incubacion'] }} items</span>
+                        </div>
+                        <a href="{{ route('biotecnologia.incubacion.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="stats-progress">
-                <div class="stats-progress-bar stats-progress-red" style="width: 30%"></div>
+        </div>
+
+        {{-- DETAILED STATS: Físico Química --}}
+        <div class="dashboard-card detail-card">
+            <div class="card-header-modern">
+                <h3 class="card-title">
+                    <i class="fas fa-flask"></i>
+                    Lab. Físico Química
+                </h3>
+                <a href="{{ route('fisicoquimica.index') }}" class="card-link">
+                    Ver todo <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="module-stats-list">
+                    <div class="module-stat-item">
+                        <span class="module-icon">🧪</span>
+                        <div class="module-info">
+                            <span class="module-name">Adsorción Atómica</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['adsorcion'] }} items</span>
+                        </div>
+                        <a href="{{ route('fisicoquimica.adsorcion.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🌾</span>
+                        <div class="module-info">
+                            <span class="module-name">Secado de Suelos</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['secado'] }} items</span>
+                        </div>
+                        <a href="{{ route('fisicoquimica.secado_suelos.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🏢</span>
+                        <div class="module-info">
+                            <span class="module-name">Área Administrativa</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['admin'] }} items</span>
+                        </div>
+                        <a href="{{ route('fisicoquimica.area_administrativa.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">📥</span>
+                        <div class="module-info">
+                            <span class="module-name">Depósito</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['deposito'] }} items</span>
+                        </div>
+                        <a href="{{ route('fisicoquimica.deposito.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">⚖️</span>
+                        <div class="module-info">
+                            <span class="module-name">Área de Balanzas</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['balanzas'] }} items</span>
+                        </div>
+                        <a href="{{ route('fisicoquimica.area_balanzas.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item">
+                        <span class="module-icon">🧬</span>
+                        <div class="module-info">
+                            <span class="module-name">Laboratorio de Análisis</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['lab_analisis'] }} items</span>
+                        </div>
+                        <a href="{{ route('fisicoquimica.laboratorio_analisis.index') }}" class="module-link">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                    <div class="module-stat-item highlight">
+                        <span class="module-icon">🔧</span>
+                        <div class="module-info">
+                            <span class="module-name">Equipos (Total)</span>
+                            <span class="module-count">{{ $stats['fisicoquimica']['equipos'] }} items</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- QUICK ACTIONS --}}
+        <div class="dashboard-card actions-card">
+            <div class="card-header-modern">
+                <h3 class="card-title">
+                    <i class="fas fa-bolt"></i>
+                    Accesos Rápidos
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="quick-actions-grid">
+                    <a href="{{ route('biotecnologia.index') }}" class="quick-action-btn action-biotec">
+                        <i class="fas fa-seedling"></i>
+                        <span>Biotecnología</span>
+                    </a>
+                    <a href="{{ route('fisicoquimica.index') }}" class="quick-action-btn action-fisico">
+                        <i class="fas fa-flask"></i>
+                        <span>Físico Química</span>
+                    </a>
+                    <a href="{{ route('zoologia.utileria.index') }}" class="quick-action-btn action-zoo">
+                        <i class="fas fa-leaf"></i>
+                        <span>Zoología</span>
+                    </a>
+                    <a href="{{ route('microbiologia.utileria.index') }}" class="quick-action-btn action-micro">
+                        <i class="fas fa-microscope"></i>
+                        <span>Microbiología</span>
+                    </a>
+                    <a href="{{ route('inventario.index') }}" class="quick-action-btn action-inventario">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario General</span>
+                    </a>
+                    <a href="{{ route('areas.index') }}" class="quick-action-btn action-areas">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Áreas</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Card de Áreas -->
-    <a href="{{ route('areas.index') }}" class="stats-card stats-card-blue" style="text-decoration:none;">
-        <div class="card-body">
-            <div class="flex items-center">
-                <div class="stats-icon stats-icon-blue">
-                    <i class="fas fa-th-large text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Áreas</h3>
-                    <p class="text-3xl font-bold text-blue-600">4</p>
-                </div>
+    {{-- TREND STATISTICS --}}
+    <div class="trend-stats-grid">
+        <div class="trend-stat-card trend-today">
+            <div class="trend-stat-icon">
+                <i class="fas fa-calendar-day"></i>
             </div>
-            <div class="stats-progress">
-                <div class="stats-progress-bar stats-progress-blue" style="width: 60%"></div>
+            <div class="trend-stat-content">
+                <h4 class="trend-stat-label">Agregados Hoy</h4>
+                <p class="trend-stat-value counter" data-target="{{ $itemsToday }}">0</p>
             </div>
         </div>
-    </a>
+        
+        <div class="trend-stat-card trend-week">
+            <div class="trend-stat-icon">
+                <i class="fas fa-calendar-week"></i>
+            </div>
+            <div class="trend-stat-content">
+                <h4 class="trend-stat-label">Esta Semana</h4>
+                <p class="trend-stat-value counter" data-target="{{ $itemsThisWeek }}">0</p>
+            </div>
+        </div>
+        
+        <div class="trend-stat-card trend-month">
+            <div class="trend-stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="trend-stat-content">
+                <h4 class="trend-stat-label">Este Mes</h4>
+                <p class="trend-stat-value counter" data-target="{{ $itemsThisMonth }}">0</p>
+            </div>
+        </div>
+        
+        <div class="trend-stat-card trend-value">
+            <div class="trend-stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="trend-stat-content">
+                <h4 class="trend-stat-label">Valor Total</h4>
+                <p class="trend-stat-value">${{ number_format($totalValue, 2, ',', '.') }}</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- TREND CHART AND TOP MODULES --}}
+    <div class="dashboard-grid">
+        {{-- TREND CHART --}}
+        <div class="dashboard-card chart-card">
+            <div class="card-header-modern">
+                <h3 class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    Tendencias de Ingreso (Últimos 6 Meses)
+                </h3>
+            </div>
+            <div class="card-body">
+                <canvas id="trendChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+
+        {{-- TOP MODULES --}}
+        <div class="dashboard-card top-modules-card">
+            <div class="card-header-modern">
+                <h3 class="card-title">
+                    <i class="fas fa-trophy"></i>
+                    Módulos con Más Items
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="top-modules-list">
+                    @foreach($topModules as $index => $module)
+                    <div class="top-module-item">
+                        <div class="top-module-rank">
+                            <span class="rank-number">{{ $index + 1 }}</span>
+                            <div class="rank-medal">
+                                @if($index === 0)
+                                    <i class="fas fa-medal" style="color: #fbbf24;"></i>
+                                @elseif($index === 1)
+                                    <i class="fas fa-medal" style="color: #9ca3af;"></i>
+                                @elseif($index === 2)
+                                    <i class="fas fa-medal" style="color: #cd7f32;"></i>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="top-module-icon" style="background: linear-gradient(135deg, {{ $module['color'] }}20, {{ $module['color'] }}10);">
+                            <i class="{{ $module['icon'] }}" style="color: {{ $module['color'] }};"></i>
+                        </div>
+                        <div class="top-module-info">
+                            <h4 class="top-module-name">{{ $module['name'] }}</h4>
+                            <p class="top-module-count">{{ number_format($module['count']) }} items</p>
+                        </div>
+                        <a href="{{ $module['route'] }}" class="top-module-link">
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ALERTS AND NOTIFICATIONS --}}
+    @if($itemsNeedingAttention > 0)
+    <div class="dashboard-card alert-card">
+        <div class="card-header-modern alert-header">
+            <h3 class="card-title">
+                <i class="fas fa-exclamation-circle"></i>
+                Alertas y Notificaciones
+            </h3>
+            <span class="alert-badge">{{ $itemsNeedingAttention }}</span>
+        </div>
+        <div class="card-body">
+            <div class="alert-item alert-warning">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-content">
+                    <h4 class="alert-title">Items con Estado Malo</h4>
+                    <p class="alert-message">
+                        Hay <strong>{{ $itemsNeedingAttention }}</strong> item(s) que requieren atención inmediata debido a su estado.
+                    </p>
+                    <a href="{{ route('inventario.index') }}?estado=malo" class="alert-action">
+                        Ver Items <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- RECENT ACTIVITY --}}
+    @if($recentItems && $recentItems->count() > 0)
+    <div class="dashboard-card recent-card">
+        <div class="card-header-modern">
+            <h3 class="card-title">
+                <i class="fas fa-clock"></i>
+                Items Recientes
+            </h3>
+            <a href="{{ route('inventario.index') }}" class="card-link">
+                Ver todos <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="recent-items-list">
+                @foreach($recentItems as $item)
+                <div class="recent-item">
+                    <div class="recent-item-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="recent-item-content">
+                        <h4 class="recent-item-title">{{ $item->nombre_item ?? $item->nombre ?? ($item->descripcion_elemento ?? 'Sin nombre') }}</h4>
+                        <p class="recent-item-meta">
+                            <span class="badge badge-{{ $item->estado ?? 'default' }}">
+                                {{ ucfirst($item->estado ?? 'N/A') }}
+                            </span>
+                            <span class="recent-item-date">
+                                {{ $item->created_at->diffForHumans() }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- QUICK STATS SUMMARY --}}
+    <div class="dashboard-card summary-card">
+        <div class="card-header-modern">
+            <h3 class="card-title">
+                <i class="fas fa-info-circle"></i>
+                Resumen del Sistema
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <i class="fas fa-database summary-icon"></i>
+                    <div class="summary-text">
+                        <span class="summary-label">Total de Registros</span>
+                        <span class="summary-value">{{ number_format($stats['totales']['general']) }}</span>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-building summary-icon"></i>
+                    <div class="summary-text">
+                        <span class="summary-label">Laboratorios Activos</span>
+                        <span class="summary-value">{{ $stats['totales']['laboratorios'] }}</span>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-layer-group summary-icon"></i>
+                    <div class="summary-text">
+                        <span class="summary-label">Módulos Configurados</span>
+                        <span class="summary-value">{{ $stats['totales']['modulos'] }}</span>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fas fa-check-circle summary-icon"></i>
+                    <div class="summary-text">
+                        <span class="summary-label">Items en Buen Estado</span>
+                        <span class="summary-value">{{ number_format($stats['inventario']['bueno']) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css" rel="stylesheet">
 <style>
-/* Variables CSS */
+/* ========================================
+   DASHBOARD STYLES - PROFESIONAL & MODERNO
+   ======================================== */
 :root {
-    --primary-color: #3b82f6;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --danger-color: #ef4444;
-    --purple-color: #8b5cf6;
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #06b6d4;
+    --purple: #8b5cf6;
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
     --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
     --gray-500: #6b7280;
+    --gray-600: #4b5563;
     --gray-700: #374151;
+    --gray-800: #1f2937;
     --gray-900: #111827;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -106,7 +605,562 @@
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* Animaciones base */
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Hero Section */
+.dashboard-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hero-title i {
+    font-size: 2rem;
+    opacity: 0.9;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+}
+
+.hero-stats-mini {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.mini-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mini-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.mini-stat-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.mini-stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.75rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    transform: scaleX(0);
+    transition: transform 0.5s ease;
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.stat-card-primary::before { background: linear-gradient(90deg, var(--primary), #60a5fa); }
+.stat-card-success::before { background: linear-gradient(90deg, var(--success), #34d399); }
+.stat-card-info::before { background: linear-gradient(90deg, var(--info), #22d3ee); }
+.stat-card-warning::before { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+.stat-card-purple::before { background: linear-gradient(90deg, var(--purple), #a78bfa); }
+.stat-card-danger::before { background: linear-gradient(90deg, var(--danger), #f87171); }
+
+.stat-card-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card-primary .stat-card-icon {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    color: var(--primary);
+}
+
+.stat-card-success .stat-card-icon {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: var(--success);
+}
+
+.stat-card-info .stat-card-icon {
+    background: linear-gradient(135deg, #cffafe, #a5f3fc);
+    color: var(--info);
+}
+
+.stat-card-warning .stat-card-icon {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: var(--warning);
+}
+
+.stat-card-purple .stat-card-icon {
+    background: linear-gradient(135deg, #e9d5ff, #ddd6fe);
+    color: var(--purple);
+}
+
+.stat-card-danger .stat-card-icon {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: var(--danger);
+}
+
+.stat-card:hover .stat-card-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.stat-card-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--gray-900), var(--gray-700));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-card-change {
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--gray-500);
+}
+
+.stat-card-change.positive {
+    color: var(--success);
+}
+
+.stat-card-change.negative {
+    color: var(--danger);
+}
+
+.stat-card-progress {
+    margin-top: 1rem;
+    height: 6px;
+    background: var(--gray-100);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--success));
+    border-radius: 10px;
+    transition: width 1.5s ease-out;
+    position: relative;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.chart-card {
+    grid-column: span 2;
+}
+
+@media (max-width: 1024px) {
+    .chart-card {
+        grid-column: span 1;
+    }
+}
+
+.card-header-modern {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-title i {
+    color: var(--primary);
+}
+
+.card-link {
+    font-size: 0.875rem;
+    color: var(--primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.card-link:hover {
+    gap: 0.75rem;
+    color: var(--primary-dark);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Module Stats List */
+.module-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.module-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--gray-50);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.module-stat-item:hover {
+    background: white;
+    border-color: var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);
+}
+
+.module-stat-item.highlight {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: var(--primary);
+}
+
+.module-icon {
+    font-size: 1.5rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.module-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.module-name {
+    font-weight: 600;
+    color: var(--gray-900);
+    font-size: 0.9375rem;
+}
+
+.module-count {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+.module-link {
+    color: var(--gray-400);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.module-stat-item:hover .module-link {
+    color: var(--primary);
+    transform: scale(1.2);
+}
+
+/* Quick Actions */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.quick-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.quick-action-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.quick-action-btn i {
+    font-size: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.quick-action-btn span {
+    position: relative;
+    z-index: 1;
+    font-size: 0.875rem;
+}
+
+.action-biotec { background: linear-gradient(135deg, var(--success), #34d399); }
+.action-fisico { background: linear-gradient(135deg, var(--info), #22d3ee); }
+.action-zoo { background: linear-gradient(135deg, var(--warning), #fbbf24); }
+.action-micro { background: linear-gradient(135deg, var(--purple), #a78bfa); }
+.action-inventario { background: linear-gradient(135deg, var(--primary), #60a5fa); }
+.action-areas { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+.quick-action-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Recent Items */
+.recent-card {
+    animation: fadeInUp 1s ease-out;
+}
+
+.recent-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.recent-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: var(--gray-50);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.recent-item:hover {
+    background: white;
+    border-color: var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.recent-item-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--success));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.recent-item-content {
+    flex: 1;
+}
+
+.recent-item-title {
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+    font-size: 0.9375rem;
+}
+
+.recent-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.recent-item-date {
+    color: var(--gray-500);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-bueno {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #166534;
+}
+
+.badge-regular {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+}
+
+.badge-malo {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+}
+
+.badge-default {
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -118,683 +1172,375 @@
     }
 }
 
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-@keyframes bounce {
-    0%, 20%, 53%, 80%, 100% {
-        transform: translate3d(0,0,0);
-    }
-    40%, 43% {
-        transform: translate3d(0, -8px, 0);
-    }
-    70% {
-        transform: translate3d(0, -4px, 0);
-    }
-    90% {
-        transform: translate3d(0, -2px, 0);
-    }
-}
-
 @keyframes shimmer {
     0% {
-        background-position: -200px 0;
+        transform: translateX(-100%);
     }
     100% {
-        background-position: calc(200px + 100%) 0;
+        transform: translateX(100%);
     }
 }
 
-/* Grid System */
-.grid {
+/* Trend Stats Grid */
+.trend-stats-grid {
     display: grid;
-    animation: fadeInUp 0.6s ease-out;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
-.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-.gap-4 { gap: 1rem; }
-.gap-6 { gap: 1.5rem; }
-.mb-4 { margin-bottom: 1rem; }
-.mb-8 { margin-bottom: 2rem; }
-.ml-4 { margin-left: 1rem; }
-.p-3 { padding: 0.75rem; }
-.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
-.text-center { text-align: center; }
-.text-gray-500 { color: var(--gray-500); }
-.text-gray-900 { color: var(--gray-900); }
-.text-blue-600 { color: var(--primary-color); }
-.text-green-600 { color: var(--success-color); }
-.text-red-600 { color: var(--danger-color); }
-.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
-.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-.font-semibold { font-weight: 600; }
-.font-bold { font-weight: 700; }
-.flex { display: flex; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-
-/* Stats Cards */
-.stats-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+.trend-stat-card {
+    background: white;
     border-radius: 16px;
     padding: 1.5rem;
     box-shadow: var(--shadow-md);
     border: 1px solid var(--gray-200);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.stats-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-.stats-card:hover::before {
-    transform: scaleX(1);
-}
-
-.stats-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-xl);
-}
-
-.stats-card-blue:hover { border-color: var(--primary-color); }
-.stats-card-green:hover { border-color: var(--success-color); }
-.stats-card-red:hover { border-color: var(--danger-color); }
-
-.stats-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.stats-icon::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.stats-card:hover .stats-icon::before {
-    opacity: 1;
-}
-
-.stats-icon-blue {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: var(--primary-color);
-}
-
-.stats-icon-green {
-    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-    color: var(--success-color);
-}
-
-.stats-icon-red {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: var(--danger-color);
-}
-
-.stats-card:hover .stats-icon {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.stats-progress {
-    margin-top: 1rem;
-    height: 4px;
-    background: var(--gray-200);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.stats-progress-bar {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 1.5s ease-out;
-    position: relative;
-}
-
-.stats-progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    animation: shimmer 2s infinite;
-}
-
-.stats-progress-blue { background: linear-gradient(90deg, var(--primary-color), #60a5fa); }
-.stats-progress-green { background: linear-gradient(90deg, var(--success-color), #34d399); }
-.stats-progress-red { background: linear-gradient(90deg, var(--danger-color), #f87171); }
-
-/* Counter Animation */
-.counter {
-    background: linear-gradient(135deg, currentColor, currentColor);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Action Cards */
-.action-cards-container {
-    animation: slideInRight 0.8s ease-out;
-}
-
-.action-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 16px;
-    padding: 1.5rem;
-    border: 1px solid var(--gray-200);
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
     display: flex;
     align-items: center;
     gap: 1rem;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.action-card::before {
+.trend-stat-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
+    left: 0;
+    width: 4px;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition: left 0.5s ease;
+    background: linear-gradient(180deg, var(--primary), var(--success));
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
 }
 
-.action-card:hover::before {
-    left: 100%;
+.trend-stat-card:hover::before {
+    transform: scaleY(1);
 }
 
-.action-card:hover {
+.trend-stat-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 
-.action-card-primary:hover { border-color: var(--primary-color); }
-.action-card-success:hover { border-color: var(--success-color); }
-.action-card-warning:hover { border-color: var(--warning-color); }
-.action-card-purple:hover { border-color: var(--purple-color); }
+.trend-today::before { background: linear-gradient(180deg, var(--success), #34d399); }
+.trend-week::before { background: linear-gradient(180deg, var(--info), #22d3ee); }
+.trend-month::before { background: linear-gradient(180deg, var(--warning), #fbbf24); }
+.trend-value::before { background: linear-gradient(180deg, var(--purple), #a78bfa); }
 
-.action-card-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
+.trend-stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.trend-today .trend-stat-icon { background: linear-gradient(135deg, var(--success), #34d399); }
+.trend-week .trend-stat-icon { background: linear-gradient(135deg, var(--info), #22d3ee); }
+.trend-month .trend-stat-icon { background: linear-gradient(135deg, var(--warning), #fbbf24); }
+.trend-value .trend-stat-icon { background: linear-gradient(135deg, var(--purple), #a78bfa); }
+
+.trend-stat-content {
+    flex: 1;
+}
+
+.trend-stat-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.trend-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1;
+}
+
+/* Top Modules */
+.top-modules-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.top-module-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 14px;
+    background: var(--gray-50);
     transition: all 0.3s ease;
+    border: 1px solid transparent;
 }
 
-.action-card-primary .action-card-icon {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: var(--primary-color);
+.top-module-item:hover {
+    background: white;
+    border-color: var(--gray-200);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(4px);
 }
 
-.action-card-success .action-card-icon {
-    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-    color: var(--success-color);
+.top-module-rank {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 50px;
 }
 
-.action-card-warning .action-card-icon {
-    background: linear-gradient(135deg, #fef3c7, #fde68a);
-    color: var(--warning-color);
+.rank-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-700);
 }
 
-.action-card-purple .action-card-icon {
-    background: linear-gradient(135deg, #e9d5ff, #ddd6fe);
-    color: var(--purple-color);
+.rank-medal i {
+    font-size: 1.25rem;
 }
 
-.action-card:hover .action-card-icon {
-    transform: scale(1.1);
+.top-module-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
 }
 
-.action-card-content h3 {
+.top-module-info {
+    flex: 1;
+}
+
+.top-module-name {
     font-size: 1rem;
     font-weight: 600;
-    margin: 0 0 0.25rem 0;
     color: var(--gray-900);
+    margin-bottom: 0.25rem;
 }
 
-.action-card-content p {
+.top-module-count {
     font-size: 0.875rem;
     color: var(--gray-500);
     margin: 0;
 }
 
-.action-card-arrow {
-    margin-left: auto;
+.top-module-link {
     color: var(--gray-400);
     transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 1.25rem;
 }
 
-.action-card:hover .action-card-arrow {
+.top-module-item:hover .top-module-link {
+    color: var(--primary);
     transform: translateX(4px);
-    color: var(--gray-600);
 }
 
-/* Modern Table */
-.modern-table-container {
-    animation: fadeInUp 1s ease-out;
-}
-
-.table-container {
-    position: relative;
-}
-
-.table-scroll-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    border: 1px solid #bfdbfe;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-    color: #1e40af;
+/* Alert Card */
+.alert-card {
+    border-left: 4px solid var(--warning);
     animation: pulse 2s infinite;
 }
 
-.table-scroll-indicator i {
-    font-size: 1rem;
-}
-
-.modern-table-wrapper {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    overflow-x: auto;
-    max-width: 100%;
-}
-
-.modern-table {
-    width: 100%;
-    min-width: 1800px; /* Asegurar que todas las columnas tengan espacio */
-    border-collapse: collapse;
-    background: white;
-}
-
-.table-header {
-    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    padding: 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: var(--gray-700);
-    border-bottom: 2px solid var(--gray-200);
-    position: relative;
-}
-
-.table-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-.modern-table:hover .table-header::after {
-    transform: scaleX(1);
-}
-
-.table-row {
-    transition: all 0.2s ease;
-    border-bottom: 1px solid var(--gray-100);
-}
-
-.table-row:hover {
-    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    transform: scale(1.01);
-    box-shadow: var(--shadow-sm);
-}
-
-.table-cell {
-    padding: 1rem;
-    color: var(--gray-900);
-    vertical-align: middle;
-}
-
-.table-description {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.table-description-full {
-    max-width: 300px;
-    word-wrap: break-word;
-    white-space: normal;
-    line-height: 1.4;
-    max-height: 100px;
-    overflow-y: auto;
-}
-
-/* Table Images */
-.table-image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 2px solid var(--gray-200);
-    transition: all 0.3s ease;
-}
-
-.table-image-container:hover {
-    border-color: var(--primary-color);
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
-}
-
-.table-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.table-image:hover {
-    transform: scale(1.1);
-}
-
-.no-image {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-    border: 2px dashed var(--gray-300);
-    border-radius: 8px;
-    color: var(--gray-500);
-    font-size: 0.75rem;
-    text-align: center;
-}
-
-.no-image i {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
-}
-
-.no-image span {
-    font-size: 0.625rem;
-    font-weight: 500;
-}
-
-.table-value {
-    font-weight: 600;
-    color: var(--success-color);
-}
-
-/* Status Badges */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.status-badge:hover {
-    transform: scale(1.05);
-}
-
-.status-good {
-    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.status-regular {
+.alert-header {
     background: linear-gradient(135deg, #fef3c7, #fde68a);
-    color: #92400e;
-    border: 1px solid #fde68a;
 }
 
-.status-bad {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: #991b1b;
-    border: 1px solid #fecaca;
+.alert-badge {
+    background: var(--danger);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 700;
 }
 
-/* Action Buttons */
-.action-buttons {
+.alert-item {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1px solid #fbbf24;
 }
 
-.action-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    border: none;
+.alert-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    font-size: 0.875rem;
+    font-size: 1.5rem;
+    color: var(--warning);
+    flex-shrink: 0;
 }
 
-.action-btn:hover {
-    transform: scale(1.1);
+.alert-content {
+    flex: 1;
 }
 
-.action-btn-edit {
-    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-    color: var(--primary-color);
-}
-
-.action-btn-edit:hover {
-    background: linear-gradient(135deg, #bfdbfe, #93c5fd);
-    box-shadow: var(--shadow-md);
-}
-
-.action-btn-delete {
-    background: linear-gradient(135deg, #fee2e2, #fecaca);
-    color: var(--danger-color);
-}
-
-.action-btn-delete:hover {
-    background: linear-gradient(135deg, #fecaca, #fca5a5);
-    box-shadow: var(--shadow-md);
-}
-
-/* Modern Buttons */
-.modern-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-.modern-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.modern-btn:hover::before {
-    left: 100%;
-}
-
-.modern-btn-success {
-    background: linear-gradient(135deg, var(--success-color), #34d399);
-    color: white;
-    box-shadow: var(--shadow-sm);
-}
-
-.modern-btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 3rem 1rem;
-}
-
-.empty-state-content {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.empty-state-content i {
-    font-size: 4rem;
-    color: var(--gray-300);
-    margin-bottom: 1rem;
-    animation: bounce 2s infinite;
-}
-
-.empty-state-content h3 {
-    font-size: 1.25rem;
+.alert-title {
+    font-size: 1.125rem;
     font-weight: 600;
-    color: var(--gray-700);
+    color: var(--gray-900);
     margin-bottom: 0.5rem;
 }
 
-.empty-state-content p {
-    color: var(--gray-500);
+.alert-message {
+    font-size: 0.9375rem;
+    color: var(--gray-700);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.alert-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--warning);
+    font-weight: 600;
+    text-decoration: none;
     font-size: 0.875rem;
+    transition: all 0.3s ease;
 }
 
-/* Responsive Design */
-@media (min-width: 768px) {
-    .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.alert-action:hover {
+    gap: 0.75rem;
+    color: var(--danger);
 }
 
-@media (min-width: 1024px) {
-    .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Summary Card */
+.summary-card {
+    margin-top: 2rem;
 }
 
-/* Loading Animation */
-.loading {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200px 100%;
-    animation: shimmer 1.5s infinite;
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid var(--gray-200);
+    transition: all 0.3s ease;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--gray-100);
-    border-radius: 4px;
+.summary-item:hover {
+    background: white;
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
 }
 
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--primary-color), var(--success-color));
-    border-radius: 4px;
+.summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--success));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #2563eb, #059669);
+.summary-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.summary-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    line-height: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .trend-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
+@endpush
 
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-// Counter Animation
 document.addEventListener('DOMContentLoaded', function() {
+    // Counter Animation
     const counters = document.querySelectorAll('.counter');
     
     counters.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-target'));
-        const duration = 2000; // 2 seconds
-        const increment = target / (duration / 16); // 60fps
+        const target = parseInt(counter.getAttribute('data-target')) || 0;
+        const duration = 2000;
+        const increment = target / (duration / 16);
         let current = 0;
         
         const updateCounter = () => {
             if (current < target) {
                 current += increment;
-                counter.textContent = Math.floor(current);
+                counter.textContent = Math.floor(current).toLocaleString();
                 requestAnimationFrame(updateCounter);
             } else {
-                counter.textContent = target;
+                counter.textContent = target.toLocaleString();
             }
         };
         
-        // Start animation when element is in viewport
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -806,191 +1552,190 @@ document.addEventListener('DOMContentLoaded', function() {
         
         observer.observe(counter);
     });
-});
 
-// Export and Reports functions
-function exportPDF() {
-    // Add loading animation
-    const btn = event.target.closest('button');
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
-    btn.disabled = true;
-    
-    // Redirect to PDF export route
-    window.location.href = '{{ route("dashboard.export.pdf") }}';
-    
-    // Reset button after a short delay
-    setTimeout(() => {
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
-    }, 1000);
-}
-
-function exportExcel() {
-    // Add loading animation
-    const btn = event.target.closest('button');
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Excel...';
-    btn.disabled = true;
-    
-    // Redirect to Excel export route
-    window.location.href = '{{ route("dashboard.export.excel") }}';
-    
-    // Reset button after a short delay
-    setTimeout(() => {
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
-    }, 1000);
-}
-
-function showReports() {
-    // Add loading animation
-    const btn = event.target.closest('button');
-    const originalContent = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
-    btn.disabled = true;
-    
-    setTimeout(() => {
-        btn.innerHTML = originalContent;
-        btn.disabled = false;
-        // Here you would implement actual reports functionality
-        alert('Función de reportes en desarrollo');
-    }, 2000);
-}
-
-// Add hover effects to table rows
-document.addEventListener('DOMContentLoaded', function() {
-    const tableRows = document.querySelectorAll('.table-row');
-    
-    tableRows.forEach(row => {
-        row.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.01)';
+    // Chart: Distribución por Laboratorio
+    const ctx = document.getElementById('labDistributionChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Inventario General', 'Biotecnología', 'Físico Química', 'Zoología', 'Microbiología'],
+                datasets: [{
+                    data: [
+                        {{ $stats['inventario']['total'] }},
+                        {{ $stats['biotecnologia']['total'] }},
+                        {{ $stats['fisicoquimica']['total'] }},
+                        {{ $stats['zoologia']['total'] }},
+                        {{ $stats['microbiologia']['total'] }}
+                    ],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(6, 182, 212, 0.8)',
+                        'rgba(245, 158, 11, 0.8)',
+                        'rgba(139, 92, 246, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(59, 130, 246)',
+                        'rgb(16, 185, 129)',
+                        'rgb(6, 182, 212)',
+                        'rgb(245, 158, 11)',
+                        'rgb(139, 92, 246)'
+                    ],
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: '600'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return `${label}: ${value.toLocaleString()} items (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                }
+            }
         });
+    }
+
+    // Trend Chart: Tendencias de Ingreso
+    const trendCtx = document.getElementById('trendChart');
+    if (trendCtx) {
+        const monthlyData = @json($monthlyStats);
         
-        row.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: monthlyData.map(item => item.label),
+                datasets: [
+                    {
+                        label: 'Inventario General',
+                        data: monthlyData.map(item => item.inventario),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                    },
+                    {
+                        label: 'Biotecnología',
+                        data: monthlyData.map(item => item.biotecnologia),
+                        borderColor: 'rgb(16, 185, 129)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: 'rgb(16, 185, 129)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 13,
+                                weight: '600'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y} items`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            font: {
+                                size: 11
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
         });
-    });
-});
-
-// Image Modal Functions
-function openImageModal(imageSrc) {
-    const modal = document.getElementById('imageModal');
-    const modalImage = document.getElementById('modalImage');
-    const modalInfo = document.getElementById('modalImageInfo');
-    
-    modalImage.src = imageSrc;
-    modalInfo.textContent = 'Imagen del inventario';
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-function closeImageModal() {
-    const modal = document.getElementById('imageModal');
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-// Close modal with Escape key
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeImageModal();
     }
 });
 </script>
-
-<!-- Modal para ver imagen en tamaño completo -->
-<div id="imageModal" class="image-modal" onclick="closeImageModal()">
-    <div class="image-modal-content" onclick="event.stopPropagation()">
-        <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
-        <img id="modalImage" src="" alt="Imagen del inventario">
-        <div class="image-modal-info">
-            <p id="modalImageInfo">Imagen del inventario</p>
-        </div>
-    </div>
-</div>
-
-<style>
-/* Image Modal Styles */
-.image-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(5px);
-    animation: fadeIn 0.3s ease;
-}
-
-.image-modal-content {
-    position: relative;
-    margin: auto;
-    padding: 20px;
-    width: 90%;
-    max-width: 800px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    animation: slideInUp 0.3s ease;
-}
-
-.image-modal-close {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1001;
-    transition: color 0.3s ease;
-}
-
-.image-modal-close:hover {
-    color: #000;
-}
-
-.image-modal-content img {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-.image-modal-info {
-    text-align: center;
-    margin-top: 15px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.image-modal-info p {
-    margin: 0;
-    color: #6b7280;
-    font-weight: 500;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(-50%) translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(-50%) translateY(0);
-    }
-}
-</style>
+@endpush
 @endsection
