@@ -162,10 +162,10 @@
                     Distribución por Laboratorio
                 </h3>
             </div>
-            <div class="card-body">
-                <canvas id="labDistributionChart"></canvas>
-            </div>
-        </div>
+        <div class="card-body">
+                <canvas id="labDistributionChart" class="dashboard-chart"></canvas>
+                </div>
+                </div>
 
         {{-- DETAILED STATS: Biotecnología --}}
         <div class="dashboard-card detail-card">
@@ -185,7 +185,7 @@
                         <div class="module-info">
                             <span class="module-name">Utilería</span>
                             <span class="module-count">{{ $stats['biotecnologia']['utileria'] }} items</span>
-                        </div>
+            </div>
                         <a href="{{ route('biotecnologia.utileria.index') }}" class="module-link">
                             <i class="fas fa-external-link-alt"></i>
                         </a>
@@ -241,8 +241,8 @@
                         </a>
                     </div>
                 </div>
-            </div>
         </div>
+    </div>
 
         {{-- DETAILED STATS: Físico Química --}}
         <div class="dashboard-card detail-card">
@@ -255,28 +255,28 @@
                     Ver todo <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-            <div class="card-body">
+        <div class="card-body">
                 <div class="module-stats-list">
                     <div class="module-stat-item">
                         <span class="module-icon">🧪</span>
                         <div class="module-info">
                             <span class="module-name">Adsorción Atómica</span>
                             <span class="module-count">{{ $stats['fisicoquimica']['adsorcion'] }} items</span>
-                        </div>
+                </div>
                         <a href="{{ route('fisicoquimica.adsorcion.index') }}" class="module-link">
                             <i class="fas fa-external-link-alt"></i>
                         </a>
-                    </div>
+                </div>
                     <div class="module-stat-item">
                         <span class="module-icon">🌾</span>
                         <div class="module-info">
                             <span class="module-name">Secado de Suelos</span>
                             <span class="module-count">{{ $stats['fisicoquimica']['secado'] }} items</span>
-                        </div>
+            </div>
                         <a href="{{ route('fisicoquimica.secado_suelos.index') }}" class="module-link">
                             <i class="fas fa-external-link-alt"></i>
                         </a>
-                    </div>
+            </div>
                     <div class="module-stat-item">
                         <span class="module-icon">🏢</span>
                         <div class="module-info">
@@ -325,8 +325,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
+    </div>
 
         {{-- QUICK ACTIONS --}}
         <div class="dashboard-card actions-card">
@@ -336,7 +336,7 @@
                     Accesos Rápidos
                 </h3>
             </div>
-            <div class="card-body">
+        <div class="card-body">
                 <div class="quick-actions-grid">
                     <a href="{{ route('biotecnologia.index') }}" class="quick-action-btn action-biotec">
                         <i class="fas fa-seedling"></i>
@@ -363,9 +363,9 @@
                         <span>Áreas</span>
                     </a>
                 </div>
+                </div>
             </div>
-        </div>
-    </div>
+            </div>
 
     {{-- TREND STATISTICS --}}
     <div class="trend-stats-grid">
@@ -376,9 +376,9 @@
             <div class="trend-stat-content">
                 <h4 class="trend-stat-label">Agregados Hoy</h4>
                 <p class="trend-stat-value counter" data-target="{{ $itemsToday }}">0</p>
-            </div>
         </div>
-        
+    </div>
+
         <div class="trend-stat-card trend-week">
             <div class="trend-stat-icon">
                 <i class="fas fa-calendar-week"></i>
@@ -420,10 +420,10 @@
                     Tendencias de Ingreso (Últimos 6 Meses)
                 </h3>
             </div>
-            <div class="card-body">
-                <canvas id="trendChart" style="max-height: 300px;"></canvas>
-            </div>
-        </div>
+        <div class="card-body">
+                <canvas id="trendChart" class="dashboard-chart"></canvas>
+                </div>
+                </div>
 
         {{-- TOP MODULES --}}
         <div class="dashboard-card top-modules-card">
@@ -447,8 +447,8 @@
                                 @elseif($index === 2)
                                     <i class="fas fa-medal" style="color: #cd7f32;"></i>
                                 @endif
-                            </div>
-                        </div>
+            </div>
+        </div>
                         <div class="top-module-icon" style="background: linear-gradient(135deg, {{ $module['color'] }}20, {{ $module['color'] }}10);">
                             <i class="{{ $module['icon'] }}" style="color: {{ $module['color'] }};"></i>
                         </div>
@@ -464,7 +464,7 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 
     {{-- ALERTS AND NOTIFICATIONS --}}
     @if($itemsNeedingAttention > 0)
@@ -873,6 +873,9 @@
 
 .chart-card {
     grid-column: span 2;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 @media (max-width: 1024px) {
@@ -882,12 +885,27 @@
 }
 
 .card-header-modern {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--gray-200);
     background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.chart-card .card-header-modern {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.chart-card .card-title {
+    font-size: 1.125rem;
+    margin: 0;
+}
+
+.chart-card .card-title i {
+    font-size: 1rem;
 }
 
 .card-title {
@@ -920,6 +938,33 @@
 
 .card-body {
     padding: 1.5rem;
+}
+
+.chart-card {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.chart-card .card-body {
+    padding: 0.75rem 1rem 1rem 1rem !important;
+    min-height: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-chart {
+    width: 100% !important;
+    height: 220px !important;
+    max-height: 220px !important;
+    display: block;
+    margin: 0 auto;
+    padding: 0;
 }
 
 /* Module Stats List */
@@ -1588,18 +1633,21 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
+                aspectRatio: 2,
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            padding: 20,
+                            padding: 8,
                             font: {
-                                size: 12,
+                                size: 10,
                                 weight: '600'
                             },
                             usePointStyle: true,
-                            pointStyle: 'circle'
+                            pointStyle: 'circle',
+                            boxWidth: 10,
+                            boxHeight: 10
                         }
                     },
                     tooltip: {
@@ -1622,6 +1670,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                     }
+                },
+                layout: {
+                    padding: 0
                 },
                 animation: {
                     animateRotate: true,
@@ -1649,12 +1700,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         tension: 0.4,
-                        fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                         pointBackgroundColor: 'rgb(59, 130, 246)',
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
+                        pointBorderWidth: 1.5,
                     },
                     {
                         label: 'Biotecnología',
@@ -1662,29 +1713,71 @@ document.addEventListener('DOMContentLoaded', function() {
                         borderColor: 'rgb(16, 185, 129)',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         tension: 0.4,
-                        fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                         pointBackgroundColor: 'rgb(16, 185, 129)',
                         pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
+                        pointBorderWidth: 1.5,
+                    },
+                    {
+                        label: 'Físico Química',
+                        data: monthlyData.map(item => item.fisicoquimica),
+                        borderColor: 'rgb(6, 182, 212)',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: 'rgb(6, 182, 212)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                    },
+                    {
+                        label: 'Zoología',
+                        data: monthlyData.map(item => item.zoologia),
+                        borderColor: 'rgb(245, 158, 11)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: 'rgb(245, 158, 11)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                    },
+                    {
+                        label: 'Microbiología',
+                        data: monthlyData.map(item => item.microbiologia),
+                        borderColor: 'rgb(139, 92, 246)',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: 'rgb(139, 92, 246)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
                     }
                 ]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
+                aspectRatio: 2.5,
                 plugins: {
                     legend: {
                         position: 'top',
                         labels: {
-                            padding: 15,
+                            padding: 8,
                             font: {
-                                size: 13,
+                                size: 10,
                                 weight: '600'
                             },
                             usePointStyle: true,
-                            pointStyle: 'circle'
+                            pointStyle: 'circle',
+                            boxWidth: 10,
+                            boxHeight: 10
                         }
                     },
                     tooltip: {
@@ -1710,26 +1803,34 @@ document.addEventListener('DOMContentLoaded', function() {
                         ticks: {
                             precision: 0,
                             font: {
-                                size: 11
-                            }
+                                size: 8
+                            },
+                            padding: 2,
+                            maxTicksLimit: 5
                         },
                         grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
                         }
                     },
                     x: {
                         ticks: {
                             font: {
-                                size: 11
-                            }
+                                size: 8
+                            },
+                            padding: 2
                         },
                         grid: {
-                            display: false
+                            display: false,
+                            drawBorder: false
                         }
                     }
                 },
+                layout: {
+                    padding: 0
+                },
                 animation: {
-                    duration: 2000,
+                    duration: 1500,
                     easing: 'easeOutQuart'
                 }
             }
