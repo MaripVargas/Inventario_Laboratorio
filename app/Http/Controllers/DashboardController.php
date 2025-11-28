@@ -149,12 +149,47 @@ class DashboardController extends Controller
         $monthStart = $month->copy()->startOfMonth();
         $monthEnd = $month->copy()->endOfMonth();
         
+        // Inventario General
+        $monthInventario = Inventario::whereBetween('created_at', [$monthStart, $monthEnd])->count();
+        
+        // Biotecnología
+        $monthBiotec = BiotecnologiaUtileria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + BiotecnologiaVidrieria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + BiotecnologiaReactivos::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + BiotecnologiaSiembra::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + BiotecnologiaIncubacion::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + BiotecnologiaSiembraEquipo::whereBetween('created_at', [$monthStart, $monthEnd])->count();
+        
+        // Físico Química
+        $monthFisicoQuimica = FisicoquimicaAdsorcionAtomica::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaSecadoSuelos::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaAreaAdministrativa::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaDeposito::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaAreaBalanzas::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaLaboratorioAnalisis::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaAdsorcionAtomicaEquipo::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaSecadoSuelosEquipo::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaDepositoEquipo::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaAreaBalanzasEquipo::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + FisicoquimicaLaboratorioAnalisisEquipo::whereBetween('created_at', [$monthStart, $monthEnd])->count();
+        
+        // Zoología
+        $monthZoologia = ZoologiaUtileria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + ZoologiaVidrieria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + ZoologiaReactivos::whereBetween('created_at', [$monthStart, $monthEnd])->count();
+        
+        // Microbiología
+        $monthMicrobiologia = MicrobiologiaUtileria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + MicrobiologiaVidrieria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
+            + MicrobiologiaReactivos::whereBetween('created_at', [$monthStart, $monthEnd])->count();
+        
         $monthlyStats[] = [
             'label' => $month->format('M Y'),
-            'inventario' => Inventario::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
-            'biotecnologia' => BiotecnologiaUtileria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
-                + BiotecnologiaVidrieria::whereBetween('created_at', [$monthStart, $monthEnd])->count()
-                + BiotecnologiaReactivos::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
+            'inventario' => $monthInventario,
+            'biotecnologia' => $monthBiotec,
+            'fisicoquimica' => $monthFisicoQuimica,
+            'zoologia' => $monthZoologia,
+            'microbiologia' => $monthMicrobiologia,
         ];
     }
     
