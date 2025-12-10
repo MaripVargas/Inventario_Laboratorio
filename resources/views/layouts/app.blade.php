@@ -609,7 +609,7 @@
                 <a href="{{ route('inventario.index') }}"
                    class="submenu-item {{ request()->routeIs('inventario.index') ? 'active' : '' }}">
                     <span class="submenu-icon">📦</span>
-                    Inventario General
+                    Equipos y Muebles
                 </a>
                <a href="{{route('zoologia.utileria.index')}}" class="submenu-item">
             <span class="submenu-icon">🧰</span>
@@ -682,7 +682,7 @@
                 <a href="{{ route('fisicoquimica.index') }}"
                    class="submenu-item {{ request()->routeIs('fisicoquimica.index') ? 'active' : '' }}">
                     <span class="submenu-icon">📦</span>
-                    Inventario General
+                    Equipos y Muebles
                 </a>
                 <a href="{{ route('fisicoquimica.adsorcion.index') }}" class="submenu-item">
                     <span class="submenu-icon">🧪</span>
@@ -725,7 +725,7 @@
                 <a href="{{ route('microbiologia.index') }}"
                    class="submenu-item {{ request()->routeIs('microbiologia.index') ? 'active' : '' }}">
                     <span class="submenu-icon">📦</span>
-                    Inventario General
+                    Equipos y Muebles
                 </a>
                <a href="{{route('microbiologia.utileria.index')}}" class="submenu-item">
             <span class="submenu-icon">🧰</span>
