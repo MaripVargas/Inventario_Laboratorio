@@ -29,7 +29,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
-            color: #1a202c;
+            color: #1e293b;
         }
 
         .sidebar {
@@ -38,9 +38,10 @@
             top: 0;
             width: 280px;
             height: 100vh;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
             z-index: 1000;
             overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar-header {
@@ -58,7 +59,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -66,6 +67,7 @@
             font-weight: 600;
             font-size: 1.2rem;
             margin-right: 1rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         .user-info h3 {
@@ -130,7 +132,8 @@
             top: 0;
             bottom: 0;
             width: 4px;
-            background: #10b981;
+            background: #60a5fa;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
         }
 
         .menu-icon {
@@ -149,10 +152,10 @@
         }
 
         .content-header {
-            background: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             padding: 1.5rem 2rem;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .content-body {
@@ -162,20 +165,25 @@
         .page-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #1a202c;
+            color: #1e40af;
             margin-bottom: 0.5rem;
         }
 
         .page-subtitle {
-            color: #64748b;
+            color: #6b7280;
             font-size: 0.9rem;
         }
 
         .card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
 
         .card-header {
@@ -200,21 +208,27 @@
         }
 
         .btn-primary {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .btn-primary:hover {
-            background: #2563eb;
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
         }
 
         .btn-success {
-            background: #10b981;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .btn-success:hover {
-            background: #059669;
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
         }
 
         .btn-icon {
@@ -308,12 +322,12 @@
         }
         
         .modal-body::-webkit-scrollbar-thumb {
-            background: #dc3545;
+            background: #3b82f6;
             border-radius: 10px;
         }
         
         .modal-body::-webkit-scrollbar-thumb:hover {
-            background: #c82333;
+            background: #2563eb;
         }
         
         /* Estilos para los inputs del formulario */
@@ -326,8 +340,8 @@
         }
         
         .form-control:focus, .form-select:focus {
-            border-color: #dc3545;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
             outline: none;
         }
         
@@ -381,21 +395,23 @@
         }
         
         .modal .btn-secondary {
-            background: #6c757d;
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
         }
-        
+
         .modal .btn-secondary:hover {
-            background: #5a6268;
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+            box-shadow: 0 6px 16px rgba(107, 114, 128, 0.4);
             transform: translateY(-2px);
         }
         
         /* Alert de información */
         .alert-info {
-            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-            border: 1px solid #b8daff;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 1px solid #93c5fd;
             border-radius: 8px;
-            color: #0c5460;
+            color: #1e40af;
         }
         
         /* Spinner de carga */

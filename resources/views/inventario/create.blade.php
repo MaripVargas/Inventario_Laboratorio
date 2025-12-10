@@ -454,25 +454,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <style>
-/* Variables CSS */
+/* Variables CSS - Paleta Profesional Azul y Gris */
 :root {
-    --primary-color: #3b82f6;
+    --primary-color: #2563eb;
+    --primary-light: #3b82f6;
+    --primary-dark: #1e40af;
+    --primary-accent: #60a5fa;
     --success-color: #10b981;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
-    --purple-color: #8b5cf6;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
     --gray-200: #e5e7eb;
     --gray-300: #d1d5db;
     --gray-400: #9ca3af;
     --gray-500: #6b7280;
+    --gray-600: #4b5563;
     --gray-700: #374151;
+    --gray-800: #1e293b;
     --gray-900: #111827;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(37, 99, 235, 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(37, 99, 235, 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-blue: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
 /* Animaciones */
