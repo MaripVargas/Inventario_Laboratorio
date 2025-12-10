@@ -90,13 +90,13 @@ $(document).ready(function() {
                                 <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                        <a href="{{ route('biotecnologia.reactivos.edit', $item->id) }}" 
+                                        <a href="{{ route('microbiologia.reactivos.edit', $item->id) }}" 
                                            class="btn btn-warning btn-sm btn-edit" 
                                            data-id="{{ $item->id }}" title="Editar">
                                            <i class="fas fa-edit"></i>
                                         </a>
 
-                                        <form action="{{ route('biotecnologia.reactivos.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('microbiologia.reactivos.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm action-btn-delete" title="Eliminar"
