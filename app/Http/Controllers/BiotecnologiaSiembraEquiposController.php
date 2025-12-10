@@ -120,14 +120,15 @@ class BiotecnologiaSiembraEquiposController extends Controller
     // -------------------------------
     // 1. RESPONSABLES POR DEFECTO
     // -------------------------------
-    $defaultResponsables = collect([
-        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
-        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-        ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
-        ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
-        ['nombre_responsable' => 'Pastrana Granados Eduardo', 'cedula' => '7719513'],
-    ]);
+   $defaultResponsables = collect([
+            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+            ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
+            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+            ['nombre_responsable' => ' Eduardo Pastrana Granado ', 'cedula' => '7719513'],
+            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ]);
 
     // -------------------------------
     // 2. DATOS DESDE LA BD
