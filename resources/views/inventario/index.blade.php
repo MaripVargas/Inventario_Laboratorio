@@ -141,7 +141,7 @@
                     <th class="table-header" style="width: 100px;">IV ID</th>
                     <th class="table-header" style="width: 120px;">Código Regional</th>
                     <th class="table-header" style="width: 120px;">Código Centro</th>
-                    <th class="table-header" style="width: 150px;">Fecha Mantenimiento</th>
+                    <th class="table-header" style="width: 150px;">Ubicacion</th>
                     <th class="table-header" style="width: 110px;">No. Placa</th>
                     <th class="table-header" style="width: 110px;">consecutivo</th>
                     <th class="table-header" style="width: 150px;">Desc. SKU</th>
@@ -153,7 +153,7 @@
                     <th class="table-header" style="width: 130px;">Valor</th>
                     <th class="table-header" style="width: 110px;">Estado</th>
                     <th class="table-header" style="width: 130px;">Tipo de Material</th>
-                    <th class="table-header" style="width: 130px;">Gestión</th>
+                    <th class="table-header" style="width: 130px;">Fecha Mantenimiento</th>
                     <th class="table-header" style="width: 120px;">Uso</th>
                     <th class="table-header" style="width: 120px;">Contrato</th>
                     <th class="table-header" style="width: 180px;">Nombre Responsable</th>

@@ -79,15 +79,15 @@
                                        placeholder="Ej: CEN-001" value="{{ old('cod_centro') }}">
                             </div>
                         </div>
-                       <div class="form-group">
+                        <div class="form-group">
                             <label class="form-label">
-                                Fecha Mantenimiento <span class="required">*</span>
+                                Ubicacion <span class="required">*</span>
                             </label>
                             <div class="input-container">
-                                <i class="fas fa-calendar input-icon"></i>
-                                <input type="date" name="fecha_adq" required 
+                                <i class="fas fa-warehouse input-icon"></i>
+                                <input type="text" name="desc_almacen" required 
                                        class="form-input"
-                                       value="{{ old('fecha_adq') }}">
+                                       placeholder="Ej: Almacén Principal" value="{{ old('desc_almacen') }}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -150,13 +150,13 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">
-                                Gestión <span class="required">*</span>
+                                Fecha Mantenimiento <span class="required">*</span>
                             </label>
                             <div class="input-container">
-                                <i class="fas fa-calendar-alt input-icon"></i>
-                                <input type="text" name="gestion" required 
+                                <i class="fas fa-calendar input-icon"></i>
+                                <input type="date" name="fecha_adq" required 
                                        class="form-input"
-                                       placeholder="Ej: 2024" value="{{ old('gestion') }}">
+                                       value="{{ old('fecha_adq') }}">
                             </div>
                         </div>
                     </div>
