@@ -11,112 +11,113 @@ use App\Exports\InventarioExport;
 class InventarioController extends Controller
 {
 
-   
+
     /**
      * Display a listing of the resource.
      */
-   public function index(Request $request)
-{
-    // Iniciar la consulta base$query = Inventario::where('lab_module', 'zoologia_botanica');
-$query = Inventario::where('lab_module', 'zoologia_botanica');
+    public function index(Request $request)
+    {
+        // Iniciar la consulta base$query = Inventario::where('lab_module', 'zoologia_botanica');
+        $query = Inventario::where('lab_module', 'zoologia_botanica');
 
-    // 🔍 Filtro por tipo de material
-    if ($request->filled('tipo_material')) {
-        $tipoMaterial = $request->tipo_material;
-        // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
-        if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
-            $query->where(function($q) {
-                $q->where('tipo_material', 'Mueblería')
-                  ->orWhere('tipo_material', 'Muebles');
-            });
-        } elseif ($tipoMaterial == 'Vidriería' || $tipoMaterial == 'Vidrieria') {
-            $query->where(function($q) {
-                $q->where('tipo_material', 'Vidrieria')
-                  ->orWhere('tipo_material', 'Vidriería');
-            });
-        } else {
-            $query->where('tipo_material', $tipoMaterial);
+        // 🔍 Filtro por tipo de material
+        if ($request->filled('tipo_material')) {
+            $tipoMaterial = $request->tipo_material;
+            // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
+            if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
+                $query->where(function ($q) {
+                    $q->where('tipo_material', 'Mueblería')
+                        ->orWhere('tipo_material', 'Muebles');
+                });
+            } elseif ($tipoMaterial == 'Vidriería' || $tipoMaterial == 'Vidrieria') {
+                $query->where(function ($q) {
+                    $q->where('tipo_material', 'Vidrieria')
+                        ->orWhere('tipo_material', 'Vidriería');
+                });
+            } else {
+                $query->where('tipo_material', $tipoMaterial);
+            }
         }
-    }
-    
-    // 🔹 Filtrado por cuentadante (nombre del responsable)
-    if ($request->filled('nombre_responsable')) {
-        $query->where('nombre_responsable', $request->nombre_responsable);
-    }
 
-    // 🔢 Filtro por placa
-    if ($request->filled('no_placa')) {
-        $query->where('no_placa', 'like', "%{$request->no_placa}%");
+        // 🔹 Filtrado por cuentadante (nombre del responsable)
+        if ($request->filled('nombre_responsable')) {
+            $query->where('nombre_responsable', $request->nombre_responsable);
+        }
+
+        // 🔢 Filtro por placa
+        if ($request->filled('no_placa')) {
+            $query->where('no_placa', 'like', "%{$request->no_placa}%");
+        }
+
+        // 🔎 Filtro de búsqueda (si agregaste el input "buscar")
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($subquery) use ($buscar) {
+                $subquery->where('ir_id', 'like', "%{$buscar}%")
+                    ->orWhere('desc_sku', 'like', "%{$buscar}%")
+                    ->orWhere('descripcion_elemento', 'like', "%{$buscar}%");
+            });
+        }
+
+        $items = $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends($request->all());
+
+        // 📤 Retornar la vista
+        return view('inventario.index', compact('items'));
     }
-
-    // 🔎 Filtro de búsqueda (si agregaste el input "buscar")
-    if ($request->filled('buscar')) {
-        $buscar = $request->buscar;
-        $query->where(function ($subquery) use ($buscar) {
-            $subquery->where('ir_id', 'like', "%{$buscar}%")
-                     ->orWhere('desc_sku', 'like', "%{$buscar}%")
-                     ->orWhere('descripcion_elemento', 'like', "%{$buscar}%");
-        });
-    }
-
-$items = $query->orderBy('created_at', 'desc')
-    ->paginate(10)
-    ->appends($request->all());
-
-    // 📤 Retornar la vista
-    return view('inventario.index', compact('items'));
-}
 
     /**
      * Show the form for creating a new resource.
      */
-  public function create()
-{
-    // Obtener lista de responsables únicos con su cédula de la base de datos
-    $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
-        ->whereNotNull('nombre_responsable')
-        ->where('nombre_responsable', '!=', '')
-        ->groupBy('nombre_responsable', 'cedula')
-        ->orderBy('nombre_responsable')
-        ->get()
-        ->map(function($item) {
-            return [
-                'nombre_responsable' => $item->nombre_responsable,
-                'cedula' => $item->cedula
-            ];
-        });
+    public function create()
+    {
+        // Obtener lista de responsables únicos con su cédula de la base de datos
+        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+            ->whereNotNull('nombre_responsable')
+            ->where('nombre_responsable', '!=', '')
+            ->groupBy('nombre_responsable', 'cedula')
+            ->orderBy('nombre_responsable')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'nombre_responsable' => $item->nombre_responsable,
+                    'cedula' => $item->cedula
+                ];
+            });
 
-    // Responsables por defecto (catálogo base)
-    $defaultResponsables = collect([
-        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
-        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-        ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
-         ['nombre_responsable'=>'Kathryn Yadira Pacheco Guzman', 'cedula'=>'38142927'],
-          ['nombre_responsable'=>'Pastrana Granados Eduardo', 'cedula'=>'7719513'],
-    ]);
+        // Responsables por defecto (catálogo base)
+        $defaultResponsables = collect([
+            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+            ['nombre_responsable' => 'Yoly Dayana Moreno', 'cedula' => '34327134'],
+            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+            ['nombre_responsable' => 'Pastrana Granados Eduardo', 'cedula' => '7719513'],
+            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ]);
 
-    // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
-    $responsables = $defaultResponsables
-        ->concat($responsablesDb)
-        ->unique('nombre_responsable')
-        ->sortBy('nombre_responsable')
-        ->values();
+        // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
+        $responsables = $defaultResponsables
+            ->concat($responsablesDb)
+            ->unique('nombre_responsable')
+            ->sortBy('nombre_responsable')
+            ->values();
 
-    // Crear el catálogo con los datos necesarios para el formulario
-    $catalogo = [
-        'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
-        'estados' => ['bueno', 'regular', 'malo'],
-        'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
-        'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
-    ];
+        // Crear el catálogo con los datos necesarios para el formulario
+        $catalogo = [
+            'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
+            'estados' => ['bueno', 'regular', 'malo'],
+            'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
+            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+        ];
 
-    return view('inventario.create', [
-        'labModule' => 'zoologia_botanica',
-        'responsables' => $responsables,
-        'catalogo' => $catalogo
-    ]);
-}
+        return view('inventario.create', [
+            'labModule' => 'zoologia_botanica',
+            'responsables' => $responsables,
+            'catalogo' => $catalogo
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -142,7 +143,7 @@ $items = $query->orderBy('created_at', 'desc')
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
-             'tipo_material' => 'required|string|max:50',
+            'tipo_material' => 'required|string|max:50',
             'uso' => 'nullable|string|max:255',
             'contrato' => 'nullable|string|max:255',
             'nombre_responsable' => 'nullable|string|max:255',
@@ -168,9 +169,9 @@ $items = $query->orderBy('created_at', 'desc')
 
         // Redirigir según el módulo de origen
         $redirectRoute = $this->getRedirectRouteFromLabModule($data['lab_module']);
-        
+
         return redirect()->route($redirectRoute)
-                        ->with('success', 'Item agregado exitosamente al inventario.');
+            ->with('success', 'Item agregado exitosamente al inventario.');
     }
 
     /**
@@ -185,43 +186,47 @@ $items = $query->orderBy('created_at', 'desc')
     /**
      * Show the form for editing the specified resource.
      */
-public function edit($id)
-{
-    $item = Inventario::findOrFail($id);
-    // Obtener lista de responsables únicos con su cédula
-    $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
-        ->whereNotNull('nombre_responsable')
-        ->where('nombre_responsable', '!=', '')
-        ->groupBy('nombre_responsable', 'cedula')
-        ->orderBy('nombre_responsable')
-        ->get();
+    public function edit($id)
+    {
+        $item = Inventario::findOrFail($id);
+        // Obtener lista de responsables únicos con su cédula
+        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+            ->whereNotNull('nombre_responsable')
+            ->where('nombre_responsable', '!=', '')
+            ->groupBy('nombre_responsable', 'cedula')
+            ->orderBy('nombre_responsable')
+            ->get();
 
-    // Responsables por defecto (catálogo base)
-    $defaultResponsables = collect([
-        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '1234567890'],
-        ['nombre_responsable' => 'Maria Goretti Ramirez',    'cedula' => '0987654321'],
-        ['nombre_responsable' => 'Alcy Rene Ceron',     'cedula' => '76316028'],
-        ['nombre_responsable' => 'Yoli Dayana Moreno',     'cedula' => '34327134'],
-    ]);
+        // Responsables por defecto (catálogo base)
+        $defaultResponsables = collect([
+            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+            ['nombre_responsable' => 'Yoly Dayana Moreno', 'cedula' => '34327134'],
+            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+            ['nombre_responsable' => 'Pastrana Granados Eduardo', 'cedula' => '7719513'],
+            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ]);
 
-    // Unir catálogo con los existentes en BD, sin duplicar por nombre
-    $responsables = $defaultResponsables
-        ->concat($responsablesDb)
-        ->filter(function($r){ return !empty($r['nombre_responsable'] ?? $r->nombre_responsable); })
-        ->map(function($r){
-            return [
-                'nombre_responsable' => is_array($r) ? $r['nombre_responsable'] : $r->nombre_responsable,
-                'cedula' => is_array($r) ? $r['cedula'] : $r->cedula,
-            ];
-        })
-        ->unique('nombre_responsable')
-        ->sortBy('nombre_responsable')
-        ->values();
+        // Unir catálogo con los existentes en BD, sin duplicar por nombre
+        $responsables = $defaultResponsables
+            ->concat($responsablesDb)
+            ->filter(function ($r) {
+                return !empty($r['nombre_responsable'] ?? $r->nombre_responsable); })
+            ->map(function ($r) {
+                return [
+                    'nombre_responsable' => is_array($r) ? $r['nombre_responsable'] : $r->nombre_responsable,
+                    'cedula' => is_array($r) ? $r['cedula'] : $r->cedula,
+                ];
+            })
+            ->unique('nombre_responsable')
+            ->sortBy('nombre_responsable')
+            ->values();
 
-    return view('inventario.edit', compact('item', 'responsables'));
-}
+        return view('inventario.edit', compact('item', 'responsables'));
+    }
 
- public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         // Validación
         $validated = $request->validate([
@@ -369,7 +374,7 @@ public function edit($id)
 
         // Determinar por la URL de referencia
         $referer = $request->header('referer');
-        
+
         if (str_contains($referer, 'biotecnologia')) {
             return 'biotecnologia_vegetal';
         } elseif (str_contains($referer, 'fisicoquimica')) {
@@ -398,30 +403,30 @@ public function edit($id)
         }
     }
 
-    
- 
-public function exportPdf($modulo)
-{
-    $inventario = Inventario::where('lab_module', $modulo)->get();
-    
-    $stats = [
-        'total_items' => $inventario->count(),
-        'total_value' => $inventario->sum('valor_adq'),
-        'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
-        'estado_regular' => $inventario->where('estado', 'regular')->count(),
-        'estado_malo' => $inventario->where('estado', 'malo')->count(),
-        'gestiones' => $inventario->pluck('gestion')->unique()->count(),
-    ];
-    
-    $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'));
-    $pdf->setPaper('A4', 'portrait');
-    
-    return $pdf->download('inventario_' . $modulo . '_' . date('Y-m-d') . '.pdf');
-}
 
-public function exportExcel($modulo)
-   {
-       return Excel::download(new InventarioExport($modulo), 'inventario_' . $modulo . '_' . date('Y-m-d') . '.xlsx');
-   }
+
+    public function exportPdf($modulo)
+    {
+        $inventario = Inventario::where('lab_module', $modulo)->get();
+
+        $stats = [
+            'total_items' => $inventario->count(),
+            'total_value' => $inventario->sum('valor_adq'),
+            'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
+            'estado_regular' => $inventario->where('estado', 'regular')->count(),
+            'estado_malo' => $inventario->where('estado', 'malo')->count(),
+            'gestiones' => $inventario->pluck('gestion')->unique()->count(),
+        ];
+
+        $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'));
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->download('inventario_' . $modulo . '_' . date('Y-m-d') . '.pdf');
+    }
+
+    public function exportExcel($modulo)
+    {
+        return Excel::download(new InventarioExport($modulo), 'inventario_' . $modulo . '_' . date('Y-m-d') . '.xlsx');
+    }
 
 }
