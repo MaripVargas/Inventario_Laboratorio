@@ -11,7 +11,7 @@
         <div class="card-header modern-header">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Lista de Reactivos</h2>
-                <a href="{{ route('zoologia.reactivos.create') }}" class="modern-btn modern-btn-primary">
+                <a href="{{ route('microbiologia.reactivos.create') }}" class="modern-btn modern-btn-primary">
                     <i class="fas fa-plus"></i> Agregar Reactivo
                 </a>
             </div>

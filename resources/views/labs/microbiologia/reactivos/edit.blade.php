@@ -1,4 +1,4 @@
-<form action="{{ route('zoologia.reactivos.update', $item->id) }}" method="POST" id="editForm">
+<form action="{{ route('microbiologia.reactivos.update', $item->id) }}" method="POST" id="editForm">
     @csrf
     @method('PUT')
 

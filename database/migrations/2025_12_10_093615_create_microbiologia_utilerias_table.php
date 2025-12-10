@@ -11,13 +11,18 @@ class CreateMicrobiologiaUtileriasTable extends Migration
      *
      * @return void
      */
-    public function up()
+     public function up()
     {
         Schema::create('microbiologia_utilerias', function (Blueprint $table) {
-            $table->id();
+         $table->id();
+            $table->string('nombre_item');
+            $table->integer('cantidad')->nullable();
+            $table->string('unidad')->nullable(); // unidad de medida
+            $table->string('detalle')->nullable();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

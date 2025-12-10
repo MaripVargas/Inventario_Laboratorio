@@ -11,7 +11,7 @@
         <div class="card-header modern-header">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Lista de Vidriería</h2>
-                <a href="{{ route('zoologia.vidrieria.create') }}" class="modern-btn modern-btn-primary">
+                <a href="{{ route('microbiologia.vidrieria.create') }}" class="modern-btn modern-btn-primary">
                     <i class="fas fa-plus"></i> Agregar Vidriería
                 </a>
             </div>
@@ -89,11 +89,11 @@ $(document).ready(function() {
                                 <td class="table-cell">{{ $item->created_at?->format('d/m/Y H:i') ?? '-' }}</td>
                                 <td class="table-cell sticky-column">
                                     <div class="action-buttons d-flex align-items-center gap-2">
-                                       <a href="{{ route('zoologia.vidrieria.edit', $item->id) }}" class="btn btn-warning btn-sm btn-edit" title="Editar">
+                                       <a href="{{ route('microbiologia.vidrieria.edit', $item->id) }}" class="btn btn-warning btn-sm btn-edit" title="Editar">
     <i class="fas fa-edit"></i>
 </a>
 
-                                        <form action="{{ route('zoologia.vidrieria.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('microbiologia.vidrieria.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm action-btn-delete" title="Eliminar"
