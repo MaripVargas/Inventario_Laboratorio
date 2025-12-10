@@ -114,21 +114,26 @@ class BiotecnologiaSiembraEquiposController extends Controller
             'biotecnologia_siembra_equipos_' . now()->format('Y-m-d_His') . '.xlsx'
         );
     }
-
-    private function getCatalogos()
+private function getCatalogos()
 {
     // -------------------------------
-    // 1. RESPONSABLES POR DEFECTO
+    // 1. RESPONSABLES POR DEFECTO (LISTA MAESTRA)
     // -------------------------------
-   $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
-            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-            ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
-            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
-            ['nombre_responsable' => ' Eduardo Pastrana Granado ', 'cedula' => '7719513'],
-            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
-        ]);
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+        ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+        ['nombre_responsable' => 'Eduardo Pastrana Granado', 'cedula' => '7719513'],
+        ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+        ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
+    ])->map(fn ($item) => [
+        'nombre' => trim($item['nombre_responsable']),
+        'cedula' => trim($item['cedula']),
+    ]);
+
+    // Extraer cédulas de defaults para filtrar después
+    $cedulasDefaults = $defaultResponsables->pluck('cedula')->toArray();
 
     // -------------------------------
     // 2. DATOS DESDE LA BD
@@ -147,49 +152,34 @@ class BiotecnologiaSiembraEquiposController extends Controller
         'usuario_registra'
     )->get();
 
-    // Combinar
+    // Combinar ambas fuentes
     $merged = $equipos->concat($inventario);
 
     // -------------------------------
-    // 3. RESPONSABLES DE BD NORMALIZADOS
+    // 3. RESPONSABLES DE BD (EXCLUYENDO DEFAULTS Y CEDULAS DE PRUEBA)
     // -------------------------------
     $responsablesDb = $merged
-        ->filter(fn ($item) => !empty($item->nombre_responsable))
+        ->filter(function ($item) use ($cedulasDefaults) {
+            $cedulaLimpia = trim($item->cedula ?? '');
+            $nombreLimpio = trim($item->nombre_responsable ?? '');
+            
+            return !empty($nombreLimpio)
+                && !empty($cedulaLimpia)
+                && !in_array($cedulaLimpia, $cedulasDefaults)  // ✅ Excluir defaults
+                && !str_contains($cedulaLimpia, '123456')       // ✅ Excluir cédulas de prueba
+                && !str_contains($cedulaLimpia, '0987654');
+        })
         ->map(fn ($item) => [
             'nombre' => trim($item->nombre_responsable),
             'cedula' => trim($item->cedula),
-        ]);
-
-    // -------------------------------
-    // 4. RESPONSABLES FINALES CORREGIDOS (SIN DUPLICADOS)
-    // -------------------------------
-    // Normalizar catálogo base
-    $base = $defaultResponsables->map(fn ($item) => [
-        'nombre' => trim($item['nombre_responsable']),
-        'cedula' => trim($item['cedula']),
-    ]);
-
-    // Diccionario final: nombre → cédula
-    $dict = [];
-
-    // 4A. Agregar primero los del catálogo base (prioridad)
-    foreach ($base as $r) {
-        $dict[$r['nombre']] = $r['cedula'];
-    }
-
-    // 4B. Agregar los de BD SOLO si no existen en el catálogo base
-    foreach ($responsablesDb as $r) {
-        if (!isset($dict[$r['nombre']])) {
-            $dict[$r['nombre']] = $r['cedula'];
-        }
-    }
-
-    // 4C. Convertir a colección ordenada
-    $responsables = collect($dict)
-        ->map(fn ($cedula, $nombre) => [
-            'nombre' => $nombre,
-            'cedula' => $cedula,
         ])
+        ->unique('cedula');  // ✅ Eliminar duplicados por cédula
+
+    // -------------------------------
+    // 4. RESPONSABLES FINALES (DEFAULTS + ADICIONALES DE BD)
+    // -------------------------------
+    $responsables = $defaultResponsables
+        ->concat($responsablesDb)
         ->sortBy('nombre')
         ->values();
 
@@ -205,6 +195,7 @@ class BiotecnologiaSiembraEquiposController extends Controller
     $vinculacionesDb = $merged
         ->pluck('vinculacion')
         ->filter()
+        ->map(fn($v) => trim($v))
         ->unique();
 
     $vinculaciones = $defaultVinculaciones
@@ -219,6 +210,7 @@ class BiotecnologiaSiembraEquiposController extends Controller
     $pluckUnique = fn ($field) => $merged
         ->pluck($field)
         ->filter()
+        ->map(fn($v) => is_string($v) ? trim($v) : $v)
         ->unique()
         ->sort()
         ->values();

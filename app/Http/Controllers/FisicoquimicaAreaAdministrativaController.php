@@ -149,64 +149,75 @@ class FisicoquimicaAreaAdministrativaController extends Controller
             });
     }
 
+    // ================================================================
+    // 🔥 MÉTODO getCatalogos() SIN DUPLICADOS (VERSIÓN FINAL)
+    // ================================================================
     private function getCatalogos()
     {
-         $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
-            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-            ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
-            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
-            ['nombre_responsable' => ' Eduardo Pastrana Granado ', 'cedula' => '7719513'],
-            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
-        ]);
+        // Normalizador
+        $normalize = function ($value) {
+            if (!$value) return '';
+            $value = trim($value);
+            $value = preg_replace('/\s+/', ' ', $value);
+            return mb_strtolower($value);
+        };
 
+        // Default
+        $defaultResponsables = collect([
+            ['nombre' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+            ['nombre' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+            ['nombre' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+            ['nombre' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
+            ['nombre' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+            ['nombre' => 'Eduardo Pastrana Granado', 'cedula' => '7719513'],
+            ['nombre' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ])->map(function ($item) use ($normalize) {
+            return [
+                'nombre' => trim(preg_replace('/\s+/', ' ', $item['nombre'])),
+                'cedula' => trim($item['cedula']),
+                'key'    => $normalize($item['nombre']),
+            ];
+        });
+
+        // BD
         $items = FisicoquimicaAreaAdministrativa::select(
-            'nombre_responsable',
-            'cedula',
-            'vinculacion',
-            'usuario_registra'
+            'nombre_responsable', 'cedula', 'vinculacion', 'usuario_registra'
         )->get();
 
         $inventario = Inventario::select(
-            'nombre_responsable',
-            'cedula',
-            'vinculacion',
-            'usuario_registra'
+            'nombre_responsable', 'cedula', 'vinculacion', 'usuario_registra'
         )->get();
 
         $merged = $items->concat($inventario);
 
+        // Normalizar BD
         $responsablesDb = $merged
-            ->filter(fn ($item) => !empty($item->nombre_responsable))
-            ->map(fn ($item) => [
-                'nombre' => $item->nombre_responsable,
-                'cedula' => $item->cedula,
-            ]);
+            ->filter(fn ($item) => !empty(trim($item->nombre_responsable)))
+            ->map(function ($item) use ($normalize) {
+                $nombre = trim(preg_replace('/\s+/', ' ', $item->nombre_responsable));
+                return [
+                    'nombre' => $nombre,
+                    'cedula' => trim($item->cedula ?? ''),
+                    'key'    => $normalize($nombre),
+                ];
+            });
 
+        // Combinar + eliminar duplicados
         $responsables = $defaultResponsables
-            ->map(fn ($item) => [
-                'nombre' => $item['nombre_responsable'],
-                'cedula' => $item['cedula'],
-            ])
             ->concat($responsablesDb)
-            ->unique(fn ($item) => $item['nombre'] . '|' . ($item['cedula'] ?? ''))
+            ->unique('key')
             ->sortBy('nombre')
             ->values();
 
+        // Vinculaciones
         $defaultVinculaciones = collect([
             'Funcionario Administrativo',
             'Contrato',
             'Provisional'
         ]);
 
-        $vinculacionesDb = $merged
-            ->pluck('vinculacion')
-            ->filter()
-            ->unique();
-
         $vinculaciones = $defaultVinculaciones
-            ->concat($vinculacionesDb)
+            ->concat($merged->pluck('vinculacion')->filter())
             ->unique()
             ->sort()
             ->values();
@@ -226,5 +237,4 @@ class FisicoquimicaAreaAdministrativaController extends Controller
         ];
     }
 }
-
 
