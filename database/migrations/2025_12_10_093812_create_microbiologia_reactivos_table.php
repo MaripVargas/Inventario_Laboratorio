@@ -14,7 +14,12 @@ class CreateMicrobiologiaReactivosTable extends Migration
     public function up()
     {
         Schema::create('microbiologia_reactivos', function (Blueprint $table) {
-            $table->id();
+               $table->id();
+            $table->string('nombre_reactivo');
+            $table->integer('cantidad')->nullable();
+            $table->string('unidad')->nullable(); // mL, L, tarro...
+            $table->string('concentracion')->nullable(); // ej. "45%"
+            $table->string('detalle')->nullable();
             $table->timestamps();
         });
     }

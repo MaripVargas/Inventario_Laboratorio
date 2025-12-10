@@ -11,7 +11,7 @@
         <div class="card-header modern-header">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-900">Lista de Artículos de Utilería</h2>
-                <a href="{{ route('zoologia.utileria.create') }}" class="modern-btn modern-btn-primary">
+                <a href="{{ route('microbiologia.utileria.create') }}" class="modern-btn modern-btn-primary">
                     <i class="fas fa-plus"></i> Agregar Artículo
                 </a>
             </div>
@@ -100,7 +100,7 @@ $(document).ready(function() {
     <i class="fas fa-edit"></i>
 </a>
 
-                                        <form action="{{ route('zoologia.utileria.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('microbiologia.utileria.destroy', $item->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm action-btn-delete" title="Eliminar"
@@ -1137,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', function() {
             editModal.show();
 
             // Cargar datos vía fetch
-            fetch(`/zoologia/utileria/${itemId}/edit`)
+            fetch(`/microbiologia/utileria/${itemId}/edit`)
                 .then(res => res.json())
                 .then(data => {
                     // Llenar formulario
@@ -1147,7 +1147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('detalle').value = data.detalle || '';
 
                     // Cambiar action del formulario
-                    editForm.action = `/zoologia/utileria/${itemId}`;
+                    editForm.action = `/microbiologia/utileria/${itemId}`;
 
                     // Mostrar formulario y ocultar spinner
                     loadingSpinner.style.display = 'none';

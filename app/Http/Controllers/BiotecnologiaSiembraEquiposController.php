@@ -116,85 +116,122 @@ class BiotecnologiaSiembraEquiposController extends Controller
     }
 
     private function getCatalogos()
-    {
-        // Responsables por defecto (catálogo base)
-        $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
-            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-            ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
-            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
-            ['nombre_responsable' => 'Pastrana Granados Eduardo', 'cedula' => '7719513'],
+{
+    // -------------------------------
+    // 1. RESPONSABLES POR DEFECTO
+    // -------------------------------
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Carolina Avila', 'cedula' => '28551046'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+        ['nombre_responsable' => 'Yoli Dayana Moreno', 'cedula' => '34327134'],
+        ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+        ['nombre_responsable' => 'Pastrana Granados Eduardo', 'cedula' => '7719513'],
+    ]);
+
+    // -------------------------------
+    // 2. DATOS DESDE LA BD
+    // -------------------------------
+    $equipos = BiotecnologiaSiembraEquipo::select(
+        'nombre_responsable',
+        'cedula',
+        'vinculacion',
+        'usuario_registra'
+    )->get();
+
+    $inventario = Inventario::select(
+        'nombre_responsable',
+        'cedula',
+        'vinculacion',
+        'usuario_registra'
+    )->get();
+
+    // Combinar
+    $merged = $equipos->concat($inventario);
+
+    // -------------------------------
+    // 3. RESPONSABLES DE BD NORMALIZADOS
+    // -------------------------------
+    $responsablesDb = $merged
+        ->filter(fn ($item) => !empty($item->nombre_responsable))
+        ->map(fn ($item) => [
+            'nombre' => trim($item->nombre_responsable),
+            'cedula' => trim($item->cedula),
         ]);
 
-        $equipos = BiotecnologiaSiembraEquipo::select(
-            'nombre_responsable',
-            'cedula',
-            'vinculacion',
-            'usuario_registra'
-        )->get();
+    // -------------------------------
+    // 4. RESPONSABLES FINALES CORREGIDOS (SIN DUPLICADOS)
+    // -------------------------------
+    // Normalizar catálogo base
+    $base = $defaultResponsables->map(fn ($item) => [
+        'nombre' => trim($item['nombre_responsable']),
+        'cedula' => trim($item['cedula']),
+    ]);
 
-        $inventario = Inventario::select(
-            'nombre_responsable',
-            'cedula',
-            'vinculacion',
-            'usuario_registra'
-        )->get();
+    // Diccionario final: nombre → cédula
+    $dict = [];
 
-        // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
-        $merged = $equipos->concat($inventario);
-
-        $responsablesDb = $merged
-            ->filter(fn ($item) => !empty($item->nombre_responsable))
-            ->map(fn ($item) => [
-                'nombre' => $item->nombre_responsable,
-                'cedula' => $item->cedula,
-            ]);
-
-        // Combinar responsables por defecto con los de la BD
-        $responsables = $defaultResponsables
-            ->map(fn ($item) => [
-                'nombre' => $item['nombre_responsable'],
-                'cedula' => $item['cedula'],
-            ])
-            ->concat($responsablesDb)
-            ->unique(fn ($item) => $item['nombre'] . '|' . ($item['cedula'] ?? ''))
-            ->sortBy('nombre')
-            ->values();
-
-        // Vinculaciones por defecto
-        $defaultVinculaciones = collect([
-            'Funcionario Administrativo',
-            'Contrato',
-            'Provisional'
-        ]);
-
-        $vinculacionesDb = $merged
-            ->pluck('vinculacion')
-            ->filter()
-            ->unique();
-
-        // Combinar vinculaciones por defecto con las de la BD
-        $vinculaciones = $defaultVinculaciones
-            ->concat($vinculacionesDb)
-            ->unique()
-            ->sort()
-            ->values();
-
-        $pluckUnique = fn ($field) => $merged
-            ->pluck($field)
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values();
-
-        return [
-            'responsables' => $responsables,
-            'cedulas' => $pluckUnique('cedula'),
-            'vinculaciones' => $vinculaciones,
-            'usuarios' => $pluckUnique('usuario_registra'),
-        ];
+    // 4A. Agregar primero los del catálogo base (prioridad)
+    foreach ($base as $r) {
+        $dict[$r['nombre']] = $r['cedula'];
     }
+
+    // 4B. Agregar los de BD SOLO si no existen en el catálogo base
+    foreach ($responsablesDb as $r) {
+        if (!isset($dict[$r['nombre']])) {
+            $dict[$r['nombre']] = $r['cedula'];
+        }
+    }
+
+    // 4C. Convertir a colección ordenada
+    $responsables = collect($dict)
+        ->map(fn ($cedula, $nombre) => [
+            'nombre' => $nombre,
+            'cedula' => $cedula,
+        ])
+        ->sortBy('nombre')
+        ->values();
+
+    // -------------------------------
+    // 5. VINCULACIONES
+    // -------------------------------
+    $defaultVinculaciones = collect([
+        'Funcionario Administrativo',
+        'Contrato',
+        'Provisional'
+    ]);
+
+    $vinculacionesDb = $merged
+        ->pluck('vinculacion')
+        ->filter()
+        ->unique();
+
+    $vinculaciones = $defaultVinculaciones
+        ->concat($vinculacionesDb)
+        ->unique()
+        ->sort()
+        ->values();
+
+    // -------------------------------
+    // 6. CEDULAS Y USUARIOS UNICOS
+    // -------------------------------
+    $pluckUnique = fn ($field) => $merged
+        ->pluck($field)
+        ->filter()
+        ->unique()
+        ->sort()
+        ->values();
+
+    // -------------------------------
+    // 7. RETORNO FINAL
+    // -------------------------------
+    return [
+        'responsables' => $responsables,
+        'cedulas' => $pluckUnique('cedula'),
+        'vinculaciones' => $vinculaciones,
+        'usuarios' => $pluckUnique('usuario_registra'),
+    ];
+}
 
     protected function filteredQuery(Request $request)
     {

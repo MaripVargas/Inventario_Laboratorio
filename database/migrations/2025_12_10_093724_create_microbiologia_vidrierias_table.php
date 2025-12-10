@@ -11,10 +11,15 @@ class CreateMicrobiologiaVidrieriasTable extends Migration
      *
      * @return void
      */
-    public function up()
+     public function up(): void
     {
         Schema::create('microbiologia_vidrierias', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre_item');
+            $table->string('volumen')->nullable();
+            $table->integer('cantidad')->nullable();
+            $table->string('unidad')->nullable();
+            $table->string('detalle')->nullable();
             $table->timestamps();
         });
     }
