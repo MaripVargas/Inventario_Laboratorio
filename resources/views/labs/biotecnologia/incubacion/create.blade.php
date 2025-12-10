@@ -167,7 +167,6 @@
                                 <option value="">Seleccionar tipo</option>
                                 <option value="Equipos" {{ old('tipo_material') == 'Equipos' ? 'selected' : '' }}>Equipos</option>
                                 <option value="Mueblería" {{ old('tipo_material') == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
-                                <option value="Vidrieria" {{ old('tipo_material') == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
                             </select>
                         </div>
                         @error('tipo_material')

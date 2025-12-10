@@ -69,7 +69,6 @@
                                     <option value="">Todos los tipos</option>
                                     <option value="Equipos" {{ request('tipo_material') == 'Equipos' ? 'selected' : '' }}>Equipos</option>
                                     <option value="Muebles" {{ request('tipo_material') == 'Muebles' ? 'selected' : '' }}>Muebles</option>
-                                    <option value="Vidriería" {{ request('tipo_material') == 'Vidriería' ? 'selected' : '' }}>Vidriería</option>
                                 </select>
                             </div>
                         </div>

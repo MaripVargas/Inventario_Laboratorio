@@ -173,7 +173,6 @@
             <option value="">Seleccionar tipo</option>
             <option value="Equipos" {{ $tipoValue == 'Equipos' ? 'selected' : '' }}>Equipos</option>
             <option value="Mueblería" {{ $tipoValue == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
-            <option value="Vidrieria" {{ $tipoValue == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
             
         </select>
     </div>

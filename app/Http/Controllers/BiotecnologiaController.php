@@ -21,16 +21,11 @@ class BiotecnologiaController extends Controller
         // 🔍 Filtro por tipo de material
         if ($request->filled('tipo_material')) {
             $tipoMaterial = $request->tipo_material;
-            // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
+            // Soportar variaciones: Mueblería/Muebles
             if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
                 $query->where(function($q) {
                     $q->where('tipo_material', 'Mueblería')
                       ->orWhere('tipo_material', 'Muebles');
-                });
-            } elseif ($tipoMaterial == 'Vidriería' || $tipoMaterial == 'Vidrieria') {
-                $query->where(function($q) {
-                    $q->where('tipo_material', 'Vidrieria')
-                      ->orWhere('tipo_material', 'Vidriería');
                 });
             } else {
                 $query->where('tipo_material', $tipoMaterial);
@@ -108,7 +103,7 @@ class BiotecnologiaController extends Controller
             ->values();
 
         $catalogo = [
-            'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
+            'tipos_material' => ['Equipos', 'Mueblería'],
             'estados' => ['bueno', 'regular', 'malo'],
             'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
             'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
