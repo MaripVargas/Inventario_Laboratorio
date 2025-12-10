@@ -20,15 +20,11 @@ class BiotecnologiaController extends Controller
         // 🔍 Filtro por tipo de material
         if ($request->filled('tipo_material')) {
             $tipoMaterial = $request->tipo_material;
+            // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
             if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
                 $query->where(function($q) {
                     $q->where('tipo_material', 'Mueblería')
                       ->orWhere('tipo_material', 'Muebles');
-                });
-            } elseif ($tipoMaterial == 'Vidriería' || $tipoMaterial == 'Vidrieria') {
-                $query->where(function($q) {
-                    $q->where('tipo_material', 'Vidrieria')
-                      ->orWhere('tipo_material', 'Vidriería');
                 });
             } else {
                 $query->where('tipo_material', $tipoMaterial);
@@ -126,12 +122,12 @@ public function create()
         ->sortBy('nombre_responsable')
         ->values();
 
-    $catalogo = [
-        'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
-        'estados' => ['bueno', 'regular', 'malo'],
-        'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
-        'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
-    ];
+        $catalogo = [
+            'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
+            'estados' => ['bueno', 'regular', 'malo'],
+            'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
+            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+        ];
 
     return view('inventario.create', [
         'labModule' => 'biotecnologia_vegetal',

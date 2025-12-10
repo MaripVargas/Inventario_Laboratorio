@@ -145,7 +145,6 @@
                 <option value="">Seleccione tipo</option>
                 <option value="Equipos" {{ $tipoMaterial == 'Equipos' ? 'selected' : '' }}>Equipos</option>
                 <option value="Mueblería" {{ $tipoMaterial == 'Mueblería' ? 'selected' : '' }}>Mueblería</option>
-                <option value="Vidrieria" {{ $tipoMaterial == 'Vidrieria' ? 'selected' : '' }}>Vidrieria</option>
             </select>
             @error('tipo_material')
                 <div class="invalid-feedback">{{ $message }}</div>
