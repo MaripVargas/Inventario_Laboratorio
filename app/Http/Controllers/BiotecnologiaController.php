@@ -126,7 +126,7 @@ public function create()
             'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
             'estados' => ['bueno', 'regular', 'malo'],
             'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
-            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Planta']
         ];
 
     return view('inventario.create', [

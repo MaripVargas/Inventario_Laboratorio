@@ -111,7 +111,7 @@ class InventarioController extends Controller
             'tipos_material' => ['Equipos', 'Mueblería'],
             'estados' => ['bueno', 'regular', 'malo'],
             'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
-            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Planta']
         ];
 
         return view('inventario.create', [

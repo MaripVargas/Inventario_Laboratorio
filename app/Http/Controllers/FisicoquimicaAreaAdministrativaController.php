@@ -213,7 +213,7 @@ class FisicoquimicaAreaAdministrativaController extends Controller
         $defaultVinculaciones = collect([
             'Funcionario Administrativo',
             'Contrato',
-            'Provisional'
+            'Planta'
         ]);
 
         $vinculaciones = $defaultVinculaciones
