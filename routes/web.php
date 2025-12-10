@@ -121,8 +121,8 @@ Route::middleware(['simulate.auth'])->group(function () {
 
    Route::prefix('microbiologia')->group(function () {
     Route::resource('utileria', MicrobiologiaUtileriaController::class)->names('microbiologia.utileria');
-    Route::resource('vidrieria', MicrobiologiaUtileriaController::class)->names('microbiologia.vidrieria');
-    Route::resource('reactivos', MicrobiologiaUtileriaController::class)->names('microbiologia.reactivos');
+    Route::resource('vidrieria', MicrobiologiaVidrieriaController::class)->names('microbiologia.vidrieria');
+    Route::resource('reactivos', MicrobiologiaReactivosController::class)->names('microbiologia.reactivos');
    
 });
 

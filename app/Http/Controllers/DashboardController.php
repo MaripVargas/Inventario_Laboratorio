@@ -38,7 +38,7 @@ class DashboardController extends Controller
      */
    public function index()
 {
-    // Inventario General
+    // Equipos y Muebles
     $totalItems = Inventario::count();
     $goodItems = Inventario::where('estado', 'bueno')->count();
     $badItems = Inventario::where('estado', 'malo')->count();
@@ -149,7 +149,7 @@ class DashboardController extends Controller
         $monthStart = $month->copy()->startOfMonth();
         $monthEnd = $month->copy()->endOfMonth();
         
-        // Inventario General
+        // Equipos y Muebles
         $monthInventario = Inventario::whereBetween('created_at', [$monthStart, $monthEnd])->count();
         
         // Biotecnología
@@ -212,7 +212,7 @@ class DashboardController extends Controller
     
     // Top 5 módulos con más items
     $topModules = [
-        ['name' => 'Inventario General', 'count' => $totalItems, 'route' => route('inventario.index'), 'icon' => 'fas fa-boxes', 'color' => '#3b82f6'],
+        ['name' => 'Equipos y Muebles', 'count' => $totalItems, 'route' => route('inventario.index'), 'icon' => 'fas fa-boxes', 'color' => '#3b82f6'],
         ['name' => 'Biotecnología', 'count' => $totalBiotec, 'route' => route('biotecnologia.index'), 'icon' => 'fas fa-seedling', 'color' => '#10b981'],
         ['name' => 'Físico Química', 'count' => $totalFisicoQuimica, 'route' => route('fisicoquimica.index'), 'icon' => 'fas fa-flask', 'color' => '#06b6d4'],
         ['name' => 'Zoología', 'count' => $totalZoologia, 'route' => route('zoologia.utileria.index'), 'icon' => 'fas fa-leaf', 'color' => '#f59e0b'],

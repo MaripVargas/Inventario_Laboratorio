@@ -42,7 +42,7 @@
                 <i class="fas fa-boxes"></i>
             </div>
             <div class="stat-card-content">
-                <h3 class="stat-card-label">Inventario General</h3>
+                <h3 class="stat-card-label">Equipos y Muebles</h3>
                 <p class="stat-card-value counter" data-target="{{ $stats['inventario']['total'] }}">0</p>
                 <div class="stat-card-footer">
                     <span class="stat-card-change positive">
@@ -356,7 +356,7 @@
                     </a>
                     <a href="{{ route('inventario.index') }}" class="quick-action-btn action-inventario">
                         <i class="fas fa-boxes"></i>
-                        <span>Inventario General</span>
+                        <span>Equipos y Muebles</span>
                     </a>
                     <a href="{{ route('areas.index') }}" class="quick-action-btn action-areas">
                         <i class="fas fa-map-marker-alt"></i>
@@ -1604,7 +1604,7 @@ document.addEventListener('DOMContentLoaded', function() {
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Inventario General', 'Biotecnología', 'Físico Química', 'Zoología', 'Microbiología'],
+                labels: ['Equipos y Muebles', 'Biotecnología', 'Físico Química', 'Zoología', 'Microbiología'],
                 datasets: [{
                     data: [
                         {{ $stats['inventario']['total'] }},
@@ -1695,7 +1695,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: monthlyData.map(item => item.label),
                 datasets: [
                     {
-                        label: 'Inventario General',
+                        label: 'Equipos y Muebles',
                         data: monthlyData.map(item => item.inventario),
                         borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
