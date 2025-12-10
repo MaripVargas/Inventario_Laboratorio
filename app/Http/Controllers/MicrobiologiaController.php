@@ -75,36 +75,45 @@ class MicrobiologiaController extends Controller
 
       public function create()
 {
-    // Obtener lista de responsables únicos con su cédula de la base de datos
+    // 1. Responsables por defecto (lista maestra)
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+        ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+        ['nombre_responsable' => 'Eduardo Pastrana Granado', 'cedula' => '7719513'],
+        ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+        ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
+    ]);
+
+    // 2. Cédulas válidas (solo las reales)
+    $cedulasValidas = $defaultResponsables->pluck('cedula')->toArray();
+
+    // 3. Obtener responsables adicionales de BD (excluyendo cédulas de prueba)
     $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
         ->whereNotNull('nombre_responsable')
         ->where('nombre_responsable', '!=', '')
-        ->groupBy('nombre_responsable', 'cedula')
-        ->orderBy('nombre_responsable')
+        ->whereNotNull('cedula')
+        ->where('cedula', '!=', '')
+        ->whereNotIn('cedula', $cedulasValidas)  // Excluir los que ya están en defaults
+        ->where('cedula', 'NOT LIKE', '%123456%') // 🔥 Excluir cédulas obvias de prueba
+        ->where('cedula', 'NOT LIKE', '%0987654%')
+        ->distinct()
         ->get()
-        ->map(function($item) {
+        ->map(function ($item) {
             return [
-                'nombre_responsable' => $item->nombre_responsable,
-                'cedula' => $item->cedula
+                'nombre_responsable' => $this->normalizarNombre($item->nombre_responsable),
+                'cedula' => trim($item->cedula),
             ];
-        });
+        })
+        ->unique('cedula');
 
-    // Responsables por defecto (catálogo base)
-   $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
-            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-            ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
-            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
-            ['nombre_responsable' => ' Eduardo Pastrana Granado ', 'cedula' => '7719513'],
-            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
-        ]);
-    // Combinar y asegurar unicidad - TODOS SON ARRAYS AHORA
+    // 4. Combinar: defaults + adicionales de BD
     $responsables = $defaultResponsables
         ->concat($responsablesDb)
-        ->unique('nombre_responsable')
         ->sortBy('nombre_responsable')
         ->values();
+
 
     // Crear el catálogo con los datos necesarios para el formulario
     $catalogo = [

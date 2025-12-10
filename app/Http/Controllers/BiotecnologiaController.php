@@ -10,7 +10,6 @@ use App\Exports\InventarioExport;
 
 class BiotecnologiaController extends Controller
 {
-    // 🔥 CORRECCIÓN: Agregar Request $request como parámetro
     public function index(Request $request)
     {
         $labModule = 'biotecnologia_vegetal';
@@ -21,7 +20,6 @@ class BiotecnologiaController extends Controller
         // 🔍 Filtro por tipo de material
         if ($request->filled('tipo_material')) {
             $tipoMaterial = $request->tipo_material;
-            // Soportar variaciones: Mueblería/Muebles, Vidrieria/Vidriería
             if ($tipoMaterial == 'Muebles' || $tipoMaterial == 'Mueblería') {
                 $query->where(function($q) {
                     $q->where('tipo_material', 'Mueblería')
@@ -37,17 +35,14 @@ class BiotecnologiaController extends Controller
             }
         }
         
-        // 🔹 Filtrado por cuentadante (nombre del responsable)
         if ($request->filled('nombre_responsable')) {
             $query->where('nombre_responsable', $request->nombre_responsable);
         }
 
-        // 🔢 Filtro por placa
         if ($request->filled('no_placa')) {
             $query->where('no_placa', 'like', "%{$request->no_placa}%");
         }
 
-        // 🔎 Filtro de búsqueda
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
             $query->where(function ($subquery) use ($buscar) {
@@ -57,14 +52,13 @@ class BiotecnologiaController extends Controller
             });
         }
 
-        // Paginar y mantener parámetros de filtro
         $items = $query->orderBy('created_at', 'desc')
                       ->paginate(10)
                       ->appends($request->all());
 
         return view('labs.biotecnologia.index', [
             'items' => $items,
-            'labModule' => $labModule, // 🔥 IMPORTANTE: Pasar labModule
+            'labModule' => $labModule,
             'createRouteName' => 'biotecnologia.create',
             'editBasePath' => 'inventario',
             'storeRouteName' => 'inventario.store',
@@ -73,53 +67,78 @@ class BiotecnologiaController extends Controller
         ]);
     }
 
-    public function create()
+    // 🔥 MÉTODO AUXILIAR - Debe estar ANTES de create()
+    private function normalizarNombre($nombre)
     {
-        // Obtener lista de responsables únicos con su cédula de la base de datos
-        $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
-            ->whereNotNull('nombre_responsable')
-            ->where('nombre_responsable', '!=', '')
-            ->groupBy('nombre_responsable', 'cedula')
-            ->orderBy('nombre_responsable')
-            ->get()
-            ->map(function($item) {
-                return [
-                    'nombre_responsable' => $item->nombre_responsable,
-                    'cedula' => $item->cedula
-                ];
-            });
+        if (empty($nombre)) {
+            return '';
+        }
 
-        // Responsables por defecto (catálogo base)
-        $defaultResponsables = collect([
-            ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
-            ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
-            ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
-            ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
-            ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
-            ['nombre_responsable' => ' Eduardo Pastrana Granado ', 'cedula' => '7719513'],
-            ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
-        ]);
+        // Eliminar dobles espacios y espacios al inicio/final
+        $nombre = trim(preg_replace('/\s+/', ' ', $nombre));
 
-        // Combinar y asegurar unicidad
-        $responsables = $defaultResponsables
-            ->concat($responsablesDb)
-            ->unique('nombre_responsable')
-            ->sortBy('nombre_responsable')
-            ->values();
+        // Convertir a título (Primera Letra Mayúscula)
+        $nombre = mb_convert_case($nombre, MB_CASE_TITLE, "UTF-8");
 
-        $catalogo = [
-            'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
-            'estados' => ['bueno', 'regular', 'malo'],
-            'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
-            'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
-        ];
+        // Quitar tildes y caracteres especiales
+        $nombre = iconv('UTF-8', 'ASCII//TRANSLIT', $nombre);
 
-        return view('inventario.create', [
-            'labModule' => 'biotecnologia_vegetal',
-            'responsables' => $responsables,
-            'catalogo' => $catalogo
-        ]);
+        return $nombre;
     }
+public function create()
+{
+    // 1. Responsables por defecto (lista maestra)
+    $defaultResponsables = collect([
+        ['nombre_responsable' => 'Alcy Rene Ceron', 'cedula' => '76316028'],
+        ['nombre_responsable' => 'Carolina Avila Cubillos', 'cedula' => '28551046'],
+        ['nombre_responsable' => 'Eduardo Pastrana Granado', 'cedula' => '7719513'],
+        ['nombre_responsable' => 'Kathryn Yadira Pacheco Guzman', 'cedula' => '38142927'],
+        ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
+        ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
+        ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
+    ]);
+
+    // 2. Cédulas válidas (solo las reales)
+    $cedulasValidas = $defaultResponsables->pluck('cedula')->toArray();
+
+    // 3. Obtener responsables adicionales de BD (excluyendo cédulas de prueba)
+    $responsablesDb = Inventario::select('nombre_responsable', 'cedula')
+        ->whereNotNull('nombre_responsable')
+        ->where('nombre_responsable', '!=', '')
+        ->whereNotNull('cedula')
+        ->where('cedula', '!=', '')
+        ->whereNotIn('cedula', $cedulasValidas)  // Excluir los que ya están en defaults
+        ->where('cedula', 'NOT LIKE', '%123456%') // 🔥 Excluir cédulas obvias de prueba
+        ->where('cedula', 'NOT LIKE', '%0987654%')
+        ->distinct()
+        ->get()
+        ->map(function ($item) {
+            return [
+                'nombre_responsable' => $this->normalizarNombre($item->nombre_responsable),
+                'cedula' => trim($item->cedula),
+            ];
+        })
+        ->unique('cedula');
+
+    // 4. Combinar: defaults + adicionales de BD
+    $responsables = $defaultResponsables
+        ->concat($responsablesDb)
+        ->sortBy('nombre_responsable')
+        ->values();
+
+    $catalogo = [
+        'tipos_material' => ['Equipos', 'Mueblería', 'Vidrieria'],
+        'estados' => ['bueno', 'regular', 'malo'],
+        'gestiones' => ['GESTIONADO', 'SIN GESTIONAR'],
+        'vinculaciones' => ['Funcionario Administrativo', 'Contrato', 'Provicional']
+    ];
+
+    return view('inventario.create', [
+        'labModule' => 'biotecnologia_vegetal',
+        'responsables' => $responsables,
+        'catalogo' => $catalogo
+    ]);
+}
 
     public function exportPdf($modulo)
     {
