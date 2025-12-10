@@ -114,7 +114,7 @@
 </div>
 @push('styles')
 <style>
-:root {
+::root {
     --primary-color: #3b82f6;
     --success-color: #10b981;
     --warning-color: #f59e0b;
@@ -143,27 +143,8 @@
 .modern-btn { display:inline-flex; align-items:center; gap:.5rem; padding:.75rem 1.5rem; border-radius:12px; font-weight:500; text-decoration:none; transition:all .3s ease; border:none; cursor:pointer; position:relative; overflow:hidden; }
 .modern-btn::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); transition:left .5s ease; }
 .modern-btn:hover::before { left:100%; }
-.modern-btn-primary { 
-    background: linear-gradient(135deg, #2563eb, #3b82f6); 
-    color: #ffffff !important; 
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-    font-weight: 600;
-}
-.modern-btn-primary:hover {
-    background: linear-gradient(135deg, #1e40af, #2563eb);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-}
-.modern-btn-secondary { 
-    background: linear-gradient(135deg, #6b7280, #4b5563); 
-    color: #ffffff !important; 
-    box-shadow: var(--shadow-sm);
-    font-weight: 600;
-}
-.modern-btn-secondary:hover {
-    background: linear-gradient(135deg, #4b5563, #374151);
-    transform: translateY(-2px);
-}
+.modern-btn-primary { background:linear-gradient(135deg,var(--primary-color),#60a5fa); color:#fff; box-shadow:var(--shadow-sm); }
+.modern-btn-secondary { background:linear-gradient(135deg,#6b7280,#9ca3af); color:#fff; box-shadow:var(--shadow-sm); }
 .modern-filters { animation: slideInRight 0.8s ease-out; }
 .modern-input { width:100%; padding:.75rem 1rem .75rem 2.5rem; border:2px solid var(--gray-200); border-radius:12px; background:#fff; font-size:.875rem; transition:all .3s ease; box-shadow:var(--shadow-sm); }
 .modern-input:focus { outline:none; border-color:var(--primary-color); box-shadow:0 0 0 3px rgba(59,130,246,.1); transform:translateY(-1px); }

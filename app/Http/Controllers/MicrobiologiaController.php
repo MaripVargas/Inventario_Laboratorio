@@ -79,6 +79,7 @@ class MicrobiologiaController extends Controller
         ['nombre_responsable' => 'Maria Goretti Ramirez', 'cedula' => '52962110'],
         ['nombre_responsable' => 'Sonia Carolina Delgado Murcia', 'cedula' => '1083883606'],
         ['nombre_responsable' => 'Yoly Dayana Moreno Ortega', 'cedula' => '34327134'],
+        ['nombre_responsable' => 'Félix Augusto Reyes Gutiérrez', 'cedula' => '93407279'],
     ]);
 
     // 2. Cédulas válidas (solo las reales)
