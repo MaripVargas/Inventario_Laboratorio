@@ -354,7 +354,7 @@
                 <option value="">Seleccione</option>
                 <option value="contrato" {{ $vincValue=='contrato' ? 'selected' : '' }}>Contrato</option>
                 <option value="Funcionario Administrativo" {{ $vincValue=='Funcionario Administrativo' ? 'selected' : '' }}>Funcionario Administrativo</option>
-                <option value="Provisional" {{ $vincValue=='Provisional' ? 'selected' : '' }}>Provisional</option>
+                <option value="Planta" {{ $vincValue=='Planta' ? 'selected' : '' }}>Planta</option>
             </select>
             @error('vinculacion')
                 <div class="invalid-feedback">{{ $message }}</div>

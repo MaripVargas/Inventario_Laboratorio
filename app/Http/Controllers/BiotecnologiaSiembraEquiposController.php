@@ -189,7 +189,7 @@ private function getCatalogos()
     $defaultVinculaciones = collect([
         'Funcionario Administrativo',
         'Contrato',
-        'Provisional'
+        'Planta'
     ]);
 
     $vinculacionesDb = $merged

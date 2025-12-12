@@ -163,7 +163,7 @@ class FisicoquimicaAdsorcionAtomicaEquiposController extends Controller
         $defaultVinculaciones = collect([
             'Funcionario Administrativo',
             'Contrato',
-            'Provisional'
+            'Planta'
         ]);
 
         $vinculacionesDb = $merged
