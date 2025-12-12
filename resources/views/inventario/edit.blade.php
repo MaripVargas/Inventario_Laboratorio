@@ -98,7 +98,7 @@
 
         <!-- Descripción Almacén -->
         <div class="col-md-12">
-            <label class="form-label fw-semibold">Descripción Almacén</label>
+            <label class="form-label fw-semibold">Ubicacion</label>
             <input 
                 type="text" 
                 name="desc_almacen" 
@@ -252,14 +252,17 @@
         </div>
 
         <!-- Gestión -->
-        <div class="col-md-4">
-            <label class="form-label fw-semibold">Gestión</label>
+         <div class="col-md-4">
+            <label class="form-label fw-semibold">
+                Fecha Mantenimiento  <span class="text-danger">*</span>
+            </label>
             <input 
-                type="text" 
-                name="gestion" 
-                value="{{ old('gestion', $item->gestion) }}" 
-                class="form-control @error('gestion') is-invalid @enderror">
-            @error('gestion')
+                type="date" 
+                name="fecha_mant" 
+                value="{{ old('fecha_mant', $item->fecha_mant ? $item->fecha_mant->format('Y-m-d') : '') }}"
+                class="form-control @error('fecha_mant') is-invalid @enderror" 
+                required>
+            @error('fecha_mant')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
