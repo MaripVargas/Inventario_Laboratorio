@@ -150,13 +150,13 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">
-                                Fecha Mantenimiento <span class="required">*</span>
+                                Fecha Mantenimiento
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-calendar input-icon"></i>
-                                <input type="date" name="fecha_adq"  
+                                <input type="date" name="gestion"
                                        class="form-input"
-                                       value="{{ old('fecha_adq') }}">
+                                       value="{{ old('gestion') }}">
                             </div>
                         </div>
                     </div>
