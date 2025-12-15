@@ -424,11 +424,16 @@
         /* ========================================
    SUBMENÚ DESPLEGABLE
    ======================================== */
+/* ========================================
+   SUBMENÚ DESPLEGABLE
+   ======================================== */
 .menu-item-wrapper {
     position: relative;
 }
 
 .submenu-toggle {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -442,6 +447,7 @@
     transform: rotate(180deg);
 }
 
+/* Contenedor del submenú */
 .submenu {
     max-height: 0;
     overflow: hidden;
@@ -450,9 +456,10 @@
 }
 
 .submenu.open {
-    max-height: 300px;
+    max-height: 500px; /* Aumentado para acomodar todos los items */
 }
 
+/* Items del submenú */
 .submenu-item {
     display: flex;
     align-items: center;
@@ -472,7 +479,7 @@
 .submenu-item.active {
     background-color: rgba(255, 255, 255, 0.1);
     color: #fff;
-    border-left: 3px solid #fff;
+    border-left: 3px solid #10b981;
 }
 
 .submenu-icon {
@@ -668,48 +675,52 @@
 </div>
 
 
-        <div class="menu-item-wrapper">
-            <a href="#"
-               class="menu-item submenu-toggle {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}"
-               onclick="toggleSubmenu(event, 'submenuFisico')">
-                <div class="menu-icon">
-                    <i class="fas fa-flask"></i>
-                </div>
-                Lab. Fisico Química
-                <i class="fas fa-chevron-down submenu-arrow"></i>
-            </a>
-            <div id="submenuFisico" class="submenu">
-                <a href="{{ route('fisicoquimica.index') }}"
-                   class="submenu-item {{ request()->routeIs('fisicoquimica.index') ? 'active' : '' }}">
-                    <span class="submenu-icon">📦</span>
-                    Equipos y Muebles
-                </a>
-                <a href="{{ route('fisicoquimica.adsorcion.index') }}" class="submenu-item">
-                    <span class="submenu-icon">🧪</span>
-                    Adsorción atómica
-                </a>
-                <a href="{{ route('fisicoquimica.secado_suelos.index') }}" class="submenu-item">
-                    <span class="submenu-icon">🌾</span>
-                    Secado de suelos
-                </a>
-                <a href="{{ route('fisicoquimica.area_administrativa.index') }}" class="submenu-item">
-                    <span class="submenu-icon">🏢</span>
-                    Área administrativa
-                </a>
-                <a href="{{ route('fisicoquimica.deposito.index') }}" class="submenu-item">
-                    <span class="submenu-icon">📥</span>
-                    Depósito
-                </a>
-                <a href="{{ route('fisicoquimica.area_balanzas.index') }}" class="submenu-item">
-                    <span class="submenu-icon">⚖️</span>
-                    Área de balanzas
-                </a>
-                <a href="{{ route('fisicoquimica.laboratorio_analisis.index') }}" class="submenu-item">
-                    <span class="submenu-icon">🧬</span>
-                    Laboratorio de análisis
-                </a>
-            </div>
+       <div class="menu-item-wrapper">
+    <a href="#"
+       class="menu-item submenu-toggle {{ request()->routeIs('fisicoquimica.*') ? 'active' : '' }}"
+       onclick="toggleSubmenu(event, 'submenuFisico')">
+        <div class="menu-icon">
+            <i class="fas fa-flask"></i>
         </div>
+        Lab. Fisico Química
+        <i class="fas fa-chevron-down submenu-arrow"></i>
+    </a>
+    <div id="submenuFisico" class="submenu">
+        <a href="{{ route('fisicoquimica.index') }}"
+           class="submenu-item {{ request()->routeIs('fisicoquimica.index') ? 'active' : '' }}">
+            <span class="submenu-icon">📦</span>
+            Equipos y Muebles
+        </a>
+        <a href="{{ route('fisicoquimica.adsorcion.index') }}" class="submenu-item">
+            <span class="submenu-icon">🧪</span>
+            Adsorción atómica
+        </a>
+        <a href="{{ route('fisicoquimica.secado_suelos.index') }}" class="submenu-item">
+            <span class="submenu-icon">🌾</span>
+            Secado de suelos
+        </a>
+        <a href="{{ route('fisicoquimica.area_administrativa.index') }}" class="submenu-item">
+            <span class="submenu-icon">🏢</span>
+            Área administrativa
+        </a>
+        <a href="{{ route('fisicoquimica.deposito.index') }}" class="submenu-item">
+            <span class="submenu-icon">📥</span>
+            Depósito
+        </a>
+        <a href="{{ route('fisicoquimica.area_balanzas.index') }}" class="submenu-item">
+            <span class="submenu-icon">⚖️</span>
+            Área de balanzas
+        </a>
+        <a href="{{ route('fisicoquimica.laboratorio_analisis.index') }}" class="submenu-item">
+            <span class="submenu-icon">🧬</span>
+            Laboratorio de análisis
+        </a>
+        <a href="{{ route('fisicoquimica.vidrieria.index') }}" class="submenu-item">
+            <span class="submenu-icon">⚗️</span>
+            Vidriería
+        </a>
+    </div>
+</div>
 
        <div class="menu-item-wrapper">
     <a href="#" 

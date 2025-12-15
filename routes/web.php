@@ -16,6 +16,7 @@ use App\Http\Controllers\FisicoquimicaSecadoSuelosEquiposController;
 use App\Http\Controllers\FisicoquimicaDepositoEquiposController;
 use App\Http\Controllers\FisicoquimicaAreaBalanzasEquiposController;
 use App\Http\Controllers\FisicoquimicaLaboratorioAnalisisEquiposController;
+use App\Http\Controllers\FisicoquimicaVidrieriaController;
 use App\Http\Controllers\MicrobiologiaController;
 use App\Http\Controllers\BiotecnologiaUtileriaController;
 use App\Http\Controllers\BiotecnologiaVidrieriaController;
@@ -205,6 +206,15 @@ Route::prefix('fisicoquimica')->name('fisicoquimica.')->middleware(['simulate.au
         ->name('laboratorio_analisis_equipos.export.pdf');
     Route::get('laboratorio-analisis-equipos/export/excel', [FisicoquimicaLaboratorioAnalisisEquiposController::class, 'exportExcel'])
         ->name('laboratorio_analisis_equipos.export.excel');
+
+         Route::resource('vidrieria', FisicoquimicaVidrieriaController::class)
+        ->names('vidrieria');
+
+    Route::get('vidrieria/export/pdf', [FisicoquimicaVidrieriaController::class, 'exportPdf'])
+        ->name('vidrieria.export.pdf');
+
+    Route::get('vidrieria/export/excel', [FisicoquimicaVidrieriaController::class, 'exportExcel'])
+        ->name('vidrieria.export.excel');
 });
 
 Route::get('{modulo}/export/pdf', [InventarioController::class, 'exportPdf'])->name('inventario.pdf');
