@@ -142,7 +142,7 @@ class InventarioController extends Controller
             'serial' => 'nullable|string|max:255',
             'fecha_adq' => 'required|date',
             'valor_adq' => 'required|numeric|min:0',
-            'gestion' => 'required|string|max:255',
+            'gestion' => 'nullable|string|max:255',
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
@@ -162,6 +162,11 @@ class InventarioController extends Controller
             $nombreFoto = time() . '_' . $foto->getClientOriginalName();
             $foto->move(public_path('uploads/inventario'), $nombreFoto);
             $data['foto'] = $nombreFoto;
+        }
+
+        // Si no se diligencia Fecha Mantenimiento, guardar un texto por defecto
+        if (empty($data['gestion'])) {
+            $data['gestion'] = 'SIN FECHA DE MANTENIMIENTO';
         }
 
         // Asignar lab_module según la ruta desde donde se accede
@@ -247,7 +252,7 @@ class InventarioController extends Controller
             'serial' => 'nullable|string|max:255',
             'fecha_adq' => 'required|date',
             'valor_adq' => 'required|numeric|min:0',
-            'gestion' => 'nullable|string|max:255',
+            'gestion' => 'required|date',
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
