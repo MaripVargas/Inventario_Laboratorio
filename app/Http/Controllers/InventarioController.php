@@ -142,7 +142,7 @@ class InventarioController extends Controller
             'serial' => 'nullable|string|max:255',
             'fecha_adq' => 'required|date',
             'valor_adq' => 'required|numeric|min:0',
-            'gestion' => 'nullable|string|max:255',
+            'fecha_mant' => 'nullable|date',
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
@@ -164,9 +164,9 @@ class InventarioController extends Controller
             $data['foto'] = $nombreFoto;
         }
 
-        // Si no se diligencia Fecha Mantenimiento, guardar un texto por defecto
-        if (empty($data['gestion'])) {
-            $data['gestion'] = 'SIN FECHA DE MANTENIMIENTO';
+        // Si no se diligencia Fecha Mantenimiento, dejar null
+        if (empty($data['fecha_mant'])) {
+            $data['fecha_mant'] = null;
         }
 
         // Asignar lab_module según la ruta desde donde se accede
@@ -252,7 +252,7 @@ class InventarioController extends Controller
             'serial' => 'nullable|string|max:255',
             'fecha_adq' => 'required|date',
             'valor_adq' => 'required|numeric|min:0',
-            'gestion' => 'required|date',
+            'fecha_mant' => 'required|date',
             'acciones' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'estado' => 'required|in:bueno,regular,malo',
@@ -274,6 +274,8 @@ class InventarioController extends Controller
             'valor_adq.required' => 'El campo Valor de Adquisición es obligatorio',
             'valor_adq.numeric' => 'El Valor de Adquisición debe ser un número',
             'valor_adq.min' => 'El Valor de Adquisición debe ser mayor o igual a 0',
+            'fecha_mant.required' => 'El campo Fecha de Mantenimiento es obligatorio',
+            'fecha_mant.date' => 'La Fecha de Mantenimiento debe ser una fecha válida',
             'estado.required' => 'El campo Estado es obligatorio',
             'estado.in' => 'El Estado debe ser: bueno, regular o malo',
             'foto.image' => 'El archivo debe ser una imagen',
@@ -424,7 +426,7 @@ class InventarioController extends Controller
             'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
             'estado_regular' => $inventario->where('estado', 'regular')->count(),
             'estado_malo' => $inventario->where('estado', 'malo')->count(),
-            'gestiones' => $inventario->pluck('gestion')->unique()->count(),
+            'gestiones' => $inventario->whereNotNull('fecha_mant')->count(),
         ];
 
         $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'));
