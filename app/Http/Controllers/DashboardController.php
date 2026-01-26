@@ -81,7 +81,7 @@ class DashboardController extends Controller
     
     // Totales generales
     $totalGeneral = $totalItems + $totalBiotec + $totalFisicoQuimica + $totalZoologia + $totalMicrobiologia;
-    $gestiones = Inventario::distinct('gestion')->count('gestion');
+    $gestiones = Inventario::whereNotNull('fecha_mant')->distinct('fecha_mant')->count('fecha_mant');
     
     // Porcentajes
     $goodPercentage = $totalItems > 0 ? round(($goodItems / $totalItems) * 100, 2) : 0;
@@ -256,7 +256,7 @@ class DashboardController extends Controller
             'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
             'estado_regular' => $inventario->where('estado', 'regular')->count(),
             'estado_malo' => $inventario->where('estado', 'malo')->count(),
-            'gestiones' => $inventario->groupBy('gestion')->count(),
+            'gestiones' => $inventario->whereNotNull('fecha_mant')->groupBy('fecha_mant')->count(),
         ];
         
         // Generate filename with current date
@@ -303,7 +303,7 @@ class DashboardController extends Controller
             'estado_bueno' => $allInventory->where('estado', 'bueno')->count(),
             'estado_regular' => $allInventory->where('estado', 'regular')->count(),
             'estado_malo' => $allInventory->where('estado', 'malo')->count(),
-            'gestiones' => $allInventory->groupBy('gestion')->count(),
+            'gestiones' => $allInventory->whereNotNull('fecha_mant')->groupBy('fecha_mant')->count(),
         ];
         
         // Add pagination info to stats
@@ -353,7 +353,7 @@ class DashboardController extends Controller
             'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
             'estado_regular' => $inventario->where('estado', 'regular')->count(),
             'estado_malo' => $inventario->where('estado', 'malo')->count(),
-            'gestiones' => $inventario->groupBy('gestion')->count(),
+            'gestiones' => $inventario->whereNotNull('fecha_mant')->groupBy('fecha_mant')->count(),
         ];
         
         $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'))

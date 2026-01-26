@@ -96,7 +96,7 @@ class InventarioExport implements FromCollection, WithHeadings, WithMapping, Wit
             $inventario->atributos ?? 'N/A',
             $inventario->fecha_adq ? $inventario->fecha_adq->format('d/m/Y') : 'N/A',
             $inventario->valor_adq,
-            $inventario->gestion ?? 'N/A',
+            $inventario->fecha_mant ? $inventario->fecha_mant->format('d/m/Y') : 'N/A',
             $inventario->acciones ?? 'N/A',
             ucfirst($inventario->estado),
             ucfirst(str_replace('_', ' ', $inventario->uso ?? 'N/A')),
