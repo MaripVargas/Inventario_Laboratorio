@@ -137,7 +137,7 @@ public function exportPdf($modulo)
         'estado_bueno' => $inventario->where('estado', 'bueno')->count(),
         'estado_regular' => $inventario->where('estado', 'regular')->count(),
         'estado_malo' => $inventario->where('estado', 'malo')->count(),
-        'gestiones' => $inventario->pluck('gestion')->unique()->count(),
+        'gestiones' => $inventario->whereNotNull('fecha_mant')->pluck('fecha_mant')->unique()->count(),
     ];
     
     $pdf = PDF::loadView('inventario.pdf', compact('inventario', 'stats'));
