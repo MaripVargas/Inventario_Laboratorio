@@ -203,14 +203,14 @@
             </h6>
         </div>
 
-        <!-- Gestión -->
+        <!-- Fecha Mantenimiento -->
         <div class="col-md-4">
             <label class="form-label fw-semibold">
                 Fecha Mantenimiento <span class="text-danger">*</span>
             </label>
             <input type="date" name="fecha_mant"
                 value="{{ old('fecha_mant', $item->fecha_mant ? $item->fecha_mant->format('Y-m-d') : '') }}"
-                class="form-control @error('fecha_mant') is-invalid @enderror">
+                class="form-control @error('fecha_mant') is-invalid @enderror" required>
             @error('fecha_mant')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
