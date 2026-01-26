@@ -154,9 +154,9 @@
                             </label>
                             <div class="input-container">
                                 <i class="fas fa-calendar input-icon"></i>
-                                <input type="date" name="gestion"
+                                <input type="date" name="fecha_mant"
                                        class="form-input"
-                                       value="{{ old('gestion') }}">
+                                       value="{{ old('fecha_mant') }}">
                             </div>
                         </div>
                     </div>

@@ -221,7 +221,7 @@
                             @endif
                         </td>
                         <td class="table-cell">{{ $item->tipo_material ?? '-' }}</td>
-                        <td class="table-cell">{{ $item->gestion ?? 'SIN GESTIONAR' }}</td>
+                        <td class="table-cell">{{ $item->fecha_mant ? $item->fecha_mant->format('d/m/Y') : 'SIN FECHA' }}</td>
                         <td class="table-cell">{{ $item->uso ?? '-' }}</td>
                         <td class="table-cell">{{ $item->contrato ?? '-' }}</td>
                         <td class="table-cell">{{ $item->nombre_responsable ?? '-' }}</td>
@@ -417,7 +417,7 @@
                         { name: 'serial', label: 'Serial' },
                         { name: 'fecha_adq', label: 'Fecha de Adquisición' },
                         { name: 'valor_adq', label: 'Valor de Adquisición' },
-                        { name: 'gestion', label: 'Gestión' },
+                        { name: 'fecha_mant', label: 'Fecha Mantenimiento' },
                         { name: 'acciones', label: 'Acciones' },
                         { name: 'estado', label: 'Estado' }
                     ];

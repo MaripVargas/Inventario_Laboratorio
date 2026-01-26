@@ -25,7 +25,7 @@ class Inventario extends Model
         'serial',
         'fecha_adq',
         'valor_adq',
-        'gestion',
+        'fecha_mant',
         'acciones',
         'foto',
         'estado',
@@ -42,6 +42,7 @@ class Inventario extends Model
 
     protected $casts = [
         'fecha_adq' => 'date',
+        'fecha_mant' => 'date',
         'valor_adq' => 'decimal:2',
     ];
 }
