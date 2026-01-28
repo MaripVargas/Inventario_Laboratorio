@@ -16,7 +16,13 @@ class RenameGestionToFechaMantInInventarioTable extends Migration
     {
         // Verificar si la columna gestion existe antes de renombrarla
         if (Schema::hasColumn('inventario', 'gestion')) {
-            // Convertir valores de texto a null si no son fechas válidas
+            // PASO 1: Primero modificar la columna para que acepte NULL
+            $driver = DB::getDriverName();
+            if ($driver === 'mysql') {
+                DB::statement('ALTER TABLE inventario MODIFY gestion VARCHAR(255) NULL');
+            }
+            
+            // PASO 2: Convertir valores de texto a null si no son fechas válidas
             DB::table('inventario')->whereNotNull('gestion')
                 ->where(function($query) {
                     $query->where('gestion', 'SIN FECHA DE MANTENIMIENTO')
@@ -25,7 +31,7 @@ class RenameGestionToFechaMantInInventarioTable extends Migration
                 })
                 ->update(['gestion' => null]);
 
-            // Intentar convertir fechas válidas en formato string a date
+            // PASO 3: Intentar convertir fechas válidas en formato string a date
             $items = DB::table('inventario')->whereNotNull('gestion')->get();
             foreach ($items as $item) {
                 $fecha = null;
@@ -41,13 +47,11 @@ class RenameGestionToFechaMantInInventarioTable extends Migration
                 }
             }
 
-            // Usar SQL directo para renombrar la columna (más compatible)
-            $driver = DB::getDriverName();
+            // PASO 4: Renombrar la columna y cambiar tipo a DATE
             if ($driver === 'mysql') {
                 DB::statement('ALTER TABLE inventario CHANGE gestion fecha_mant DATE NULL');
             } elseif ($driver === 'sqlite') {
-                // SQLite no soporta renombrar columnas directamente, necesitamos recrear la tabla
-                // Por ahora, solo agregamos la nueva columna
+                // SQLite no soporta renombrar columnas directamente
                 if (!Schema::hasColumn('inventario', 'fecha_mant')) {
                     Schema::table('inventario', function (Blueprint $table) {
                         $table->date('fecha_mant')->nullable()->after('valor_adq');
@@ -56,7 +60,7 @@ class RenameGestionToFechaMantInInventarioTable extends Migration
                     DB::statement('UPDATE inventario SET fecha_mant = gestion WHERE gestion IS NOT NULL');
                 }
             } else {
-                // Para otros drivers, intentar renameColumn
+                // Para otros drivers
                 Schema::table('inventario', function (Blueprint $table) {
                     $table->renameColumn('gestion', 'fecha_mant');
                 });
