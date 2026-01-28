@@ -77,7 +77,8 @@ class ZoologiaVidrieriaController extends Controller
         $item = ZoologiaVidrieria::findOrFail($id);
         $item->update($request->all());
 
-        return redirect()->route('Zoologia.vidrieria.index')
+        // La ruta del resource está registrada como 'zoologia.vidrieria.index' (en minúsculas)
+        return redirect()->route('zoologia.vidrieria.index')
                          ->with('success', 'Material actualizado correctamente.');
     }
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Agregar Artículo de Utilería')
-@section('page-title', 'Laboratorio de Biotecnología')
+@section('page-title', 'Laboratorio de Zoología')
 @section('page-subtitle', 'Registrar nuevo artículo de utilería')
 
 @section('content')

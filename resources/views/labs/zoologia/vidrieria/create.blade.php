@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Agregar Vidriería')
-@section('page-title', 'Laboratorio de Biotecnología')
+@section('page-title', 'Laboratorio de Zoología')
 @section('page-subtitle', 'Registrar nuevo material de vidriería')
 
 @section('content')
