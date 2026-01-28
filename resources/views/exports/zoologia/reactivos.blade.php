@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reactivos Zoología y Botánica</title>
+    <title>Reactivos Zoología </title>
     <style>
         body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 12px; color: #111827; }
         h1 { text-align: center; margin-bottom: 10px; }
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>Reactivos - Lab. Zoología y Botánica</h1>
+    <h1>Reactivos - Lab. Zoología</h1>
     <p class="meta">Generado el {{ $generatedAt->format('d/m/Y H:i') }} | Total: {{ $items->count() }} registros</p>
 
     <table>
