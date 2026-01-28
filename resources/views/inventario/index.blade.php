@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Lab.Zoologia y Bontanica')
-@section('page-title', 'Lab.Zoologia y Bontanica')
-@section('page-subtitle', 'Gestiona el inventario del laboratorio - módulo Zoología y Botánica')
+@section('title', 'Lab.Zoologia ')
+@section('page-title', 'Lab.Zoologia ')
+@section('page-subtitle', 'Gestiona el inventario del laboratorio - módulo Zoología ')
 
 @section('content')
 

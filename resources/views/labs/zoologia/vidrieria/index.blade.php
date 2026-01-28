@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Vidriería - Biotecnología')
-@section('page-title', 'Laboratorio de Biotecnología')
-@section('page-subtitle', 'Gestión de vidriería del laboratorio')
+@section('title', 'Vidriería - Zoología ')
+@section('page-title', 'Lab. Zoología ')
+@section('page-subtitle', 'Gestión de vidriería del laboratorio de Zoología ')
 
 @section('content')
 
